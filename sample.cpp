@@ -200,8 +200,10 @@ void			Cross(float[3], float[3], float[3]);
 float			Dot(float [3], float [3]);
 float			Unit(float [3], float [3]);
 
-
+//==================================== MY CHANGES ====================================//
 #include "heli.550"
+bool Frozen;
+//==================================== MY CHANGES ====================================//
 
 // main program:
 
@@ -781,6 +783,15 @@ Keyboard( unsigned char c, int x, int y )
 
 	switch( c )
 	{
+		case 'f':
+		case 'F':
+			Frozen = !Frozen;
+			if (Frozen)
+				glutIdleFunc(NULL);
+			else
+				glutIdleFunc(Animate);
+			break;
+
 		case 'o':
 		case 'O':
 			WhichProjection = ORTHO;
@@ -911,6 +922,7 @@ MouseMotion( int x, int y )
 void
 Reset( )
 {
+	Frozen = false; //set frozen to false initially so the project runs
 	ActiveButton = 0;
 	AxesOn = 1;
 	DebugOn = 0;
