@@ -762,6 +762,7 @@ InitLists( )
 
 	glEndList( );
 
+
 	// create the axes:
 
 	AxesList = glGenLists( 1 );
