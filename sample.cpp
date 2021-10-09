@@ -148,9 +148,9 @@ const GLfloat FOGEND      = { 4. };
 // non-constant global variables:
 
 int		ActiveButton;			// current button that is down
-GLuint	AxesList;				// list to hold the axes
+GLuint	BladesList;				// list to hold the axes
 int		AxesOn;					// != 0 means to draw the axes
-GLuint	BoxList;				// object display list
+GLuint	HelicopterList;				// object display list
 int		DebugOn;				// != 0 means to print debugging info
 int		DepthCueOn;				// != 0 means to use intensity depth cueing
 int		DepthBufferOn;			// != 0 means to use the z-buffer
@@ -203,6 +203,9 @@ float			Unit(float [3], float [3]);
 //==================================== MY CHANGES ====================================//
 #include "heli.550"
 bool Frozen;
+// blade parameters:
+#define BLADE_RADIUS		 1.0
+#define BLADE_WIDTH		 0.4
 //==================================== MY CHANGES ====================================//
 
 // main program:
@@ -362,7 +365,7 @@ Display( )
 	if( AxesOn != 0 )
 	{
 		glColor3fv( &Colors[WhichColor][0] );
-		glCallList( AxesList );
+		glCallList( BladesList );
 	}
 
 	// since we are using glScalef( ), be sure normals get unitized:
@@ -371,14 +374,14 @@ Display( )
 
 	// draw the current object:
 
-	glCallList( BoxList );
+	glCallList( HelicopterList );
 
 #ifdef DEMO_Z_FIGHTING
 	if( DepthFightingOn != 0 )
 	{
 		glPushMatrix( );
 			glRotatef( 90.,   0., 1., 0. );
-			glCallList( BoxList );
+			glCallList( HelicopterList );
 		glPopMatrix( );
 	}
 #endif
@@ -405,7 +408,7 @@ Display( )
 	gluOrtho2D( 0., 100.,     0., 100. );
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity( );
-	glColor3f( 1., 0., 1. );
+	glColor3f( 0., 1., 0. );
 	DoRasterString( 5., 5., 0., (char *)"Project 2 - Helicopter" );
 
 	// swap the double-buffered framebuffers:
@@ -708,18 +711,19 @@ InitGraphics( )
 //  memory so that they can be played back efficiently at a later time
 //  with a call to glCallList( )
 
+
+//FINDME!
 void
 InitLists( )
 {
-	float dx = BOXSIZE / 2.f;
-	float dy = BOXSIZE / 2.f;
-	float dz = BOXSIZE / 2.f;
 	glutSetWindow( MainWindow );
 
 	// create the object:
 
-	BoxList = glGenLists( 1 );
-	glNewList( BoxList, GL_COMPILE );
+	HelicopterList = glGenLists( 1 );
+
+	//Start of Helicopter Display List
+	glNewList( HelicopterList, GL_COMPILE );
 
 	int i;
 	struct point* p0, * p1, * p2;
@@ -761,16 +765,24 @@ InitLists( )
 	glPopMatrix();
 
 	glEndList( );
+	//End of Helicopter Display List
 
+	//Start of Blades Display List
+	BladesList = glGenLists(1);
+	glNewList(BladesList, GL_COMPILE);
+	// draw the helicopter blade with radius BLADE_RADIUS and
+	//	width BLADE_WIDTH centered at (0.,0.,0.) in the XY plane
+	glBegin(GL_TRIANGLES);
+	glVertex2f(BLADE_RADIUS, BLADE_WIDTH / 2.);
+	glVertex2f(0., 0.);
+	glVertex2f(BLADE_RADIUS, -BLADE_WIDTH / 2.);
 
-	// create the axes:
-
-	AxesList = glGenLists( 1 );
-	glNewList( AxesList, GL_COMPILE );
-		glLineWidth( AXES_WIDTH );
-			Axes( 1.5 );
-		glLineWidth( 1. );
-	glEndList( );
+	glVertex2f(-BLADE_RADIUS, -BLADE_WIDTH / 2.);
+	glVertex2f(0., 0.);
+	glVertex2f(-BLADE_RADIUS, BLADE_WIDTH / 2.);
+	glEnd();
+	glEndList();
+	//End of Blades Display List
 }
 
 
