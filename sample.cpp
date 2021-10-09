@@ -730,7 +730,6 @@ InitLists( )
 	struct point* p0, * p1, * p2;
 	struct tri* tp;
 	float p01[3], p02[3], n[3];
-
 	glPushMatrix();
 	glTranslatef(0., -1., 0.);
 	glRotatef(97., 0., 1., 0.);
@@ -774,6 +773,7 @@ InitLists( )
 	// draw the helicopter blade with radius BLADE_RADIUS and
 	//	width BLADE_WIDTH centered at (0.,0.,0.) in the XY plane
 	glBegin(GL_TRIANGLES);
+	glColor3f(0., n[1], n[2]);
 	glVertex2f(BLADE_RADIUS, BLADE_WIDTH / 2.);
 	glVertex2f(0., 0.);
 	glVertex2f(BLADE_RADIUS, -BLADE_WIDTH / 2.);
@@ -783,7 +783,23 @@ InitLists( )
 	glVertex2f(-BLADE_RADIUS, BLADE_WIDTH / 2.);
 	glEnd();
 	glTranslatef(0., -1.3, -8.); //moves in a certain direction
-	glRotatef(0, 0., 0., 0.); //ax ay and az are between 1-0
+	glRotatef(90, 0., 0.1, 0.); //ax ay and az are between 1-0
+	glTranslatef(-8.07, -1, -8.75); //moves in a certain direction
+
+	glBegin(GL_TRIANGLES);
+	glColor3f(0., n[1], n[2]);
+	glVertex2f(BLADE_RADIUS, BLADE_WIDTH / 2.);
+	glVertex2f(0., 0.);
+	glVertex2f(BLADE_RADIUS, -BLADE_WIDTH / 2.);
+
+	glVertex2f(-BLADE_RADIUS, -BLADE_WIDTH / 2.);
+	glVertex2f(0., 0.);
+	glVertex2f(-BLADE_RADIUS, BLADE_WIDTH / 2.);
+	glEnd();
+	//glScalef(1., 0., 0.);
+	//glTranslatef(0., -1.3, -8.); //moves in a certain direction
+	//glRotatef(90, 0., 0.1, 0.); //ax ay and az are between 1-0
+	//glTranslatef(-8.07, -1, -8.75); //moves in a certain direction
 	glEndList();
 	//End of Blades Display List
 
