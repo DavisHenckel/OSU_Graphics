@@ -749,7 +749,7 @@ InitLists( )
 		n[1] += .25;
 		if (n[1] > 1.)
 			n[1] = 1.;
-		glColor3f(0., n[1], 0.);
+		glColor3f(n[1], 0., 0.);
 
 		glVertex3f(p0->x, p0->y, p0->z);
 		glVertex3f(p1->x, p1->y, p1->z);
