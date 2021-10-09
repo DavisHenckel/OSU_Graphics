@@ -148,7 +148,8 @@ const GLfloat FOGEND      = { 4. };
 // non-constant global variables:
 
 int		ActiveButton;			// current button that is down
-GLuint	BladesList;				// list to hold the axes
+GLuint	BladesList;				// list to hold the blades
+GLuint	AxesList;				// list to hold the blades
 int		AxesOn;					// != 0 means to draw the axes
 GLuint	HelicopterList;				// object display list
 int		DebugOn;				// != 0 means to print debugging info
@@ -781,8 +782,12 @@ InitLists( )
 	glVertex2f(0., 0.);
 	glVertex2f(-BLADE_RADIUS, BLADE_WIDTH / 2.);
 	glEnd();
+	glTranslatef(0., -1.3, -8.); //moves in a certain direction
+	glRotatef(0, 0., 0., 0.); //ax ay and az are between 1-0
 	glEndList();
 	//End of Blades Display List
+
+	// create the axes:
 }
 
 
