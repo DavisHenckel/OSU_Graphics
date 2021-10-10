@@ -149,7 +149,8 @@ const GLfloat FOGEND      = { 4. };
 
 int		ActiveButton;			// current button that is down
 GLuint	BladesList;				// list to hold the blades
-GLuint	AxesList;				// list to hold the blades
+GLuint	BoxList;				// list to hold the blades
+GLuint	AxesList;				// list to hold the axes
 int		AxesOn;					// != 0 means to draw the axes
 GLuint	HelicopterList;				// object display list
 int		DebugOn;				// != 0 means to print debugging info
@@ -204,6 +205,7 @@ float			Unit(float [3], float [3]);
 //==================================== MY CHANGES ====================================//
 #include "heli.550"
 bool Frozen;
+bool inside = false;
 // blade parameters:
 #define BLADE_RADIUS		 1.0
 #define BLADE_WIDTH		 0.4
@@ -331,18 +333,23 @@ Display( )
 
 	// set the eye position, look-at position, and up-vector:
 
-	gluLookAt( 0., 0., 3.,     0., 0., 0.,     0., 1., 0. );
-
-	// rotate the scene:
-
-	glRotatef( (GLfloat)Yrot, 0., 1., 0. );
-	glRotatef( (GLfloat)Xrot, 1., 0., 0. );
+	//inside view
+	if (inside) {
+		gluLookAt(-0.4, 1.8, -4.9, -0.4, 1.8, -10., 0., 1., 0.);
+	}
+	//outside view
+	else {
+		gluLookAt(4., 7., 12., 0., 1., 0., 0., 1., 0.);
+		glRotatef((GLfloat)Yrot, 0., 1., 0.);
+		glRotatef((GLfloat)Xrot, 1., 0., 0.);
+		glScalef((GLfloat)Scale, (GLfloat)Scale, (GLfloat)Scale);
+	}
 
 	// uniformly scale the scene:
 
 	if( Scale < MINSCALE )
 		Scale = MINSCALE;
-	glScalef( (GLfloat)Scale, (GLfloat)Scale, (GLfloat)Scale );
+	
 
 	// set the fog parameters:
 	// (this is really here to do intensity depth cueing)
@@ -366,7 +373,7 @@ Display( )
 	if( AxesOn != 0 )
 	{
 		glColor3fv( &Colors[WhichColor][0] );
-		glCallList( BladesList );
+		glCallList( AxesList );
 	}
 
 	// since we are using glScalef( ), be sure normals get unitized:
@@ -375,8 +382,39 @@ Display( )
 
 	// draw the current object:
 
+	glPushMatrix();
 	glCallList( HelicopterList );
+	glPopMatrix();
 
+	//big blade
+	glPushMatrix();
+	glScalef(5., 1., 1.); //radius 5
+	glTranslatef(0., 2.9, -2.); //moves in a certain direction
+	//glRotatef(90, 1.0, 0.0, 0.0);
+	glCallList(BladesList);
+	glPopMatrix();
+	
+	//small blade
+	glPushMatrix();
+	glScalef(3., 1., 1.); //radius 3
+	glTranslatef(0.15, 2.5, 9.);
+	glRotatef(90, 0., 1.0, 0.);
+	glCallList(BladesList);
+	glPopMatrix();
+	
+	//box
+	glPushMatrix();
+	glRotatef(25, 1.0, 1.0, 1.0);
+	glTranslatef(2., 2.5, -13.);
+	glCallList(BoxList);
+	glPopMatrix();
+
+	//box2
+	glPushMatrix();
+	glRotatef(45, 1.0, 1.0, 1.0);
+	glTranslatef(5., -5.5, -13.);
+	glCallList(BoxList);
+	glPopMatrix();
 #ifdef DEMO_Z_FIGHTING
 	if( DepthFightingOn != 0 )
 	{
@@ -438,6 +476,18 @@ DoColorMenu( int id )
 	WhichColor = id - RED;
 	glutSetWindow( MainWindow );
 	glutPostRedisplay( );
+}
+
+void DoInsideMenu(int id)
+{
+	if (id == 0) {
+		inside = false;
+	}
+	else {
+		inside = true;
+	}
+	glutSetWindow(MainWindow);
+	glutPostRedisplay();
 }
 
 
@@ -575,6 +625,10 @@ InitMenus( )
 		glutAddMenuEntry( ColorNames[i], i );
 	}
 
+	int insideMenu = glutCreateMenu( DoInsideMenu );
+	glutAddMenuEntry("Off", 0);
+	glutAddMenuEntry("On", 1);
+
 	int axesmenu = glutCreateMenu( DoAxesMenu );
 	glutAddMenuEntry( "Off",  0 );
 	glutAddMenuEntry( "On",   1 );
@@ -612,6 +666,7 @@ InitMenus( )
 #endif
 
 	glutAddSubMenu(   "Depth Cue",     depthcuemenu);
+	glutAddSubMenu(   "Inside ",	   insideMenu);
 	glutAddSubMenu(   "Projection",    projmenu );
 	glutAddMenuEntry( "Reset",         RESET );
 	glutAddSubMenu(   "Debug",         debugmenu);
@@ -717,6 +772,9 @@ InitGraphics( )
 void
 InitLists( )
 {
+	float dx = BOXSIZE / 2.f;
+	float dy = BOXSIZE / 2.f;
+	float dz = BOXSIZE / 2.f;
 	glutSetWindow( MainWindow );
 
 	// create the object:
@@ -772,38 +830,72 @@ InitLists( )
 	glNewList(BladesList, GL_COMPILE);
 	// draw the helicopter blade with radius BLADE_RADIUS and
 	//	width BLADE_WIDTH centered at (0.,0.,0.) in the XY plane
-	glBegin(GL_TRIANGLES);
-	glColor3f(0., n[1], n[2]);
-	glVertex2f(BLADE_RADIUS, BLADE_WIDTH / 2.);
-	glVertex2f(0., 0.);
-	glVertex2f(BLADE_RADIUS, -BLADE_WIDTH / 2.);
-
-	glVertex2f(-BLADE_RADIUS, -BLADE_WIDTH / 2.);
-	glVertex2f(0., 0.);
-	glVertex2f(-BLADE_RADIUS, BLADE_WIDTH / 2.);
-	glEnd();
-	glTranslatef(0., -1.3, -8.); //moves in a certain direction
-	glRotatef(90, 0., 0.1, 0.); //ax ay and az are between 1-0
-	glTranslatef(-8.07, -1, -8.75); //moves in a certain direction
-
-	glBegin(GL_TRIANGLES);
-	glColor3f(0., n[1], n[2]);
-	glVertex2f(BLADE_RADIUS, BLADE_WIDTH / 2.);
-	glVertex2f(0., 0.);
-	glVertex2f(BLADE_RADIUS, -BLADE_WIDTH / 2.);
-
-	glVertex2f(-BLADE_RADIUS, -BLADE_WIDTH / 2.);
-	glVertex2f(0., 0.);
-	glVertex2f(-BLADE_RADIUS, BLADE_WIDTH / 2.);
-	glEnd();
-	//glScalef(1., 0., 0.);
-	//glTranslatef(0., -1.3, -8.); //moves in a certain direction
-	//glRotatef(90, 0., 0.1, 0.); //ax ay and az are between 1-0
+	
 	//glTranslatef(-8.07, -1, -8.75); //moves in a certain direction
+	//glRotatef(90, 0., 0.1, 0.); //ax ay and az are between 1-0
+	//glTranslatef(-7, 1., -2.); //moves in a certain direction
+	glColor3f(0., n[1], n[2]);
+	glBegin(GL_TRIANGLES);
+	glVertex2f(BLADE_RADIUS, BLADE_WIDTH / 2.);
+	glVertex2f(0., 0.);
+	glVertex2f(BLADE_RADIUS, -BLADE_WIDTH / 2.);
+
+	glVertex2f(-BLADE_RADIUS, -BLADE_WIDTH / 2.);
+	glVertex2f(0., 0.);
+	glVertex2f(-BLADE_RADIUS, BLADE_WIDTH / 2.);
+	glEnd();
 	glEndList();
 	//End of Blades Display List
 
+	BoxList = glGenLists(1);
+	glNewList(BoxList, GL_COMPILE);
+
+	glBegin(GL_QUADS);
+
+	glColor3f(0., 0., 1.);
+	glVertex3f(-dx, -dy, dz);
+	glVertex3f(dx, -dy, dz);
+	glVertex3f(dx, dy, dz);
+	glVertex3f(-dx, dy, dz);
+
+	glVertex3f(-dx, -dy, -dz);
+	glVertex3f(-dx, dy, -dz);
+	glVertex3f(dx, dy, -dz);
+	glVertex3f(dx, -dy, -dz);
+
+	glColor3f(1., 0., 0.);
+	glVertex3f(dx, -dy, dz);
+	glVertex3f(dx, -dy, -dz);
+	glVertex3f(dx, dy, -dz);
+	glVertex3f(dx, dy, dz);
+
+	glVertex3f(-dx, -dy, dz);
+	glVertex3f(-dx, dy, dz);
+	glVertex3f(-dx, dy, -dz);
+	glVertex3f(-dx, -dy, -dz);
+
+	glColor3f(0., 1., 0.);
+	glVertex3f(-dx, dy, dz);
+	glVertex3f(dx, dy, dz);
+	glVertex3f(dx, dy, -dz);
+	glVertex3f(-dx, dy, -dz);
+
+	glVertex3f(-dx, -dy, dz);
+	glVertex3f(-dx, -dy, -dz);
+	glVertex3f(dx, -dy, -dz);
+	glVertex3f(dx, -dy, dz);
+
+	glEnd();
+
+	glEndList();
+
 	// create the axes:
+	AxesList = glGenLists(1);
+	glNewList(AxesList, GL_COMPILE);
+	glLineWidth(AXES_WIDTH);
+	Axes(1.5);
+	glLineWidth(1.);
+	glEndList();
 }
 
 
