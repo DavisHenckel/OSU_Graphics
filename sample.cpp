@@ -402,7 +402,7 @@ Display( )
 	glCallList(BladesList);
 	glPopMatrix();
 	
-	//box
+	//box1
 	glPushMatrix();
 	glRotatef(25, 1.0, 1.0, 1.0);
 	glTranslatef(2., 2.5, -13.);
@@ -415,6 +415,15 @@ Display( )
 	glTranslatef(5., -5.5, -13.);
 	glCallList(BoxList);
 	glPopMatrix();
+
+	//box3
+	glPushMatrix();
+	glRotatef(70, 1.0, 1.0, 1.0);
+	glTranslatef(13., -5.5, -13.);
+	glCallList(BoxList);
+	glPopMatrix();
+
+
 #ifdef DEMO_Z_FIGHTING
 	if( DepthFightingOn != 0 )
 	{
