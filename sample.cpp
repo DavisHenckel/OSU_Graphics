@@ -209,6 +209,7 @@ bool inside = false;
 // blade parameters:
 #define BLADE_RADIUS		 1.0
 #define BLADE_WIDTH		 0.4
+float BladeAngle;
 //==================================== MY CHANGES ====================================//
 
 // main program:
@@ -264,13 +265,13 @@ Animate( )
 	// put animation stuff in here -- change some global variables
 	// for Display( ) to find:
 
-	const int MS_IN_THE_ANIMATION_CYCLE = 10000;	// milliseconds in the animation loop
+	const int MS_IN_THE_ANIMATION_CYCLE = 1000;	// milliseconds in the animation loop
 	int ms = glutGet(GLUT_ELAPSED_TIME);			// milliseconds since the program started
 	ms %= MS_IN_THE_ANIMATION_CYCLE;				// milliseconds in the range 0 to MS_IN_THE_ANIMATION_CYCLE-1
 	Time = (float)ms / (float)MS_IN_THE_ANIMATION_CYCLE;        // [ 0., 1. )
 
 	// force a call to Display( ) next time it is convenient:
-
+	BladeAngle = 360 * Time;
 	glutSetWindow( MainWindow );
 	glutPostRedisplay( );
 }
@@ -388,17 +389,20 @@ Display( )
 
 	//big blade
 	glPushMatrix();
-	glScalef(5., 1., 1.); //radius 5
 	glTranslatef(0., 2.9, -2.); //moves in a certain direction
-	//glRotatef(90, 1.0, 0.0, 0.0);
+	glRotatef(BladeAngle, 0., 1., 0.);
+	glRotatef(90., 1., 0., 0.);
+	glScalef(5., 5., 5.); //radius 5
 	glCallList(BladesList);
 	glPopMatrix();
 	
 	//small blade
 	glPushMatrix();
-	glScalef(3., 1., 1.); //radius 3
-	glTranslatef(0.15, 2.5, 9.);
+	
+	glTranslatef(.5, 2.5, 9.);
+	glRotatef(BladeAngle * 2, 1., 0., 0.);
 	glRotatef(90, 0., 1.0, 0.);
+	glScalef(3., 3., 3.); //radius 3
 	glCallList(BladesList);
 	glPopMatrix();
 	
@@ -754,7 +758,7 @@ InitGraphics( )
 	glutTabletButtonFunc( NULL );
 	glutMenuStateFunc( NULL );
 	glutTimerFunc( -1, NULL, 0 );
-	glutIdleFunc( NULL );
+	glutIdleFunc( Animate );
 
 	// init glew (a window must be open to do this):
 
