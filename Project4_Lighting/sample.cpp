@@ -323,9 +323,6 @@ OsuSphere(float radius, int slices, int stacks)
 	{
 		float lng = -M_PI + 2. * M_PI * (float)ilng / (float)(NumLngs - 1);
 		top.s = (lng + M_PI) / (2. * M_PI);
-		//if (DistortBool) {
-		//	top.s = sin(top.s * Time);
-		//}
 		DrawPoint(&top);
 		struct point* p = PtsPointer(NumLats - 2, ilng);	// ilat=NumLats-1 is the north pole
 		DrawPoint(p);
@@ -339,9 +336,6 @@ OsuSphere(float radius, int slices, int stacks)
 	{
 		float lng = -M_PI + 2. * M_PI * (float)ilng / (float)(NumLngs - 1);
 		bot.s = (lng + M_PI) / (2. * M_PI);
-		//if (DistortBool) {
-		//	bot.s = sin(bot.s * Time);
-		//}
 		DrawPoint(&bot);
 		struct point* p = PtsPointer(1, ilng);					// ilat=0 is the south pole
 		DrawPoint(p);
@@ -539,8 +533,9 @@ Display( )
 
 	// draw the current object:
 
-	glPushMatrix();
-	glTranslatef(0., 0., -5);
+	//earth
+	glPushMatrix(); 
+	glTranslatef(0., 0., 0.);
 	OsuSphere(RADIUS, SLICES, STACKS);
 	if (TextureBool) {
 		glMatrixMode(GL_TEXTURE);
@@ -551,9 +546,16 @@ Display( )
 	}
 	glPopMatrix();
 	
-
+	//sun
 	glPushMatrix();
-	glTranslatef(0., 0., 2.);
+	glTranslatef(-20., 0., 0.);
+	glColor3f(1, 0.905, 0.360);
+	glutSolidSphere(3, SLICES * 2, STACKS * 2);
+	glPopMatrix();
+
+	//torus
+	glPushMatrix();
+	glTranslatef(0., 0., 0.);
 	glColor3f(0.529, 0.050, 0.129);
 	glutSolidTorus(1.0, 3.0, 10, 50);
 	glPopMatrix();
@@ -903,7 +905,7 @@ InitGraphics( )
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 	int level = 0;
 	int ncomps = 3;
