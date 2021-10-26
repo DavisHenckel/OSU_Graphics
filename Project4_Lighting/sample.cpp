@@ -541,9 +541,17 @@ Display( )
 	glEnable( GL_NORMALIZE );
 
 	// draw the current object:
-
+	glPushMatrix();
+	glTranslatef(-2., -1., 1.5);
 	glCallList( BoxList );
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(2., 3., 0.);
+	glColor3f(1., 1., 1.);
 	OsuSphere(RADIUS, SLICES, STACKS);
+	glPopMatrix();
+
 #ifdef DEMO_Z_FIGHTING
 	if( DepthFightingOn != 0 )
 	{
