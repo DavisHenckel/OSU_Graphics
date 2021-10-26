@@ -552,6 +552,12 @@ Display( )
 	OsuSphere(RADIUS, SLICES, STACKS);
 	glPopMatrix();
 
+	glPushMatrix();
+	glTranslatef(0., 0., -6.);
+	glColor3f(0.086, 0.454, 0.278);
+	glutSolidTorus(1.0, 3.0, 10, 50);
+	glPopMatrix();
+
 #ifdef DEMO_Z_FIGHTING
 	if( DepthFightingOn != 0 )
 	{
