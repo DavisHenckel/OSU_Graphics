@@ -1,0 +1,2 @@
+C:\MJB\CS550\SampleFreeGlut2019\Debug\Sample.exe
+D:\Users\Davis\Computer Science\OSU\CS450 (Intro to Graphics)\Week3\Texture_Mapping\Debug\Sample.exe
