@@ -54,7 +54,7 @@ const int INIT_WINDOW_SIZE = { 900 };
 
 // size of the 3d box:
 
-const float BOXSIZE = { 2.f };
+const float BOXSIZE = { 0.5f };
 
 // multiplication factors for input interaction:
 //  (these are known from previous experience)
@@ -217,6 +217,11 @@ void			Cross(float[3], float[3], float[3]);
 float			Dot(float [3], float [3]);
 float			Unit(float [3], float [3]);
 
+float RADIUS = 1.;
+int SLICES = 50;
+int STACKS = 50;
+bool TextureBool = false;
+
 //OSU SPHERE
 int		NumLngs, NumLats;
 struct point* Pts;
@@ -288,14 +293,8 @@ OsuSphere(float radius, int slices, int stacks)
 			p->nx = x;
 			p->ny = y;
 			p->nz = z;
-			if (DistortBool) {
-				p->s = AnimationVar - (lng + M_PI) / (2. * M_PI);
-				p->t = AnimationVar - (lat + M_PI / 2.) / M_PI;
-			}
-			else {
-				p->s = (lng + M_PI) / (2. * M_PI);
-				p->t = (lat + M_PI / 2.) / M_PI;
-			}
+			p->s = (lng + M_PI) / (2. * M_PI);
+			p->t = (lat + M_PI / 2.) / M_PI;
 
 		}
 	}
@@ -544,7 +543,7 @@ Display( )
 	// draw the current object:
 
 	glCallList( BoxList );
-
+	OsuSphere(RADIUS, SLICES, STACKS);
 #ifdef DEMO_Z_FIGHTING
 	if( DepthFightingOn != 0 )
 	{
