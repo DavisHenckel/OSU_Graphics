@@ -52,9 +52,6 @@ const int ESCAPE = { 0x1b };
 
 const int INIT_WINDOW_SIZE = { 900 };
 
-// size of the 3d box:
-
-const float BOXSIZE = { 0.5f };
 
 // multiplication factors for input interaction:
 //  (these are known from previous experience)
@@ -167,7 +164,6 @@ const GLfloat FOGEND      = { 4. };
 int		ActiveButton;			// current button that is down
 GLuint	AxesList;				// list to hold the axes
 int		AxesOn;					// != 0 means to draw the axes
-GLuint	BoxList;				// object display list
 int		DebugOn;				// != 0 means to print debugging info
 int		DepthCueOn;				// != 0 means to use intensity depth cueing
 int		DepthBufferOn;			// != 0 means to use the z-buffer
@@ -220,7 +216,8 @@ float			Unit(float [3], float [3]);
 float RADIUS = 1.;
 int SLICES = 50;
 int STACKS = 50;
-bool TextureBool = false;
+bool TextureBool = true;
+GLuint myTextureT;
 
 //OSU SPHERE
 int		NumLngs, NumLats;
@@ -541,20 +538,23 @@ Display( )
 	glEnable( GL_NORMALIZE );
 
 	// draw the current object:
-	glPushMatrix();
-	glTranslatef(-2., -1., 1.5);
-	glCallList( BoxList );
-	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(2., 3., 0.);
-	glColor3f(1., 1., 1.);
+	glTranslatef(0., 0., -5);
 	OsuSphere(RADIUS, SLICES, STACKS);
+	if (TextureBool) {
+		glMatrixMode(GL_TEXTURE);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, myTextureT);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		glDisable(GL_TEXTURE_2D);
+	}
 	glPopMatrix();
+	
 
 	glPushMatrix();
-	glTranslatef(0., 0., -6.);
-	glColor3f(0.086, 0.454, 0.278);
+	glTranslatef(0., 0., 2.);
+	glColor3f(0.529, 0.050, 0.129);
 	glutSolidTorus(1.0, 3.0, 10, 50);
 	glPopMatrix();
 
@@ -595,6 +595,12 @@ Display( )
 	// note: be sure to use glFlush( ) here, not glFinish( ) !
 
 	glFlush( );
+}
+void DoTextureMenu(int id)
+{
+	TextureBool = id;
+	glutSetWindow(MainWindow);
+	glutPostRedisplay();
 }
 
 
@@ -750,6 +756,10 @@ InitMenus( )
 		glutAddMenuEntry( ColorNames[i], i );
 	}
 
+	int textureMenu = glutCreateMenu(DoTextureMenu);
+	glutAddMenuEntry("Off", 0);
+	glutAddMenuEntry("On", 1);
+
 	int axesmenu = glutCreateMenu( DoAxesMenu );
 	glutAddMenuEntry( "Off",  0 );
 	glutAddMenuEntry( "On",   1 );
@@ -785,7 +795,7 @@ InitMenus( )
 #ifdef DEMO_Z_FIGHTING
 	glutAddSubMenu(   "Depth Fighting",depthfightingmenu);
 #endif
-
+	glutAddSubMenu("Texture", textureMenu);
 	glutAddSubMenu(   "Depth Cue",     depthcuemenu);
 	glutAddSubMenu(   "Projection",    projmenu );
 	glutAddMenuEntry( "Reset",         RESET );
@@ -879,6 +889,26 @@ InitGraphics( )
 		fprintf( stderr, "GLEW initialized OK\n" );
 	fprintf( stderr, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 #endif
+
+	int width = 1024;
+	int height = 512;
+	//build the tex file.
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glGenTextures(1, &myTextureT);
+	unsigned char* myTexture = BmpToTexture("worldtex.bmp", &width, &height);
+
+	glBindTexture(GL_TEXTURE_2D, myTextureT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+	int level = 0;
+	int ncomps = 3;
+	int border = 0;
+	glTexImage2D(GL_TEXTURE_2D, level, ncomps, width, height, border, GL_RGB, GL_UNSIGNED_BYTE, myTexture);
 }
 
 
@@ -890,55 +920,6 @@ InitGraphics( )
 void
 InitLists( )
 {
-	float dx = BOXSIZE / 2.f;
-	float dy = BOXSIZE / 2.f;
-	float dz = BOXSIZE / 2.f;
-	glutSetWindow( MainWindow );
-
-	// create the object:
-
-	BoxList = glGenLists( 1 );
-	glNewList( BoxList, GL_COMPILE );
-
-		glBegin( GL_QUADS );
-
-			glColor3f( 0., 0., 1. );
-				glVertex3f( -dx, -dy,  dz );
-				glVertex3f(  dx, -dy,  dz );
-				glVertex3f(  dx,  dy,  dz );
-				glVertex3f( -dx,  dy,  dz );
-
-				glVertex3f( -dx, -dy, -dz );
-				glVertex3f( -dx,  dy, -dz );
-				glVertex3f(  dx,  dy, -dz );
-				glVertex3f(  dx, -dy, -dz );
-
-			glColor3f( 1., 0., 0. );
-				glVertex3f(  dx, -dy,  dz );
-				glVertex3f(  dx, -dy, -dz );
-				glVertex3f(  dx,  dy, -dz );
-				glVertex3f(  dx,  dy,  dz );
-
-				glVertex3f( -dx, -dy,  dz );
-				glVertex3f( -dx,  dy,  dz );
-				glVertex3f( -dx,  dy, -dz );
-				glVertex3f( -dx, -dy, -dz );
-
-			glColor3f( 0., 1., 0. );
-				glVertex3f( -dx,  dy,  dz );
-				glVertex3f(  dx,  dy,  dz );
-				glVertex3f(  dx,  dy, -dz );
-				glVertex3f( -dx,  dy, -dz );
-
-				glVertex3f( -dx, -dy,  dz );
-				glVertex3f( -dx, -dy, -dz );
-				glVertex3f(  dx, -dy, -dz );
-				glVertex3f(  dx, -dy,  dz );
-
-		glEnd( );
-
-	glEndList( );
-
 	// create the axes:
 
 	AxesList = glGenLists( 1 );
