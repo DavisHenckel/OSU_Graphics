@@ -52,9 +52,6 @@ const int ESCAPE = { 0x1b };
 
 const int INIT_WINDOW_SIZE = { 900 };
 
-// size of the 3d box:
-
-const float BOXSIZE = { 2.f };
 
 // multiplication factors for input interaction:
 //  (these are known from previous experience)
@@ -167,7 +164,6 @@ const GLfloat FOGEND      = { 4. };
 int		ActiveButton;			// current button that is down
 GLuint	AxesList;				// list to hold the axes
 int		AxesOn;					// != 0 means to draw the axes
-GLuint	BoxList;				// object display list
 int		DebugOn;				// != 0 means to print debugging info
 int		DepthCueOn;				// != 0 means to use intensity depth cueing
 int		DepthBufferOn;			// != 0 means to use the z-buffer
@@ -217,6 +213,165 @@ void			Cross(float[3], float[3], float[3]);
 float			Dot(float [3], float [3]);
 float			Unit(float [3], float [3]);
 
+float RADIUS = 1.;
+int SLICES = 50;
+int STACKS = 50;
+bool TextureBool = true;
+GLuint myTextureT;
+
+//OSU SPHERE
+int		NumLngs, NumLats;
+struct point* Pts;
+
+struct point
+{
+	float x, y, z;		// coordinates
+	float nx, ny, nz;	// surface normal
+	float s, t;		// texture coords
+};
+
+inline
+struct point*
+	PtsPointer(int lat, int lng)
+{
+	if (lat < 0)	lat += (NumLats - 1);
+	if (lng < 0)	lng += (NumLngs - 0);
+	if (lat > NumLats - 1)	lat -= (NumLats - 1);
+	if (lng > NumLngs - 1)	lng -= (NumLngs - 0);
+	return &Pts[NumLngs * lat + lng];
+}
+
+inline
+void
+DrawPoint(struct point* p)
+{
+	glNormal3fv(&p->nx);
+	glTexCoord2fv(&p->s);
+	glVertex3fv(&p->x);
+}
+
+void
+OsuSphere(float radius, int slices, int stacks)
+{
+	if (TextureBool) {
+		glEnable(GL_TEXTURE_2D);
+	}
+	// set the globals:
+
+	NumLngs = slices;
+	NumLats = stacks;
+	if (NumLngs < 3)
+		NumLngs = 3;
+	if (NumLats < 3)
+		NumLats = 3;
+
+	// allocate the point data structure:
+
+	Pts = new struct point[NumLngs * NumLats];
+
+	// fill the Pts structure:
+
+	for (int ilat = 0; ilat < NumLats; ilat++)
+	{
+		float lat = -M_PI / 2. + M_PI * (float)ilat / (float)(NumLats - 1);	// ilat=0/lat=0. is the south pole
+											// ilat=NumLats-1, lat=+M_PI/2. is the north pole
+		float xz = cosf(lat);
+		float  y = sinf(lat);
+		for (int ilng = 0; ilng < NumLngs; ilng++)				// ilng=0, lng=-M_PI and
+											// ilng=NumLngs-1, lng=+M_PI are the same meridian
+		{
+			float lng = -M_PI + 2. * M_PI * (float)ilng / (float)(NumLngs - 1);
+			float x = xz * cosf(lng);
+			float z = -xz * sinf(lng);
+			struct point* p = PtsPointer(ilat, ilng);
+			p->x = radius * x;
+			p->y = radius * y;
+			p->z = radius * z;
+			p->nx = x;
+			p->ny = y;
+			p->nz = z;
+			p->s = (lng + M_PI) / (2. * M_PI);
+			p->t = (lat + M_PI / 2.) / M_PI;
+
+		}
+	}
+
+	struct point top, bot;		// top, bottom points
+
+	top.x = 0.;
+	top.y = radius;
+	top.z = 0.;
+	top.nx = 0.;
+	top.ny = 1.;
+	top.nz = 0.;
+	top.s = 0.;
+	top.t = 1.;
+
+	bot.x = 0.;
+	bot.y = -radius;
+	bot.z = 0.;
+	bot.nx = 0.;
+	bot.ny = -1.;
+	bot.nz = 0.;
+	bot.s = 0.;
+	bot.t = 0.;
+
+	// connect the north pole to the latitude NumLats-2:
+
+	glBegin(GL_TRIANGLE_STRIP);
+	for (int ilng = 0; ilng < NumLngs; ilng++)
+	{
+		float lng = -M_PI + 2. * M_PI * (float)ilng / (float)(NumLngs - 1);
+		top.s = (lng + M_PI) / (2. * M_PI);
+		//if (DistortBool) {
+		//	top.s = sin(top.s * Time);
+		//}
+		DrawPoint(&top);
+		struct point* p = PtsPointer(NumLats - 2, ilng);	// ilat=NumLats-1 is the north pole
+		DrawPoint(p);
+	}
+	glEnd();
+
+	// connect the south pole to the latitude 1:
+
+	glBegin(GL_TRIANGLE_STRIP);
+	for (int ilng = NumLngs - 1; ilng >= 0; ilng--)
+	{
+		float lng = -M_PI + 2. * M_PI * (float)ilng / (float)(NumLngs - 1);
+		bot.s = (lng + M_PI) / (2. * M_PI);
+		//if (DistortBool) {
+		//	bot.s = sin(bot.s * Time);
+		//}
+		DrawPoint(&bot);
+		struct point* p = PtsPointer(1, ilng);					// ilat=0 is the south pole
+		DrawPoint(p);
+	}
+	glEnd();
+
+	// connect the horizontal strips:
+
+	for (int ilat = 2; ilat < NumLats - 1; ilat++)
+	{
+		struct point* p;
+		glBegin(GL_TRIANGLE_STRIP);
+		for (int ilng = 0; ilng < NumLngs; ilng++)
+		{
+			p = PtsPointer(ilat, ilng);
+			DrawPoint(p);
+			p = PtsPointer(ilat - 1, ilng);
+			DrawPoint(p);
+		}
+		glEnd();
+	}
+
+	// clean-up:
+
+	delete[] Pts;
+	Pts = NULL;
+	if (TextureBool) {
+		glDisable(GL_TEXTURE_2D);
+	}
+}
 
 // main program:
 
@@ -384,7 +539,24 @@ Display( )
 
 	// draw the current object:
 
-	glCallList( BoxList );
+	glPushMatrix();
+	glTranslatef(0., 0., -5);
+	OsuSphere(RADIUS, SLICES, STACKS);
+	if (TextureBool) {
+		glMatrixMode(GL_TEXTURE);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, myTextureT);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		glDisable(GL_TEXTURE_2D);
+	}
+	glPopMatrix();
+	
+
+	glPushMatrix();
+	glTranslatef(0., 0., 2.);
+	glColor3f(0.529, 0.050, 0.129);
+	glutSolidTorus(1.0, 3.0, 10, 50);
+	glPopMatrix();
 
 #ifdef DEMO_Z_FIGHTING
 	if( DepthFightingOn != 0 )
@@ -423,6 +595,12 @@ Display( )
 	// note: be sure to use glFlush( ) here, not glFinish( ) !
 
 	glFlush( );
+}
+void DoTextureMenu(int id)
+{
+	TextureBool = id;
+	glutSetWindow(MainWindow);
+	glutPostRedisplay();
 }
 
 
@@ -578,6 +756,10 @@ InitMenus( )
 		glutAddMenuEntry( ColorNames[i], i );
 	}
 
+	int textureMenu = glutCreateMenu(DoTextureMenu);
+	glutAddMenuEntry("Off", 0);
+	glutAddMenuEntry("On", 1);
+
 	int axesmenu = glutCreateMenu( DoAxesMenu );
 	glutAddMenuEntry( "Off",  0 );
 	glutAddMenuEntry( "On",   1 );
@@ -613,7 +795,7 @@ InitMenus( )
 #ifdef DEMO_Z_FIGHTING
 	glutAddSubMenu(   "Depth Fighting",depthfightingmenu);
 #endif
-
+	glutAddSubMenu("Texture", textureMenu);
 	glutAddSubMenu(   "Depth Cue",     depthcuemenu);
 	glutAddSubMenu(   "Projection",    projmenu );
 	glutAddMenuEntry( "Reset",         RESET );
@@ -707,6 +889,26 @@ InitGraphics( )
 		fprintf( stderr, "GLEW initialized OK\n" );
 	fprintf( stderr, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 #endif
+
+	int width = 1024;
+	int height = 512;
+	//build the tex file.
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glGenTextures(1, &myTextureT);
+	unsigned char* myTexture = BmpToTexture("worldtex.bmp", &width, &height);
+
+	glBindTexture(GL_TEXTURE_2D, myTextureT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+	int level = 0;
+	int ncomps = 3;
+	int border = 0;
+	glTexImage2D(GL_TEXTURE_2D, level, ncomps, width, height, border, GL_RGB, GL_UNSIGNED_BYTE, myTexture);
 }
 
 
@@ -718,55 +920,6 @@ InitGraphics( )
 void
 InitLists( )
 {
-	float dx = BOXSIZE / 2.f;
-	float dy = BOXSIZE / 2.f;
-	float dz = BOXSIZE / 2.f;
-	glutSetWindow( MainWindow );
-
-	// create the object:
-
-	BoxList = glGenLists( 1 );
-	glNewList( BoxList, GL_COMPILE );
-
-		glBegin( GL_QUADS );
-
-			glColor3f( 0., 0., 1. );
-				glVertex3f( -dx, -dy,  dz );
-				glVertex3f(  dx, -dy,  dz );
-				glVertex3f(  dx,  dy,  dz );
-				glVertex3f( -dx,  dy,  dz );
-
-				glVertex3f( -dx, -dy, -dz );
-				glVertex3f( -dx,  dy, -dz );
-				glVertex3f(  dx,  dy, -dz );
-				glVertex3f(  dx, -dy, -dz );
-
-			glColor3f( 1., 0., 0. );
-				glVertex3f(  dx, -dy,  dz );
-				glVertex3f(  dx, -dy, -dz );
-				glVertex3f(  dx,  dy, -dz );
-				glVertex3f(  dx,  dy,  dz );
-
-				glVertex3f( -dx, -dy,  dz );
-				glVertex3f( -dx,  dy,  dz );
-				glVertex3f( -dx,  dy, -dz );
-				glVertex3f( -dx, -dy, -dz );
-
-			glColor3f( 0., 1., 0. );
-				glVertex3f( -dx,  dy,  dz );
-				glVertex3f(  dx,  dy,  dz );
-				glVertex3f(  dx,  dy, -dz );
-				glVertex3f( -dx,  dy, -dz );
-
-				glVertex3f( -dx, -dy,  dz );
-				glVertex3f( -dx, -dy, -dz );
-				glVertex3f(  dx, -dy, -dz );
-				glVertex3f(  dx, -dy,  dz );
-
-		glEnd( );
-
-	glEndList( );
-
 	// create the axes:
 
 	AxesList = glGenLists( 1 );
