@@ -1,0 +1,9 @@
+﻿  sample.cpp
+D:\Users\Davis\Computer Science\OSU\CS450 (Intro to Graphics)\Week2\Helicopter_Graphics\sample.cpp(392,27): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+D:\Users\Davis\Computer Science\OSU\CS450 (Intro to Graphics)\Week2\Helicopter_Graphics\sample.cpp(825,14): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Users\Davis\Computer Science\OSU\CS450 (Intro to Graphics)\Week2\Helicopter_Graphics\sample.cpp(852,43): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+D:\Users\Davis\Computer Science\OSU\CS450 (Intro to Graphics)\Week2\Helicopter_Graphics\sample.cpp(854,44): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+D:\Users\Davis\Computer Science\OSU\CS450 (Intro to Graphics)\Week2\Helicopter_Graphics\sample.cpp(856,45): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+D:\Users\Davis\Computer Science\OSU\CS450 (Intro to Graphics)\Week2\Helicopter_Graphics\sample.cpp(858,44): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+sample.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/INCREMENTAL:NO' specification
+  Sample.vcxproj -> D:\Users\Davis\Computer Science\OSU\CS450 (Intro to Graphics)\Week2\Helicopter_Graphics\Debug\Sample.exe
