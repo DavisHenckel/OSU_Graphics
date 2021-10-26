@@ -216,7 +216,8 @@ float			Unit(float [3], float [3]);
 float RADIUS = 1.;
 int SLICES = 50;
 int STACKS = 50;
-bool TextureBool = true;
+bool TextureBool = false;
+bool AnimateBool = false;
 GLuint myTextureT;
 
 //OSU SPHERE
@@ -605,6 +606,13 @@ void DoTextureMenu(int id)
 	glutPostRedisplay();
 }
 
+void DoAnimateMenu(int id)
+{
+	AnimateBool = id;
+	glutSetWindow(MainWindow);
+	glutPostRedisplay();
+}
+
 
 void
 DoAxesMenu( int id )
@@ -762,6 +770,10 @@ InitMenus( )
 	glutAddMenuEntry("Off", 0);
 	glutAddMenuEntry("On", 1);
 
+	int animateMenu = glutCreateMenu(DoAnimateMenu);
+	glutAddMenuEntry("Off", 0);
+	glutAddMenuEntry("On", 1);
+
 	int axesmenu = glutCreateMenu( DoAxesMenu );
 	glutAddMenuEntry( "Off",  0 );
 	glutAddMenuEntry( "On",   1 );
@@ -797,7 +809,8 @@ InitMenus( )
 #ifdef DEMO_Z_FIGHTING
 	glutAddSubMenu(   "Depth Fighting",depthfightingmenu);
 #endif
-	glutAddSubMenu("Texture", textureMenu);
+	glutAddSubMenu(   "Texture",       textureMenu);
+	glutAddSubMenu(	  "Animation",	   animateMenu);
 	glutAddSubMenu(   "Depth Cue",     depthcuemenu);
 	glutAddSubMenu(   "Projection",    projmenu );
 	glutAddMenuEntry( "Reset",         RESET );
@@ -1073,6 +1086,8 @@ MouseMotion( int x, int y )
 void
 Reset( )
 {
+	TextureBool = false;
+	AnimateBool = false;
 	ActiveButton = 0;
 	AxesOn = 1;
 	DebugOn = 0;
