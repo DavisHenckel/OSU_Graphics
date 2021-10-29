@@ -218,6 +218,11 @@ int SLICES = 50;
 int STACKS = 50;
 bool TextureBool = false;
 bool AnimateBool = false;
+float pi = 3.14159;
+float EarthVelocity = 50; //50ms to revolve around the sun.
+float EarthPosition1 = 0;
+float EarthPosition2 = 0;
+float EarthPosition3 = 0;
 GLuint myTextureT;
 
 //OSU SPHERE
@@ -428,6 +433,7 @@ Animate( )
 
 	// force a call to Display( ) next time it is convenient:
 
+
 	glutSetWindow( MainWindow );
 	glutPostRedisplay( );
 }
@@ -546,7 +552,8 @@ Display( )
 		glDisable(GL_TEXTURE_2D);
 	}
 	glPopMatrix();
-	
+
+	glMatrixMode(GL_MODELVIEW);
 	//sun
 	glPushMatrix();
 	glTranslatef(-20., 0., 0.);
