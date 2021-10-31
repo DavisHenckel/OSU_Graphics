@@ -216,7 +216,11 @@ float			Unit(float [3], float [3]);
 float RADIUS = 1.;
 int SLICES = 50;
 int STACKS = 50;
-bool TextureBool = true;
+bool TextureBool = false;
+bool AnimateBool = false;
+float EarthXPos = 0.;
+float EarthZPos = 0.;
+float EarthPathRadius = 20.;
 GLuint myTextureT;
 
 //OSU SPHERE
@@ -323,9 +327,6 @@ OsuSphere(float radius, int slices, int stacks)
 	{
 		float lng = -M_PI + 2. * M_PI * (float)ilng / (float)(NumLngs - 1);
 		top.s = (lng + M_PI) / (2. * M_PI);
-		//if (DistortBool) {
-		//	top.s = sin(top.s * Time);
-		//}
 		DrawPoint(&top);
 		struct point* p = PtsPointer(NumLats - 2, ilng);	// ilat=NumLats-1 is the north pole
 		DrawPoint(p);
@@ -339,9 +340,6 @@ OsuSphere(float radius, int slices, int stacks)
 	{
 		float lng = -M_PI + 2. * M_PI * (float)ilng / (float)(NumLngs - 1);
 		bot.s = (lng + M_PI) / (2. * M_PI);
-		//if (DistortBool) {
-		//	bot.s = sin(bot.s * Time);
-		//}
 		DrawPoint(&bot);
 		struct point* p = PtsPointer(1, ilng);					// ilat=0 is the south pole
 		DrawPoint(p);
@@ -432,7 +430,11 @@ Animate( )
 	Time = (float)ms / (float)MS_IN_THE_ANIMATION_CYCLE;        // [ 0., 1. )
 
 	// force a call to Display( ) next time it is convenient:
-
+	EarthXPos = EarthPathRadius * sin(Time * 2 * M_PI);
+	EarthZPos = EarthPathRadius * cos(Time * 2 * M_PI);
+	//if (Time == 0) {
+	//	MyFlag = false;
+	//}
 	glutSetWindow( MainWindow );
 	glutPostRedisplay( );
 }
@@ -495,13 +497,12 @@ Display( )
 
 	// set the eye position, look-at position, and up-vector:
 
-	gluLookAt( 0., 0., 3.,     0., 0., 0.,     0., 1., 0. );
+	gluLookAt( 0., 8., 30.,     0., 0., 0.,     0., 1., 0. );
 
 	// rotate the scene:
 
 	glRotatef( (GLfloat)Yrot, 0., 1., 0. );
 	glRotatef( (GLfloat)Xrot, 1., 0., 0. );
-
 	// uniformly scale the scene:
 
 	if( Scale < MINSCALE )
@@ -539,8 +540,16 @@ Display( )
 
 	// draw the current object:
 
-	glPushMatrix();
-	glTranslatef(0., 0., -5);
+	//earth
+	glPushMatrix(); 
+	if (AnimateBool) {
+		Animate();
+	}
+	else {
+		EarthXPos = -20;
+		EarthZPos = 0;
+	}
+	glTranslatef(EarthXPos, 0., EarthZPos);
 	OsuSphere(RADIUS, SLICES, STACKS);
 	if (TextureBool) {
 		glMatrixMode(GL_TEXTURE);
@@ -549,11 +558,20 @@ Display( )
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		glDisable(GL_TEXTURE_2D);
 	}
+	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 	
-
+	
+	//sun
 	glPushMatrix();
-	glTranslatef(0., 0., 2.);
+	glTranslatef(0., 0., 0.);
+	glColor3f(1, 0.905, 0.360);
+	glutSolidSphere(3, SLICES * 2, STACKS * 2);
+	glPopMatrix();
+
+	//torus
+	glPushMatrix();
+	glTranslatef(20., 0., 0.);
 	glColor3f(0.529, 0.050, 0.129);
 	glutSolidTorus(1.0, 3.0, 10, 50);
 	glPopMatrix();
@@ -599,6 +617,13 @@ Display( )
 void DoTextureMenu(int id)
 {
 	TextureBool = id;
+	glutSetWindow(MainWindow);
+	glutPostRedisplay();
+}
+
+void DoAnimateMenu(int id)
+{
+	AnimateBool = id;
 	glutSetWindow(MainWindow);
 	glutPostRedisplay();
 }
@@ -760,6 +785,10 @@ InitMenus( )
 	glutAddMenuEntry("Off", 0);
 	glutAddMenuEntry("On", 1);
 
+	int animateMenu = glutCreateMenu(DoAnimateMenu);
+	glutAddMenuEntry("Off", 0);
+	glutAddMenuEntry("On", 1);
+
 	int axesmenu = glutCreateMenu( DoAxesMenu );
 	glutAddMenuEntry( "Off",  0 );
 	glutAddMenuEntry( "On",   1 );
@@ -795,7 +824,8 @@ InitMenus( )
 #ifdef DEMO_Z_FIGHTING
 	glutAddSubMenu(   "Depth Fighting",depthfightingmenu);
 #endif
-	glutAddSubMenu("Texture", textureMenu);
+	glutAddSubMenu(   "Texture",       textureMenu);
+	glutAddSubMenu(	  "Animation",	   animateMenu);
 	glutAddSubMenu(   "Depth Cue",     depthcuemenu);
 	glutAddSubMenu(   "Projection",    projmenu );
 	glutAddMenuEntry( "Reset",         RESET );
@@ -903,7 +933,7 @@ InitGraphics( )
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 	int level = 0;
 	int ncomps = 3;
@@ -1071,6 +1101,8 @@ MouseMotion( int x, int y )
 void
 Reset( )
 {
+	TextureBool = false;
+	AnimateBool = false;
 	ActiveButton = 0;
 	AxesOn = 1;
 	DebugOn = 0;
