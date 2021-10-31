@@ -178,7 +178,7 @@ float	Xrot, Yrot;				// rotation angles in degrees
 
 
 // function prototypes:
-
+float* prepareArgs(float, float, float);
 void	Animate( );
 void	Display( );
 void	DoAxesMenu( int );
@@ -222,6 +222,7 @@ float EarthXPos = 0.;
 float EarthZPos = 0.;
 float EarthPathRadius = 20.;
 GLuint myTextureT;
+bool Light0On, Light1On, Light2On;
 
 //OSU SPHERE
 int		NumLngs, NumLats;
@@ -439,6 +440,20 @@ Animate( )
 	glutPostRedisplay( );
 }
 
+//MJB Functions
+float
+White[] = { 1.,1.,1.,1. };
+// utility to create an array from 3 separate values:
+float*
+Array3(float a, float b, float c)
+{
+	static float array[4];
+	array[0] = a;
+	array[1] = b;
+	array[2] = c;
+	array[3] = 1.;
+	return array;
+}
 
 // draw the complete scene:
 
@@ -550,7 +565,7 @@ Display( )
 		EarthZPos = 0;
 	}
 	glTranslatef(EarthXPos, 0., EarthZPos);
-	OsuSphere(RADIUS, SLICES, STACKS);
+	OsuSphere(RADIUS * 1.75, SLICES, STACKS);
 	if (TextureBool) {
 		glMatrixMode(GL_TEXTURE);
 		glEnable(GL_TEXTURE_2D);
@@ -559,22 +574,74 @@ Display( )
 		glDisable(GL_TEXTURE_2D);
 	}
 	glMatrixMode(GL_MODELVIEW);
+	if (Light0On) {
+		glEnable(GL_LIGHT0);
+	}
+	else {
+		glDisable(GL_LIGHT0);
+	}
 	glPopMatrix();
 	
 	
 	//sun
 	glPushMatrix();
 	glTranslatef(0., 0., 0.);
-	glColor3f(1, 0.905, 0.360);
-	glutSolidSphere(3, SLICES * 2, STACKS * 2);
+	glColor3f(0.992, 0.976, 0.525);
+	glutSolidSphere(5, SLICES * 2, STACKS * 2);
 	glPopMatrix();
 
 	//torus
 	glPushMatrix();
+	//test
+	float myArray[4];
+	myArray[0] = 0.75;
+	myArray[1] = 0.75;
+	myArray[2] = 0.75;
+	myArray[3] = 1.;
+	glMaterialfv(GL_BACK, GL_EMISSION, myArray);
+	//glMaterialfv(GL_BACK, GL_AMBIENT, MulArray3(.4f, White));
+	//glMaterialfv(GL_BACK, GL_DIFFUSE, MulArray3(1., White));
+	//glMaterialfv(GL_BACK, GL_SPECULAR, Array3(0., 0., 0.));
+	//glMaterialf(GL_BACK, GL_SHININESS, 2.f);
+	//glMaterialfv(GL_FRONT, GL_EMISSION, Array3(0., 0., 0.));
+	//glMaterialfv(GL_FRONT, GL_AMBIENT, Array3(r, g, b));
+	//glMaterialfv(GL_FRONT, GL_DIFFUSE, Array3(r, g, b));
+	//glMaterialfv(GL_FRONT, GL_SPECULAR, MulArray3(.8f, White));
+	//glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 	glTranslatef(20., 0., 0.);
 	glColor3f(0.529, 0.050, 0.129);
-	glutSolidTorus(1.0, 3.0, 10, 50);
+	glutSolidTorus(0.7, 3.0, 10, 50);
 	glPopMatrix();
+
+	//light blob 1
+	glPushMatrix();
+	glTranslatef(27.5, 0., 0.);
+	glColor3f(0.929, 0.172, 0.886); //magenta light color
+	glutSolidSphere(.3, SLICES, STACKS);
+	if (Light1On) {
+		glEnable(GL_LIGHT1);
+	}
+	else {
+		glDisable(GL_LIGHT1);
+	}
+	glPopMatrix();
+
+
+
+	//light blob 2
+	glPushMatrix();
+	glTranslatef(0., 15., 0.);
+	glColor3f(1., 1., 1.); //magenta light color
+	glutSolidSphere(.3, SLICES, STACKS);
+	if (Light2On) {
+		glEnable(GL_LIGHT2);
+	}
+	else {
+		glDisable(GL_LIGHT2);
+	}
+	glPopMatrix();
+
+
 
 #ifdef DEMO_Z_FIGHTING
 	if( DepthFightingOn != 0 )
@@ -624,6 +691,7 @@ void DoTextureMenu(int id)
 void DoAnimateMenu(int id)
 {
 	AnimateBool = id;
+	Time = 0.;
 	glutSetWindow(MainWindow);
 	glutPostRedisplay();
 }
@@ -971,6 +1039,18 @@ Keyboard( unsigned char c, int x, int y )
 
 	switch( c )
 	{
+		case '0':
+			Light0On = !Light0On;
+			break;
+
+		case '1':
+			Light1On = !Light1On;
+			break;
+
+		case '2':
+			Light2On = !Light2On;
+			break;
+
 		case 'o':
 		case 'O':
 			WhichProjection = ORTHO;
@@ -1101,7 +1181,7 @@ MouseMotion( int x, int y )
 void
 Reset( )
 {
-	TextureBool = false;
+	TextureBool = true;
 	AnimateBool = false;
 	ActiveButton = 0;
 	AxesOn = 1;
@@ -1113,6 +1193,8 @@ Reset( )
 	WhichColor = WHITE;
 	WhichProjection = PERSP;
 	Xrot = Yrot = 0.;
+	Time = 0;
+	Light0On = Light1On = Light2On = true;		// set these in Reset( )
 }
 
 
