@@ -430,7 +430,6 @@ Animate( )
 	Time = (float)ms / (float)MS_IN_THE_ANIMATION_CYCLE;        // [ 0., 1. )
 
 	// force a call to Display( ) next time it is convenient:
-	float NumberOfPoints = MS_IN_THE_ANIMATION_CYCLE / 2 * M_PI;
 	EarthXPos = EarthPathRadius * sin(Time * 2 * M_PI);
 	EarthZPos = EarthPathRadius * cos(Time * 2 * M_PI);
 	//if (Time == 0) {
@@ -498,13 +497,12 @@ Display( )
 
 	// set the eye position, look-at position, and up-vector:
 
-	gluLookAt( 0., 0., 3.,     0., 0., 0.,     0., 1., 0. );
+	gluLookAt( 0., 8., 30.,     0., 0., 0.,     0., 1., 0. );
 
 	// rotate the scene:
 
 	glRotatef( (GLfloat)Yrot, 0., 1., 0. );
 	glRotatef( (GLfloat)Xrot, 1., 0., 0. );
-
 	// uniformly scale the scene:
 
 	if( Scale < MINSCALE )
@@ -548,7 +546,7 @@ Display( )
 		Animate();
 	}
 	else {
-		EarthXPos = 0;
+		EarthXPos = -20;
 		EarthZPos = 0;
 	}
 	glTranslatef(EarthXPos, 0., EarthZPos);
@@ -566,14 +564,14 @@ Display( )
 	
 	//sun
 	glPushMatrix();
-	glTranslatef(20., 0., 0.);
+	glTranslatef(0., 0., 0.);
 	glColor3f(1, 0.905, 0.360);
 	glutSolidSphere(3, SLICES * 2, STACKS * 2);
 	glPopMatrix();
 
 	//torus
 	glPushMatrix();
-	glTranslatef(0., 0., 0.);
+	glTranslatef(20., 0., 0.);
 	glColor3f(0.529, 0.050, 0.129);
 	glutSolidTorus(1.0, 3.0, 10, 50);
 	glPopMatrix();
