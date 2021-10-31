@@ -178,7 +178,7 @@ float	Xrot, Yrot;				// rotation angles in degrees
 
 
 // function prototypes:
-
+float* prepareArgs(float, float, float);
 void	Animate( );
 void	Display( );
 void	DoAxesMenu( int );
@@ -222,6 +222,7 @@ float EarthXPos = 0.;
 float EarthZPos = 0.;
 float EarthPathRadius = 20.;
 GLuint myTextureT;
+bool Light0On, Light1On, Light2On;
 
 //OSU SPHERE
 int		NumLngs, NumLats;
@@ -439,6 +440,81 @@ Animate( )
 	glutPostRedisplay( );
 }
 
+//MJB Functions
+float
+White[] = { 1.,1.,1.,1. };
+// utility to create an array from 3 separate values:
+float*
+Array3(float a, float b, float c)
+{
+	static float array[4];
+	array[0] = a;
+	array[1] = b;
+	array[2] = c;
+	array[3] = 1.;
+	return array;
+}
+
+// utility to create an array from a multiplier and an array:
+float*
+MulArray3(float factor, float array0[3])
+{
+	static float array[4];
+	array[0] = factor * array0[0];
+	array[1] = factor * array0[1];
+	array[2] = factor * array0[2];
+	array[3] = 1.;
+	return array;
+}
+
+void
+SetMaterial(float r, float g, float b, float shininess) {
+	glMaterialfv(GL_BACK, GL_EMISSION, Array3(0., 0., 0.));
+	glMaterialfv(GL_BACK, GL_AMBIENT, MulArray3(.4f, White));
+	glMaterialfv(GL_BACK, GL_DIFFUSE, MulArray3(1., White));
+	glMaterialfv(GL_BACK, GL_SPECULAR, Array3(0., 0., 0.));
+	if (shininess != 0.) {
+		glMaterialf(GL_BACK, GL_SHININESS, 2.f);
+	}
+	glMaterialfv(GL_FRONT, GL_EMISSION, Array3(0., 0., 0.));
+	glMaterialfv(GL_FRONT, GL_AMBIENT, Array3(r, g, b));
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, Array3(r, g, b));
+	glMaterialfv(GL_FRONT, GL_SPECULAR, MulArray3(.8f, White));
+	if (shininess != 0.) {
+		glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+	}
+}
+
+
+void
+SetPointLight(int ilight, float x, float y, float z, float r, float g, float b)
+{
+	glLightfv(ilight, GL_POSITION, Array3(x, y, z));
+	glLightfv(ilight, GL_AMBIENT, Array3(0., 0., 0.));
+	glLightfv(ilight, GL_DIFFUSE, Array3(r, g, b));
+	glLightfv(ilight, GL_SPECULAR, Array3(r, g, b));
+	glLightf(ilight, GL_CONSTANT_ATTENUATION, 1.);
+	glLightf(ilight, GL_LINEAR_ATTENUATION, 0.);
+	glLightf(ilight, GL_QUADRATIC_ATTENUATION, 0.);
+	glEnable(ilight);
+}
+
+void
+SetSpotLight(int ilight, float x, float y, float z, float xdir, float ydir, float zdir, float r, float g, float b)
+{
+	glLightfv(ilight, GL_POSITION, Array3(x, y, z));
+	glLightfv(ilight, GL_SPOT_DIRECTION, Array3(xdir, ydir, zdir));
+	glLightf(ilight, GL_SPOT_EXPONENT, 1.);
+	glLightf(ilight, GL_SPOT_CUTOFF, 45.);
+	glLightfv(ilight, GL_AMBIENT, Array3(0., 0., 0.));
+	glLightfv(ilight, GL_DIFFUSE, Array3(r, g, b));
+	glLightfv(ilight, GL_SPECULAR, Array3(r, g, b));
+	glLightf(ilight, GL_CONSTANT_ATTENUATION, 1.);
+	glLightf(ilight, GL_LINEAR_ATTENUATION, 0.);
+	glLightf(ilight, GL_QUADRATIC_ATTENUATION, 0.);
+	glEnable(ilight);
+}
+
 
 // draw the complete scene:
 
@@ -542,6 +618,7 @@ Display( )
 
 	//earth
 	glPushMatrix(); 
+	glDisable(GL_LIGHTING);
 	if (AnimateBool) {
 		Animate();
 	}
@@ -550,7 +627,9 @@ Display( )
 		EarthZPos = 0;
 	}
 	glTranslatef(EarthXPos, 0., EarthZPos);
-	OsuSphere(RADIUS, SLICES, STACKS);
+	OsuSphere(RADIUS * 1.75, SLICES, STACKS);
+	glEnable(GL_LIGHTING);
+	SetSpotLight(GL_LIGHT0, 0.f, 0.f, 0.f, -EarthXPos, 0., -EarthZPos, 0.0, 1., 0.); //light looking in following earth
 	if (TextureBool) {
 		glMatrixMode(GL_TEXTURE);
 		glEnable(GL_TEXTURE_2D);
@@ -559,22 +638,70 @@ Display( )
 		glDisable(GL_TEXTURE_2D);
 	}
 	glMatrixMode(GL_MODELVIEW);
+	if (Light0On) {
+		glEnable(GL_LIGHT0);
+	}
+	else {
+		glDisable(GL_LIGHT0);
+	}
 	glPopMatrix();
 	
 	
 	//sun
+	glShadeModel(GL_SMOOTH);
 	glPushMatrix();
+	SetMaterial(0.992, 0.976, 0.525, 20.f);
 	glTranslatef(0., 0., 0.);
-	glColor3f(1, 0.905, 0.360);
-	glutSolidSphere(3, SLICES * 2, STACKS * 2);
+	glColor3f(0.992, 0.976, 0.525);
+	glutSolidSphere(5, SLICES * 2, STACKS * 2);
 	glPopMatrix();
 
 	//torus
+	glShadeModel(GL_FLAT);
 	glPushMatrix();
+	glDisable(GL_LIGHTING);
+	glColor3f(0.529, 0.050, 0.129); //red color
+	glEnable(GL_LIGHTING);
+	SetMaterial(0.529, 0.050, 0.129, 0.); //set material up with no shininess and red color
 	glTranslatef(20., 0., 0.);
-	glColor3f(0.529, 0.050, 0.129);
-	glutSolidTorus(1.0, 3.0, 10, 50);
+	glutSolidTorus(0.7, 3.0, 10, 50);
 	glPopMatrix();
+
+	//light blob 1
+	glPushMatrix();
+	glDisable(GL_LIGHTING);
+	glTranslatef(27.5, 0., 0.);
+	glColor3f(0.929, 0.172, 0.886); //magenta
+	glutSolidSphere(.3, SLICES, STACKS);
+	glEnable(GL_LIGHTING);
+	SetPointLight(GL_LIGHT1, 0.f, 0.f, 0.f, 0.929, 0.172, 0.886); //white light near torus
+	if (Light1On) {
+		glEnable(GL_LIGHT1);
+	}
+	else {
+		glDisable(GL_LIGHT1);
+	}
+	glPopMatrix();
+
+
+
+	//light blob 2
+	glPushMatrix();
+	glDisable(GL_LIGHTING);
+	glTranslatef(0., 15., 0.);
+	glColor3f(1., 1., 1.);
+	glutSolidSphere(.3, SLICES, STACKS);
+	glEnable(GL_LIGHTING);
+	SetPointLight(GL_LIGHT2, 0.f, 0.f, 0.f ,1., 1., 1.); //white light at top
+	if (Light2On) {
+		glEnable(GL_LIGHT2);
+	}
+	else {
+		glDisable(GL_LIGHT2);
+	}
+	glPopMatrix();
+
+
 
 #ifdef DEMO_Z_FIGHTING
 	if( DepthFightingOn != 0 )
@@ -624,6 +751,7 @@ void DoTextureMenu(int id)
 void DoAnimateMenu(int id)
 {
 	AnimateBool = id;
+	Time = 0.;
 	glutSetWindow(MainWindow);
 	glutPostRedisplay();
 }
@@ -971,6 +1099,18 @@ Keyboard( unsigned char c, int x, int y )
 
 	switch( c )
 	{
+		case '0':
+			Light0On = !Light0On;
+			break;
+
+		case '1':
+			Light1On = !Light1On;
+			break;
+
+		case '2':
+			Light2On = !Light2On;
+			break;
+
 		case 'o':
 		case 'O':
 			WhichProjection = ORTHO;
@@ -1101,7 +1241,7 @@ MouseMotion( int x, int y )
 void
 Reset( )
 {
-	TextureBool = false;
+	TextureBool = true;
 	AnimateBool = false;
 	ActiveButton = 0;
 	AxesOn = 1;
@@ -1113,6 +1253,8 @@ Reset( )
 	WhichColor = WHITE;
 	WhichProjection = PERSP;
 	Xrot = Yrot = 0.;
+	Time = 0;
+	Light0On = Light1On = Light2On = true;		// set these in Reset( )
 }
 
 
