@@ -455,6 +455,64 @@ Array3(float a, float b, float c)
 	return array;
 }
 
+// utility to create an array from a multiplier and an array:
+float*
+MulArray3(float factor, float array0[3])
+{
+	static float array[4];
+	array[0] = factor * array0[0];
+	array[1] = factor * array0[1];
+	array[2] = factor * array0[2];
+	array[3] = 1.;
+	return array;
+}
+
+void
+SetMaterial(float r, float g, float b, float shininess) {
+	glMaterialfv(GL_BACK, GL_EMISSION, Array3(0., 0., 0.));
+	glMaterialfv(GL_BACK, GL_AMBIENT, MulArray3(.4f, White));
+	glMaterialfv(GL_BACK, GL_DIFFUSE, MulArray3(1., White));
+	glMaterialfv(GL_BACK, GL_SPECULAR, Array3(0., 0., 0.));
+	glMaterialf(GL_BACK, GL_SHININESS, 2.f);
+
+	glMaterialfv(GL_FRONT, GL_EMISSION, Array3(0., 0., 0.));
+	glMaterialfv(GL_FRONT, GL_AMBIENT, Array3(r, g, b));
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, Array3(r, g, b));
+	glMaterialfv(GL_FRONT, GL_SPECULAR, MulArray3(.8f, White));
+	glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+}
+
+
+void
+SetPointLight(int ilight, float x, float y, float z, float r, float g, float b)
+{
+	glLightfv(ilight, GL_POSITION, Array3(x, y, z));
+	glLightfv(ilight, GL_AMBIENT, Array3(0., 0., 0.));
+	glLightfv(ilight, GL_DIFFUSE, Array3(r, g, b));
+	glLightfv(ilight, GL_SPECULAR, Array3(r, g, b));
+	glLightf(ilight, GL_CONSTANT_ATTENUATION, 1.);
+	glLightf(ilight, GL_LINEAR_ATTENUATION, 0.);
+	glLightf(ilight, GL_QUADRATIC_ATTENUATION, 0.);
+	glEnable(ilight);
+}
+
+void
+SetSpotLight(int ilight, float x, float y, float z, float xdir, float ydir, float zdir, float r, float g, float b)
+{
+	glLightfv(ilight, GL_POSITION, Array3(x, y, z));
+	glLightfv(ilight, GL_SPOT_DIRECTION, Array3(xdir, ydir, zdir));
+	glLightf(ilight, GL_SPOT_EXPONENT, 1.);
+	glLightf(ilight, GL_SPOT_CUTOFF, 45.);
+	glLightfv(ilight, GL_AMBIENT, Array3(0., 0., 0.));
+	glLightfv(ilight, GL_DIFFUSE, Array3(r, g, b));
+	glLightfv(ilight, GL_SPECULAR, Array3(r, g, b));
+	glLightf(ilight, GL_CONSTANT_ATTENUATION, 1.);
+	glLightf(ilight, GL_LINEAR_ATTENUATION, 0.);
+	glLightf(ilight, GL_QUADRATIC_ATTENUATION, 0.);
+	glEnable(ilight);
+}
+
+
 // draw the complete scene:
 
 void
@@ -557,6 +615,7 @@ Display( )
 
 	//earth
 	glPushMatrix(); 
+	glDisable(GL_LIGHTING);
 	if (AnimateBool) {
 		Animate();
 	}
@@ -566,6 +625,8 @@ Display( )
 	}
 	glTranslatef(EarthXPos, 0., EarthZPos);
 	OsuSphere(RADIUS * 1.75, SLICES, STACKS);
+	glEnable(GL_LIGHTING);
+	SetSpotLight(GL_LIGHT0, 0.f, 0.f, 0.f, -EarthXPos, 0., -EarthZPos, 1.0, 0., 0.); //light looking in following earth
 	if (TextureBool) {
 		glMatrixMode(GL_TEXTURE);
 		glEnable(GL_TEXTURE_2D);
@@ -585,6 +646,7 @@ Display( )
 	
 	//sun
 	glPushMatrix();
+	SetMaterial(1.f, 0.f, 0.f, 10.f);
 	glTranslatef(0., 0., 0.);
 	glColor3f(0.992, 0.976, 0.525);
 	glutSolidSphere(5, SLICES * 2, STACKS * 2);
@@ -592,32 +654,20 @@ Display( )
 
 	//torus
 	glPushMatrix();
-	//test
-	float myArray[4];
-	myArray[0] = 0.75;
-	myArray[1] = 0.75;
-	myArray[2] = 0.75;
-	myArray[3] = 1.;
-	glMaterialfv(GL_BACK, GL_EMISSION, myArray);
-	//glMaterialfv(GL_BACK, GL_AMBIENT, MulArray3(.4f, White));
-	//glMaterialfv(GL_BACK, GL_DIFFUSE, MulArray3(1., White));
-	//glMaterialfv(GL_BACK, GL_SPECULAR, Array3(0., 0., 0.));
-	//glMaterialf(GL_BACK, GL_SHININESS, 2.f);
-	//glMaterialfv(GL_FRONT, GL_EMISSION, Array3(0., 0., 0.));
-	//glMaterialfv(GL_FRONT, GL_AMBIENT, Array3(r, g, b));
-	//glMaterialfv(GL_FRONT, GL_DIFFUSE, Array3(r, g, b));
-	//glMaterialfv(GL_FRONT, GL_SPECULAR, MulArray3(.8f, White));
-	//glMaterialf(GL_FRONT, GL_SHININESS, shininess);
-	glTranslatef(20., 0., 0.);
 	glColor3f(0.529, 0.050, 0.129);
+	SetMaterial(0., 0.0, 0., 2.);
+	glTranslatef(20., 0., 0.);
 	glutSolidTorus(0.7, 3.0, 10, 50);
 	glPopMatrix();
 
 	//light blob 1
 	glPushMatrix();
+	glDisable(GL_LIGHTING);
 	glTranslatef(27.5, 0., 0.);
-	glColor3f(0.929, 0.172, 0.886); //magenta light color
+	glColor3f(0.929, 0.172, 0.886); //magenta
 	glutSolidSphere(.3, SLICES, STACKS);
+	glEnable(GL_LIGHTING);
+	SetSpotLight(GL_LIGHT1, 0.f, 0.f, 0.f, 0.f, 0.f, 1.f, 0.0,0.,0.); //magenta light near torus
 	if (Light1On) {
 		glEnable(GL_LIGHT1);
 	}
@@ -630,9 +680,12 @@ Display( )
 
 	//light blob 2
 	glPushMatrix();
+	glDisable(GL_LIGHTING);
 	glTranslatef(0., 15., 0.);
-	glColor3f(1., 1., 1.); //magenta light color
+	glColor3f(1., 1., 1.);
 	glutSolidSphere(.3, SLICES, STACKS);
+	glEnable(GL_LIGHTING);
+	SetPointLight(GL_LIGHT2, 0.f, 0.f, 0.f ,1., 1., 1.); //white light at top
 	if (Light2On) {
 		glEnable(GL_LIGHT2);
 	}
