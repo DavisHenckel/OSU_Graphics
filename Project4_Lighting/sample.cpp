@@ -626,7 +626,7 @@ Display( )
 	glTranslatef(EarthXPos, 0., EarthZPos);
 	OsuSphere(RADIUS * 1.75, SLICES, STACKS);
 	glEnable(GL_LIGHTING);
-	SetSpotLight(GL_LIGHT0, 0.f, 0.f, 0.f, -EarthXPos, 0., -EarthZPos, 1.0, 0., 0.); //light looking in following earth
+	SetSpotLight(GL_LIGHT0, 0.f, 0.f, 0.f, -EarthXPos, 0., -EarthZPos, 0.0, 1., 0.); //light looking in following earth
 	if (TextureBool) {
 		glMatrixMode(GL_TEXTURE);
 		glEnable(GL_TEXTURE_2D);
@@ -653,9 +653,10 @@ Display( )
 	glPopMatrix();
 
 	//torus
+	glShadeModel(GL_SMOOTH);
 	glPushMatrix();
 	glColor3f(0.529, 0.050, 0.129);
-	SetMaterial(0., 0.0, 0., 2.);
+	//SetMaterial(0., 0.0, 0., 0.);
 	glTranslatef(20., 0., 0.);
 	glutSolidTorus(0.7, 3.0, 10, 50);
 	glPopMatrix();
@@ -667,7 +668,7 @@ Display( )
 	glColor3f(0.929, 0.172, 0.886); //magenta
 	glutSolidSphere(.3, SLICES, STACKS);
 	glEnable(GL_LIGHTING);
-	SetSpotLight(GL_LIGHT1, 0.f, 0.f, 0.f, 0.f, 0.f, 1.f, 0.0,0.,0.); //magenta light near torus
+	SetSpotLight(GL_LIGHT1, 0.f, 0.f, 0.f, -10.f, 0.f, 0.f, 0.0,0.,0.); //magenta light near torus
 	if (Light1On) {
 		glEnable(GL_LIGHT1);
 	}
