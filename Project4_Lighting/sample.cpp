@@ -473,13 +473,16 @@ SetMaterial(float r, float g, float b, float shininess) {
 	glMaterialfv(GL_BACK, GL_AMBIENT, MulArray3(.4f, White));
 	glMaterialfv(GL_BACK, GL_DIFFUSE, MulArray3(1., White));
 	glMaterialfv(GL_BACK, GL_SPECULAR, Array3(0., 0., 0.));
-	glMaterialf(GL_BACK, GL_SHININESS, 2.f);
-
+	if (shininess != 0.) {
+		glMaterialf(GL_BACK, GL_SHININESS, 2.f);
+	}
 	glMaterialfv(GL_FRONT, GL_EMISSION, Array3(0., 0., 0.));
 	glMaterialfv(GL_FRONT, GL_AMBIENT, Array3(r, g, b));
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, Array3(r, g, b));
 	glMaterialfv(GL_FRONT, GL_SPECULAR, MulArray3(.8f, White));
-	glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+	if (shininess != 0.) {
+		glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+	}
 }
 
 
@@ -645,18 +648,21 @@ Display( )
 	
 	
 	//sun
+	glShadeModel(GL_SMOOTH);
 	glPushMatrix();
-	SetMaterial(1.f, 0.f, 0.f, 10.f);
+	SetMaterial(0.992, 0.976, 0.525, 20.f);
 	glTranslatef(0., 0., 0.);
 	glColor3f(0.992, 0.976, 0.525);
 	glutSolidSphere(5, SLICES * 2, STACKS * 2);
 	glPopMatrix();
 
 	//torus
-	glShadeModel(GL_SMOOTH);
+	glShadeModel(GL_FLAT);
 	glPushMatrix();
-	glColor3f(0.529, 0.050, 0.129);
-	//SetMaterial(0., 0.0, 0., 0.);
+	glDisable(GL_LIGHTING);
+	glColor3f(0.529, 0.050, 0.129); //red color
+	glEnable(GL_LIGHTING);
+	SetMaterial(0.529, 0.050, 0.129, 0.); //set material up with no shininess and red color
 	glTranslatef(20., 0., 0.);
 	glutSolidTorus(0.7, 3.0, 10, 50);
 	glPopMatrix();
@@ -668,7 +674,7 @@ Display( )
 	glColor3f(0.929, 0.172, 0.886); //magenta
 	glutSolidSphere(.3, SLICES, STACKS);
 	glEnable(GL_LIGHTING);
-	SetSpotLight(GL_LIGHT1, 0.f, 0.f, 0.f, -10.f, 0.f, 0.f, 0.0,0.,0.); //magenta light near torus
+	SetPointLight(GL_LIGHT1, 0.f, 0.f, 0.f, 0.929, 0.172, 0.886); //white light near torus
 	if (Light1On) {
 		glEnable(GL_LIGHT1);
 	}
