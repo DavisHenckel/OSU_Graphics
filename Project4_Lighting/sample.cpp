@@ -218,11 +218,9 @@ int SLICES = 50;
 int STACKS = 50;
 bool TextureBool = false;
 bool AnimateBool = false;
-float pi = 3.14159;
-float EarthVelocity = 50; //50ms to revolve around the sun.
-float EarthPosition1 = 0;
-float EarthPosition2 = 0;
-float EarthPosition3 = 0;
+float EarthXPos = 0.;
+float EarthZPos = 0.;
+float EarthPathRadius = 20.;
 GLuint myTextureT;
 
 //OSU SPHERE
@@ -432,8 +430,12 @@ Animate( )
 	Time = (float)ms / (float)MS_IN_THE_ANIMATION_CYCLE;        // [ 0., 1. )
 
 	// force a call to Display( ) next time it is convenient:
-
-
+	float NumberOfPoints = MS_IN_THE_ANIMATION_CYCLE / 2 * M_PI;
+	EarthXPos = EarthPathRadius * sin(Time * 2 * M_PI);
+	EarthZPos = EarthPathRadius * cos(Time * 2 * M_PI);
+	//if (Time == 0) {
+	//	MyFlag = false;
+	//}
 	glutSetWindow( MainWindow );
 	glutPostRedisplay( );
 }
@@ -542,7 +544,14 @@ Display( )
 
 	//earth
 	glPushMatrix(); 
-	glTranslatef(0., 0., 0.);
+	if (AnimateBool) {
+		Animate();
+	}
+	else {
+		EarthXPos = 0;
+		EarthZPos = 0;
+	}
+	glTranslatef(EarthXPos, 0., EarthZPos);
 	OsuSphere(RADIUS, SLICES, STACKS);
 	if (TextureBool) {
 		glMatrixMode(GL_TEXTURE);
@@ -551,12 +560,13 @@ Display( )
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		glDisable(GL_TEXTURE_2D);
 	}
-	glPopMatrix();
-
 	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+	
+	
 	//sun
 	glPushMatrix();
-	glTranslatef(-20., 0., 0.);
+	glTranslatef(20., 0., 0.);
 	glColor3f(1, 0.905, 0.360);
 	glutSolidSphere(3, SLICES * 2, STACKS * 2);
 	glPopMatrix();
