@@ -177,6 +177,7 @@ int		Xmouse, Ymouse;			// mouse values
 float	Xrot, Yrot;				// rotation angles in degrees
 
 
+
 // function prototypes:
 float* prepareArgs(float, float, float);
 void	Animate( );
@@ -223,6 +224,8 @@ float EarthZPos = 0.;
 float EarthPathRadius = 20.;
 GLuint myTextureT;
 bool Light0On, Light1On, Light2On;
+float Time0 = 0;
+bool Frozen = false;
 
 //OSU SPHERE
 int		NumLngs, NumLats;
@@ -429,6 +432,7 @@ Animate( )
 	int ms = glutGet(GLUT_ELAPSED_TIME);			// milliseconds since the program started
 	ms %= MS_IN_THE_ANIMATION_CYCLE;				// milliseconds in the range 0 to MS_IN_THE_ANIMATION_CYCLE-1
 	Time = (float)ms / (float)MS_IN_THE_ANIMATION_CYCLE;        // [ 0., 1. )
+	Time -= Time0;
 
 	// force a call to Display( ) next time it is convenient:
 	EarthXPos = EarthPathRadius * sin(Time * 2 * M_PI);
@@ -473,16 +477,12 @@ SetMaterial(float r, float g, float b, float shininess) {
 	glMaterialfv(GL_BACK, GL_AMBIENT, MulArray3(.4f, White));
 	glMaterialfv(GL_BACK, GL_DIFFUSE, MulArray3(1., White));
 	glMaterialfv(GL_BACK, GL_SPECULAR, Array3(0., 0., 0.));
-	if (shininess != 0.) {
-		glMaterialf(GL_BACK, GL_SHININESS, 2.f);
-	}
+	glMaterialf(GL_BACK, GL_SHININESS, 2.f);
 	glMaterialfv(GL_FRONT, GL_EMISSION, Array3(0., 0., 0.));
 	glMaterialfv(GL_FRONT, GL_AMBIENT, Array3(r, g, b));
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, Array3(r, g, b));
 	glMaterialfv(GL_FRONT, GL_SPECULAR, MulArray3(.8f, White));
-	if (shininess != 0.) {
-		glMaterialf(GL_FRONT, GL_SHININESS, shininess);
-	}
+	glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 }
 
 
@@ -627,7 +627,6 @@ Display( )
 		EarthZPos = 0;
 	}
 	glTranslatef(EarthXPos, 0., EarthZPos);
-	OsuSphere(RADIUS * 1.75, SLICES, STACKS);
 	glEnable(GL_LIGHTING);
 	SetSpotLight(GL_LIGHT0, 0.f, 0.f, 0.f, -EarthXPos, 0., -EarthZPos, 0.0, 1., 0.); //light looking in following earth
 	if (TextureBool) {
@@ -637,6 +636,7 @@ Display( )
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		glDisable(GL_TEXTURE_2D);
 	}
+	OsuSphere(RADIUS * 1.75, SLICES, STACKS);
 	glMatrixMode(GL_MODELVIEW);
 	if (Light0On) {
 		glEnable(GL_LIGHT0);
@@ -662,7 +662,7 @@ Display( )
 	glDisable(GL_LIGHTING);
 	glColor3f(0.529, 0.050, 0.129); //red color
 	glEnable(GL_LIGHTING);
-	SetMaterial(0.529, 0.050, 0.129, 0.); //set material up with no shininess and red color
+	SetMaterial(0.529, 0.050, 0.129, 1.); //set material up with no shininess and red color
 	glTranslatef(20., 0., 0.);
 	glutSolidTorus(0.7, 3.0, 10, 50);
 	glPopMatrix();
@@ -751,7 +751,10 @@ void DoTextureMenu(int id)
 void DoAnimateMenu(int id)
 {
 	AnimateBool = id;
-	Time = 0.;
+	const int MS_IN_THE_ANIMATION_CYCLE = 10000;	// milliseconds in the animation loop
+	int ms = glutGet(GLUT_ELAPSED_TIME);			// milliseconds since the program started
+	ms %= MS_IN_THE_ANIMATION_CYCLE;				// milliseconds in the range 0 to MS_IN_THE_ANIMATION_CYCLE-1
+	Time0 = (float)ms / (float)MS_IN_THE_ANIMATION_CYCLE + 2500;        // [ 0., 1. 
 	glutSetWindow(MainWindow);
 	glutPostRedisplay();
 }
@@ -1120,7 +1123,19 @@ Keyboard( unsigned char c, int x, int y )
 		case 'P':
 			WhichProjection = PERSP;
 			break;
-
+		case 'f':
+		case 'F':
+			if (Frozen == false) {
+				Frozen = true;
+			}
+			else {
+				Frozen = false;
+			}
+			if (Frozen)
+				glutIdleFunc(NULL);
+			else
+				glutIdleFunc(Animate);
+			break;
 		case 'q':
 		case 'Q':
 		case ESCAPE:
@@ -1253,7 +1268,8 @@ Reset( )
 	WhichColor = WHITE;
 	WhichProjection = PERSP;
 	Xrot = Yrot = 0.;
-	Time = 0;
+	Frozen = false;
+	//Time = 0;
 	Light0On = Light1On = Light2On = true;		// set these in Reset( )
 }
 
