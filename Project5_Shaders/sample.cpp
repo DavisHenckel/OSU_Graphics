@@ -32,11 +32,11 @@
 //		6. The transformations to be reset
 //		7. The program to quit
 //
-//	Author:			Joe Graphics
+//	Author:			Davis Henckel
 
 // title of these windows:
 
-const char *WINDOWTITLE = { "OpenGL / GLUT Sample -- Joe Graphics" };
+const char *WINDOWTITLE = { "Project 5, Shaders - Davis Henckel" };
 const char *GLUITITLE   = { "User Interface Window" };
 
 // what the glui package defines as true and false:
@@ -50,7 +50,7 @@ const int ESCAPE = { 0x1b };
 
 // initial window size:
 
-const int INIT_WINDOW_SIZE = { 600 };
+const int INIT_WINDOW_SIZE = { 800 };
 
 // size of the 3d box:
 
@@ -396,12 +396,6 @@ Display( )
 	}
 #endif
 
-	// draw some gratuitous text that just rotates on top of the scene:
-
-	glDisable( GL_DEPTH_TEST );
-	glColor3f( 0., 1., 1. );
-	DoRasterString( 0., 1., 0., (char *)"Text That Moves" );
-
 	// draw some gratuitous text that is fixed on the screen:
 	//
 	// the projection matrix is reset to define a scene whose
@@ -419,7 +413,7 @@ Display( )
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity( );
 	glColor3f( 1., 1., 1. );
-	DoRasterString( 5., 5., 0., (char *)"Text That Doesn't" );
+	DoRasterString( 5., 5., 0., (char *)"Davis Henckel - Project 5" );
 
 	// swap the double-buffered framebuffers:
 
