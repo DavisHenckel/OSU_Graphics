@@ -216,6 +216,9 @@ float			Unit(float [3], float [3]);
 // ================================================================================================
 
 bool TextureBool = true;
+float RADIUS = 1.;
+int SLICES = 50;
+int STACKS = 50;
 
 //OSU SPHERE
 int		NumLngs, NumLats;
@@ -524,8 +527,9 @@ Display( )
 		glDisable( GL_FOG );
 	}
 
-	// possibly draw the axes:
+	OsuSphere(RADIUS, SLICES, STACKS);
 
+	// possibly draw the axes:
 	if( AxesOn != 0 )
 	{
 		glColor3fv( &Colors[WhichColor][0] );
