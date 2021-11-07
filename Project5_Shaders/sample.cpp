@@ -15,6 +15,7 @@
 #include <GL/glu.h>
 #include "glut.h"
 
+#include "glslprogram.h"
 
 //	This is a sample OpenGL / GLUT program
 //
@@ -572,7 +573,7 @@ Display( )
 
 	// set the eye position, look-at position, and up-vector:
 
-	gluLookAt( 0., 0., 3.,     0., 0., 0.,     0., 1., 0. );
+	gluLookAt( 0., 4., 5.,     0., 0., 0.,     0., 1., 0. );
 
 	// rotate the scene:
 
