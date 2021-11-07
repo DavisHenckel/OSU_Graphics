@@ -373,6 +373,77 @@ OsuSphere(float radius, int slices, int stacks)
 		glDisable(GL_TEXTURE_2D);
 	}
 }
+
+//MJB Function
+float
+White[] = { 1.,1.,1.,1. };
+// utility to create an array from 3 separate values:
+float*
+Array3(float a, float b, float c)
+{
+	static float array[4];
+	array[0] = a;
+	array[1] = b;
+	array[2] = c;
+	array[3] = 1.;
+	return array;
+}
+
+// utility to create an array from a multiplier and an array:
+float*
+MulArray3(float factor, float array0[3])
+{
+	static float array[4];
+	array[0] = factor * array0[0];
+	array[1] = factor * array0[1];
+	array[2] = factor * array0[2];
+	array[3] = 1.;
+	return array;
+}
+
+//assigns a materials shininesss
+void
+SetMaterial(float r, float g, float b, float shininess) {
+	glMaterialfv(GL_BACK, GL_EMISSION, Array3(0., 0., 0.));
+	glMaterialfv(GL_BACK, GL_AMBIENT, MulArray3(.4f, White));
+	glMaterialfv(GL_BACK, GL_DIFFUSE, MulArray3(1., White));
+	glMaterialfv(GL_BACK, GL_SPECULAR, Array3(0., 0., 0.));
+	glMaterialf(GL_BACK, GL_SHININESS, 2.f);
+	glMaterialfv(GL_FRONT, GL_EMISSION, Array3(0., 0., 0.));
+	glMaterialfv(GL_FRONT, GL_AMBIENT, Array3(r, g, b));
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, Array3(r, g, b));
+	glMaterialfv(GL_FRONT, GL_SPECULAR, MulArray3(.8f, White));
+	glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+}
+
+void
+SetPointLight(int ilight, float x, float y, float z, float r, float g, float b)
+{
+	glLightfv(ilight, GL_POSITION, Array3(x, y, z));
+	glLightfv(ilight, GL_AMBIENT, Array3(0., 0., 0.));
+	glLightfv(ilight, GL_DIFFUSE, Array3(r, g, b));
+	glLightfv(ilight, GL_SPECULAR, Array3(r, g, b));
+	glLightf(ilight, GL_CONSTANT_ATTENUATION, 1.);
+	glLightf(ilight, GL_LINEAR_ATTENUATION, 0.);
+	glLightf(ilight, GL_QUADRATIC_ATTENUATION, 0.);
+	glEnable(ilight);
+}
+
+void
+SetSpotLight(int ilight, float x, float y, float z, float xdir, float ydir, float zdir, float r, float g, float b)
+{
+	glLightfv(ilight, GL_POSITION, Array3(x, y, z));
+	glLightfv(ilight, GL_SPOT_DIRECTION, Array3(xdir, ydir, zdir));
+	glLightf(ilight, GL_SPOT_EXPONENT, 1.);
+	glLightf(ilight, GL_SPOT_CUTOFF, 45.);
+	glLightfv(ilight, GL_AMBIENT, Array3(0., 0., 0.));
+	glLightfv(ilight, GL_DIFFUSE, Array3(r, g, b));
+	glLightfv(ilight, GL_SPECULAR, Array3(r, g, b));
+	glLightf(ilight, GL_CONSTANT_ATTENUATION, 1.);
+	glLightf(ilight, GL_LINEAR_ATTENUATION, 0.);
+	glLightf(ilight, GL_QUADRATIC_ATTENUATION, 0.);
+	glEnable(ilight);
+}
 // ================================================================================================
 
 // main program:
@@ -527,7 +598,22 @@ Display( )
 		glDisable( GL_FOG );
 	}
 
-	OsuSphere(RADIUS, SLICES, STACKS);
+	//draw the sphere set shininess
+	glPushMatrix();
+	glShadeModel(GL_SMOOTH);
+	//glColor3f(0.529, 0.050, 0.129); //red color
+	SetMaterial(0.529, 0.050, 0.129, 20.f); //makes the sphere shiny
+	OsuSphere(RADIUS*2, SLICES, STACKS);
+	glPopMatrix();
+
+	//draw a white light and a blob shining from above
+	glPushMatrix();
+	glTranslatef(0., 20., 0.);
+	glColor3f(1., 1., 1.);
+	glutSolidSphere(.3, SLICES, STACKS);
+	glEnable(GL_LIGHTING);
+	SetPointLight(GL_LIGHT1, 0.f, 0.f, 0.f, 1., 1., 1.); //white light at top
+	glPopMatrix();
 
 	// possibly draw the axes:
 	if( AxesOn != 0 )
