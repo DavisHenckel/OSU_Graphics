@@ -52,9 +52,6 @@ const int ESCAPE = { 0x1b };
 
 const int INIT_WINDOW_SIZE = { 800 };
 
-// size of the 3d box:
-
-const float BOXSIZE = { 2.f };
 
 // multiplication factors for input interaction:
 //  (these are known from previous experience)
@@ -167,7 +164,6 @@ const GLfloat FOGEND      = { 4. };
 int		ActiveButton;			// current button that is down
 GLuint	AxesList;				// list to hold the axes
 int		AxesOn;					// != 0 means to draw the axes
-GLuint	BoxList;				// object display list
 int		DebugOn;				// != 0 means to print debugging info
 int		DepthCueOn;				// != 0 means to use intensity depth cueing
 int		DepthBufferOn;			// != 0 means to use the z-buffer
@@ -542,7 +538,6 @@ Display( )
 
 	// draw the current object:
 
-	glCallList( BoxList );
 
 #ifdef DEMO_Z_FIGHTING
 	if( DepthFightingOn != 0 )
@@ -876,54 +871,6 @@ InitGraphics( )
 void
 InitLists( )
 {
-	float dx = BOXSIZE / 2.f;
-	float dy = BOXSIZE / 2.f;
-	float dz = BOXSIZE / 2.f;
-	glutSetWindow( MainWindow );
-
-	// create the object:
-
-	BoxList = glGenLists( 1 );
-	glNewList( BoxList, GL_COMPILE );
-
-		glBegin( GL_QUADS );
-
-			glColor3f( 0., 0., 1. );
-				glVertex3f( -dx, -dy,  dz );
-				glVertex3f(  dx, -dy,  dz );
-				glVertex3f(  dx,  dy,  dz );
-				glVertex3f( -dx,  dy,  dz );
-
-				glVertex3f( -dx, -dy, -dz );
-				glVertex3f( -dx,  dy, -dz );
-				glVertex3f(  dx,  dy, -dz );
-				glVertex3f(  dx, -dy, -dz );
-
-			glColor3f( 1., 0., 0. );
-				glVertex3f(  dx, -dy,  dz );
-				glVertex3f(  dx, -dy, -dz );
-				glVertex3f(  dx,  dy, -dz );
-				glVertex3f(  dx,  dy,  dz );
-
-				glVertex3f( -dx, -dy,  dz );
-				glVertex3f( -dx,  dy,  dz );
-				glVertex3f( -dx,  dy, -dz );
-				glVertex3f( -dx, -dy, -dz );
-
-			glColor3f( 0., 1., 0. );
-				glVertex3f( -dx,  dy,  dz );
-				glVertex3f(  dx,  dy,  dz );
-				glVertex3f(  dx,  dy, -dz );
-				glVertex3f( -dx,  dy, -dz );
-
-				glVertex3f( -dx, -dy,  dz );
-				glVertex3f( -dx, -dy, -dz );
-				glVertex3f(  dx, -dy, -dz );
-				glVertex3f(  dx, -dy,  dz );
-
-		glEnd( );
-
-	glEndList( );
 
 	// create the axes:
 
