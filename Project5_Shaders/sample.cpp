@@ -15,6 +15,7 @@
 #include <GL/glu.h>
 #include "glut.h"
 
+#include "glslprogram.h"
 
 //	This is a sample OpenGL / GLUT program
 //
@@ -219,6 +220,10 @@ bool TextureBool = true;
 float RADIUS = 1.;
 int SLICES = 50;
 int STACKS = 50;
+bool Light1On = true;
+bool Frozen = true;
+bool VertexShader = false;
+bool FragmentShader = false;
 
 //OSU SPHERE
 int		NumLngs, NumLats;
@@ -568,7 +573,7 @@ Display( )
 
 	// set the eye position, look-at position, and up-vector:
 
-	gluLookAt( 0., 0., 3.,     0., 0., 0.,     0., 1., 0. );
+	gluLookAt( 0., 4., 5.,     0., 0., 0.,     0., 1., 0. );
 
 	// rotate the scene:
 
@@ -601,7 +606,6 @@ Display( )
 	//draw the sphere set shininess
 	glPushMatrix();
 	glShadeModel(GL_SMOOTH);
-	//glColor3f(0.529, 0.050, 0.129); //red color
 	SetMaterial(0.529, 0.050, 0.129, 20.f); //makes the sphere shiny
 	OsuSphere(RADIUS*2, SLICES, STACKS);
 	glPopMatrix();
@@ -983,11 +987,29 @@ Keyboard( unsigned char c, int x, int y )
 
 	switch( c )
 	{
+		case '1':
+			Light1On = !Light1On;
+			break;
+		case 'f':
+			Frozen = !Frozen;
 		case 'o':
 		case 'O':
 			WhichProjection = ORTHO;
 			break;
-
+		case 'F':
+			FragmentShader = true;
+			VertexShader = false;
+			Frozen = false;
+		case 'V':
+		case 'v':
+			VertexShader = true;
+			FragmentShader = false;
+			Frozen = false;
+		case 'b':
+		case 'B':
+			VertexShader = true;
+			FragmentShader = true;
+			Frozen = false;
 		case 'p':
 		case 'P':
 			WhichProjection = PERSP;
@@ -1123,6 +1145,7 @@ Reset( )
 	WhichColor = WHITE;
 	WhichProjection = PERSP;
 	Xrot = Yrot = 0.;
+	Light1On = true;
 }
 
 
