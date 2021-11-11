@@ -15,7 +15,9 @@
 #include <GL/glu.h>
 #include "glut.h"
 
-#include "glslprogram.h"
+#include "glslprogram.cpp"
+
+
 
 //	This is a sample OpenGL / GLUT program
 //
@@ -172,6 +174,7 @@ int		DepthFightingOn;		// != 0 means to force the creation of z-fighting
 int		MainWindow;				// window id for main graphics window
 float	Scale;					// scaling factor
 float	Time;					// timer in the range [0.,1.)
+GLSLProgram* Pattern;
 int		WhichColor;				// index into Colors[ ]
 int		WhichProjection;		// ORTHO or PERSP
 int		Xmouse, Ymouse;			// mouse values
@@ -605,6 +608,9 @@ Display( )
 
 	//draw the sphere set shininess
 	glPushMatrix();
+	Pattern->Use();
+	Pattern->SetUniformVariable("uTime", Time);
+	Pattern->Use(0);
 	glShadeModel(GL_SMOOTH);
 	SetMaterial(0.529, 0.050, 0.129, 20.f); //makes the sphere shiny
 	OsuSphere(RADIUS*2, SLICES, STACKS);
@@ -954,6 +960,19 @@ InitGraphics( )
 		fprintf( stderr, "GLEW initialized OK\n" );
 	fprintf( stderr, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 #endif
+
+	Pattern = new GLSLProgram();
+	bool valid = Pattern->Create("pattern.vert", "pattern.frag");
+	if (!valid)
+	{
+		fprintf(stderr, "Shader cannot be created!\n");
+		DoMainMenu(QUIT);
+	}
+	else
+	{
+		fprintf(stderr, "Shader created.\n");
+	}
+	Pattern->SetVerbose(false);
 }
 
 
