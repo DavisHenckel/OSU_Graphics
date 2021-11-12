@@ -228,6 +228,7 @@ bool Frozen = true;
 bool VertexShader = false;
 bool FragmentShader = false;
 
+
 //OSU SPHERE
 int		NumLngs, NumLats;
 struct point* Pts;
@@ -606,15 +607,33 @@ Display( )
 		glDisable( GL_FOG );
 	}
 
-	//draw the sphere set shininess
+	float S0, T0;
+	float Ds, Dt;
+	float V0, V1, V2;
+	float ColorR, ColorG, ColorB;
+
+	S0 = T0 = 2.;
+	Ds = Dt = 1.;
+	V0 = 1.;
+	V1 = 2.;
+	V2 = 3.;
+	//These 3 vlaues make a dark red color
+	ColorR = 0.529; 
+	ColorB = 0.050;
+	ColorG = 0.129;
+
+	//draw the sphere
 	glPushMatrix();
 	Pattern->Use();
 	Pattern->SetUniformVariable("uTime", Time);
+	Pattern->SetUniformVariable("uColor", ColorR, ColorG, ColorB);
+	OsuSphere(RADIUS * 2, SLICES, STACKS);
 	Pattern->Use(0);
 	glShadeModel(GL_SMOOTH);
-	SetMaterial(0.529, 0.050, 0.129, 20.f); //makes the sphere shiny
-	OsuSphere(RADIUS*2, SLICES, STACKS);
+	//SetMaterial(0.529, 0.050, 0.129, 20.f); //makes the sphere shiny
 	glPopMatrix();
+
+	printf("time is %f\n", Time);
 
 	//draw a white light and a blob shining from above
 	glPushMatrix();
