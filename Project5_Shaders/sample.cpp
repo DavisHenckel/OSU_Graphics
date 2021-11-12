@@ -15,7 +15,9 @@
 #include <GL/glu.h>
 #include "glut.h"
 
-#include "glslprogram.h"
+#include "glslprogram.cpp"
+
+
 
 //	This is a sample OpenGL / GLUT program
 //
@@ -172,6 +174,7 @@ int		DepthFightingOn;		// != 0 means to force the creation of z-fighting
 int		MainWindow;				// window id for main graphics window
 float	Scale;					// scaling factor
 float	Time;					// timer in the range [0.,1.)
+GLSLProgram* Pattern;
 int		WhichColor;				// index into Colors[ ]
 int		WhichProjection;		// ORTHO or PERSP
 int		Xmouse, Ymouse;			// mouse values
@@ -224,6 +227,7 @@ bool Light1On = true;
 bool Frozen = true;
 bool VertexShader = false;
 bool FragmentShader = false;
+
 
 //OSU SPHERE
 int		NumLngs, NumLats;
@@ -603,12 +607,33 @@ Display( )
 		glDisable( GL_FOG );
 	}
 
-	//draw the sphere set shininess
+	float S0, T0;
+	float Ds, Dt;
+	float V0, V1, V2;
+	float ColorR, ColorG, ColorB;
+
+	S0 = T0 = 2.;
+	Ds = Dt = 1.;
+	V0 = 1.;
+	V1 = 2.;
+	V2 = 3.;
+	//These 3 vlaues make a dark red color
+	ColorR = 0.529; 
+	ColorB = 0.050;
+	ColorG = 0.129;
+
+	//draw the sphere
 	glPushMatrix();
+	Pattern->Use();
+	Pattern->SetUniformVariable("uTime", Time);
+	Pattern->SetUniformVariable("uColor", ColorR, ColorG, ColorB);
+	OsuSphere(RADIUS * 2, SLICES, STACKS);
+	Pattern->Use(0);
 	glShadeModel(GL_SMOOTH);
-	SetMaterial(0.529, 0.050, 0.129, 20.f); //makes the sphere shiny
-	OsuSphere(RADIUS*2, SLICES, STACKS);
+	//SetMaterial(0.529, 0.050, 0.129, 20.f); //makes the sphere shiny
 	glPopMatrix();
+
+	printf("time is %f\n", Time);
 
 	//draw a white light and a blob shining from above
 	glPushMatrix();
@@ -954,6 +979,19 @@ InitGraphics( )
 		fprintf( stderr, "GLEW initialized OK\n" );
 	fprintf( stderr, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 #endif
+
+	Pattern = new GLSLProgram();
+	bool valid = Pattern->Create("pattern.vert", "pattern.frag");
+	if (!valid)
+	{
+		fprintf(stderr, "Shader cannot be created!\n");
+		DoMainMenu(QUIT);
+	}
+	else
+	{
+		fprintf(stderr, "Shader created.\n");
+	}
+	Pattern->SetVerbose(false);
 }
 
 
