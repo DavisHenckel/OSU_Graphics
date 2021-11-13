@@ -606,10 +606,13 @@ Display( )
 	{
 		glDisable( GL_FOG );
 	}
-
+	float S0, T0;
+	float Ds, Dt;
 	float V0, V1, V2;
 	float ColorR, ColorG, ColorB;
 
+	S0 = 0.;
+	T0 = 1.;
 	V0 = 1.;
 	V1 = 2.;
 	V2 = 3.;
@@ -621,12 +624,18 @@ Display( )
 	//draw the sphere
 	glPushMatrix();
 	Pattern->Use();
+	//Pattern->SetUniformVariable("uDs", Ds);
+	//Pattern->SetUniformVariable("uDt", Dt);
+	Pattern->SetUniformVariable("uAnimateVert", VertexShader);
+	Pattern->SetUniformVariable("uAnimateFrag", FragmentShader);
 	Pattern->SetUniformVariable("uTime", Time);
 	Pattern->SetUniformVariable("uColor", ColorR, ColorG, ColorB);
+	if (VertexShader || FragmentShader) {
+		Animate();
+	}
+	//printf("time is %f\n", Time);
 	OsuSphere(RADIUS * 2, SLICES, STACKS);
 	Pattern->Use(0);
-	glShadeModel(GL_SMOOTH);
-	Animate();
 	//SetMaterial(0.529, 0.050, 0.129, 20.f); //makes the sphere shiny
 	glPopMatrix();
 
@@ -1025,24 +1034,28 @@ Keyboard( unsigned char c, int x, int y )
 			break;
 		case 'f':
 			Frozen = !Frozen;
+			break;
 		case 'o':
 		case 'O':
 			WhichProjection = ORTHO;
 			break;
 		case 'F':
-			FragmentShader = true;
+			FragmentShader = !FragmentShader;
 			VertexShader = false;
 			Frozen = false;
+			break;
 		case 'V':
 		case 'v':
-			VertexShader = true;
+			VertexShader = !VertexShader;
 			FragmentShader = false;
 			Frozen = false;
+			break;
 		case 'b':
 		case 'B':
 			VertexShader = true;
 			FragmentShader = true;
 			Frozen = false;
+			break;
 		case 'p':
 		case 'P':
 			WhichProjection = PERSP;
