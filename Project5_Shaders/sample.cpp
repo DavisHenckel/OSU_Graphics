@@ -617,9 +617,9 @@ Display( )
 	V1 = 2.;
 	V2 = 3.;
 	//These 3 vlaues make a dark red/orange color
-	ColorR = 0.529; 
-	ColorB = 0.050;
-	ColorG = 0.129;
+	ColorR = 1.;
+	ColorB = 0.4;
+	ColorG = 1.;
 
 	//draw the sphere
 	glPushMatrix();

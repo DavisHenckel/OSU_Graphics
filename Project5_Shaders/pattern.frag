@@ -18,10 +18,10 @@ main( )
 		}	
 	}
 	else {
-		timePlaceholder = 1;
-		if (vST.s > .5 && vST.t < 1.0) {
+		if (vST.x > .5) {
 			myColor = vec3(cos(uTime), sin(uTime), cos(uTime));
-		}	
+		}
+		timePlaceholder = 1;
 	}
 	gl_FragColor = vec4( myColor,  1. );
 }
