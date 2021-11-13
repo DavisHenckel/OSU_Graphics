@@ -19,7 +19,10 @@ main( )
 	}
 	else {
 		if (vST.x > .5) {
-			myColor = vec3(cos(uTime), sin(uTime), cos(uTime));
+			myColor = vec3(.7, .26, .11);
+		}
+		if (vST.y < .25) {
+			myColor = vec3(.5 , .1, .9);
 		}
 		timePlaceholder = 1;
 	}
