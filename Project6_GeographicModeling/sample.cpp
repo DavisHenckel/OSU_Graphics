@@ -226,6 +226,7 @@ struct Curve
 };
 
 
+
 const int NUMCURVES = 5;
 const int NUMPOINTS = 4;
 
@@ -398,7 +399,42 @@ Display( )
 
 	// draw the current object:
 
-	glCallList( BoxList );
+	
+	glLineWidth(3.);
+	float r = 1.;
+	float g = 1.;
+	float b = 1.;
+	Point c1p0 = { 10., 0., 2., 1., 2., 3. };
+	Point c1p1 = { 1., 10., 1., 1., 5., 7. };
+	Point c1p2 = { 2., 5., 2., 0., 1., 2. };
+	Point c1p3 = { 2., 3., 3., 3., 4., 6. };
+	Curve Curve1 = {
+		r, g, b,
+		c1p0, c1p1, c1p2, c1p3
+	};
+
+	Point c2p0 = { 1., 2., 0., 6., 4., 1. };
+	Point c2p1 = { 1., 4., 1., 1., 4., 2. };
+	Point c2p2 = { 2., 5., 2., 2., 7., 1. };
+	Point c2p3 = { 5., 3., 7., 3., 5., 1. };
+	Curve Curve2 = {
+		r, g, b,
+		c2p0, c2p1, c2p2, c2p3
+	};
+
+	glColor3f(r, g, b);
+	glBegin(GL_LINE_STRIP);
+	for (int it = 0; it <= NUMPOINTS; it++)
+	{
+		float t = (float)it / (float)NUMPOINTS;
+		float omt = 1.f - t;
+		float x = omt * omt * omt * Curve1.p0.x + 3.f * t * omt * omt * Curve1.p1.x + 3.f * t * t * omt * Curve1.p2.x + t * t * t * Curve1.p3.x;
+		float y = omt * omt * omt * Curve1.p0.y + 3.f * t * omt * omt * Curve1.p1.y + 3.f * t * t * omt * Curve1.p2.y + t * t * t * Curve1.p3.y;
+		float z = omt * omt * omt * Curve1.p0.z + 3.f * t * omt * omt * Curve1.p1.z + 3.f * t * t * omt * Curve1.p2.z + t * t * t * Curve1.p3.z;
+		glVertex3f(x, y, z);
+	}
+	glEnd();
+	glLineWidth(1.);
 
 #ifdef DEMO_Z_FIGHTING
 	if( DepthFightingOn != 0 )
@@ -410,11 +446,8 @@ Display( )
 	}
 #endif
 
-	// draw some gratuitous text that just rotates on top of the scene:
 
-	glDisable( GL_DEPTH_TEST );
-	glColor3f( 0., 1., 1. );
-	DoRasterString( 0., 1., 0., (char *)"Text That Moves" );
+	glDisable(GL_DEPTH_TEST);
 
 	// draw some gratuitous text that is fixed on the screen:
 	//
@@ -433,29 +466,10 @@ Display( )
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity( );
 	glColor3f( 1., 1., 1. );
-	DoRasterString( 5., 5., 0., (char *)"Text That Doesn't" );
+	DoRasterString( 5., 5., 0., (char *)"Davis Henckel" );
 
 	// swap the double-buffered framebuffers:
-
-	glutSwapBuffers( );
-	glLineWidth(3.);
-	float r = 0.5;
-	float g = 0.7;
-	float b = .22;
-	glColor3f(r, g, b);
-	glBegin(GL_LINE_STRIP);
-	for (int it = 0; it <= NUMPOINTS; it++)
-	{
-		float t = (float)it / (float)NUMPOINTS;
-		float omt = 1.f - t;
-		float x = omt * omt * omt * p0.x + 3.f * t * omt * omt * p1.x + 3.f * t * t * omt * p2.x + t * t * t * p3.x;
-		float y = omt * omt * omt * p0.y + 3.f * t * omt * omt * p1.y + 3.f * t * t * omt * p2.y + t * t * t * p3.y;
-		float z = omt * omt * omt * p0.z + 3.f * t * omt * omt * p1.z + 3.f * t * t * omt * p2.z + t * t * t * p3.z;
-		glVertex3f(x, y, z);
-	}
-	glEnd();
-	glLineWidth(1.);
-
+	glutSwapBuffers();
 	// be sure the graphics buffer has been sent:
 	// note: be sure to use glFlush( ) here, not glFinish( ) !
 
