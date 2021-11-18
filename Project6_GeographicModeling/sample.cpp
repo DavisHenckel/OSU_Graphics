@@ -217,6 +217,24 @@ void			Cross(float[3], float[3], float[3]);
 float			Dot(float [3], float [3]);
 float			Unit(float [3], float [3]);
 
+struct Point
+{
+	float x0, y0, z0;       // initial coordinates
+	float x, y, z;        // animated coordinates
+};
+
+struct Curve
+{
+	float r, g, b;
+	Point p0, p1, p2, p3;
+};
+
+
+const int NUMCURVES = 5;
+const int NUMPOINTS = 4;
+
+Curve Curves[NUMCURVES];		// if you are creating a pattern of curves
+Curve Stem;				// if you are not
 
 // main program:
 
@@ -424,6 +442,23 @@ Display( )
 	// swap the double-buffered framebuffers:
 
 	glutSwapBuffers( );
+	glLineWidth(3.);
+	float r = 0.5;
+	float g = 0.7;
+	float b = .22;
+	glColor3f(r, g, b);
+	glBegin(GL_LINE_STRIP);
+	for (int it = 0; it <= NUMPOINTS; it++)
+	{
+		float t = (float)it / (float)NUMPOINTS;
+		float omt = 1.f - t;
+		float x = omt * omt * omt * p0.x + 3.f * t * omt * omt * p1.x + 3.f * t * t * omt * p2.x + t * t * t * p3.x;
+		float y = omt * omt * omt * p0.y + 3.f * t * omt * omt * p1.y + 3.f * t * t * omt * p2.y + t * t * t * p3.y;
+		float z = omt * omt * omt * p0.z + 3.f * t * omt * omt * p1.z + 3.f * t * t * omt * p2.z + t * t * t * p3.z;
+		glVertex3f(x, y, z);
+	}
+	glEnd();
+	glLineWidth(1.);
 
 	// be sure the graphics buffer has been sent:
 	// note: be sure to use glFlush( ) here, not glFinish( ) !
@@ -1441,4 +1476,56 @@ Unit(float vin[3], float vout[3])
 		vout[2] = vin[2];
 	}
 	return dist;
+}
+
+
+void
+RotateX(Point* p, float deg, float xc, float yc, float zc)
+{
+	float rad = deg * (M_PI / 180.f);         // radians
+	float x = p->x0 - xc;
+	float y = p->y0 - yc;
+	float z = p->z0 - zc;
+
+	float xp = x;
+	float yp = y * cos(rad) - z * sin(rad);
+	float zp = y * sin(rad) + z * cos(rad);
+
+	p->x = xp + xc;
+	p->y = yp + yc;
+	p->z = zp + zc;
+}
+
+void
+RotateY(Point* p, float deg, float xc, float yc, float zc)
+{
+	float rad = deg * (M_PI / 180.f);         // radians
+	float x = p->x0 - xc;
+	float y = p->y0 - yc;
+	float z = p->z0 - zc;
+
+	float xp = x * cos(rad) + z * sin(rad);
+	float yp = y;
+	float zp = -x * sin(rad) + z * cos(rad);
+
+	p->x = xp + xc;
+	p->y = yp + yc;
+	p->z = zp + zc;
+}
+
+void
+RotateZ(Point* p, float deg, float xc, float yc, float zc)
+{
+	float rad = deg * (M_PI / 180.f);         // radians
+	float x = p->x0 - xc;
+	float y = p->y0 - yc;
+	float z = p->z0 - zc;
+
+	float xp = x * cos(rad) - y * sin(rad);
+	float yp = x * sin(rad) + y * cos(rad);
+	float zp = z;
+
+	p->x = xp + xc;
+	p->y = yp + yc;
+	p->z = zp + zc;
 }
