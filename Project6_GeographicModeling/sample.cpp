@@ -325,6 +325,9 @@ void DrawCurve(Point  p0, Point p1, Point p2, Point p3, float r, float g, float 
 void
 Display( )
 {
+	if (AnimateVal) {
+		Animate();
+	}
 	if( DebugOn != 0 )
 	{
 		fprintf( stderr, "Display\n" );
@@ -420,6 +423,7 @@ Display( )
 	glEnable( GL_NORMALIZE );
 
 	// draw the current object:
+	printf("time is %f\n", Time);
 
 	//Side 1
 	float r = .5;
@@ -993,6 +997,7 @@ Reset( )
 	WhichColor = WHITE;
 	WhichProjection = PERSP;
 	Xrot = Yrot = 0.;
+	AnimateVal = false;
 }
 
 
