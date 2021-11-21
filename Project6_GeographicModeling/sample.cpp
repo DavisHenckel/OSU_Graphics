@@ -228,7 +228,7 @@ struct Curve
 
 
 const int NUMCURVES = 5;
-const int NUMPOINTS = 4;
+const int NUMPOINTS = 100;
 
 Curve Curves[NUMCURVES];		// if you are creating a pattern of curves
 Curve Stem;				// if you are not
@@ -297,6 +297,27 @@ Animate( )
 	glutPostRedisplay( );
 }
 
+
+//function to draw a curve
+void DrawCurve(Point  p0, Point p1, Point p2, Point p3, float r, float g, float b) {
+	Curve Curve1 = {
+		r, g, b,
+		p0, p1, p2, p3
+	};
+	glColor3f(r, g, b);
+	glBegin(GL_LINE_STRIP);
+	for (int it = 0; it <= NUMPOINTS; it++)
+	{
+		float t = (float)it / (float)NUMPOINTS;
+		float omt = 1.f - t;
+		float x = omt * omt * omt * Curve1.p0.x + 3.f * t * omt * omt * Curve1.p1.x + 3.f * t * t * omt * Curve1.p2.x + t * t * t * Curve1.p3.x;
+		float y = omt * omt * omt * Curve1.p0.y + 3.f * t * omt * omt * Curve1.p1.y + 3.f * t * t * omt * Curve1.p2.y + t * t * t * Curve1.p3.y;
+		float z = omt * omt * omt * Curve1.p0.z + 3.f * t * omt * omt * Curve1.p1.z + 3.f * t * t * omt * Curve1.p2.z + t * t * t * Curve1.p3.z;
+		glVertex3f(x, y, z);
+	}
+	glEnd();
+	glLineWidth(1.);
+}
 
 // draw the complete scene:
 
@@ -401,40 +422,23 @@ Display( )
 
 	
 	glLineWidth(3.);
-	float r = 1.;
-	float g = 1.;
+	float r = .5;
+	float g = .7;
 	float b = 1.;
-	Point c1p0 = { 10., 0., 2., 1., 2., 3. };
-	Point c1p1 = { 1., 10., 1., 1., 5., 7. };
-	Point c1p2 = { 2., 5., 2., 0., 1., 2. };
-	Point c1p3 = { 2., 3., 3., 3., 4., 6. };
+	Point c1p0 = { 0., 5., 0., 0., 5., 0. };
+	Point c1p1 = { 0., 2., 0.,  1., 2., 0. };
+	Point c1p2 = { 0., 2., 0., 3., 2., 0. };
+	Point c1p3 = { 0., 5., 0., 0., 0., 0. };
+	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
 	Curve Curve1 = {
 		r, g, b,
 		c1p0, c1p1, c1p2, c1p3
 	};
 
-	Point c2p0 = { 1., 2., 0., 6., 4., 1. };
-	Point c2p1 = { 1., 4., 1., 1., 4., 2. };
-	Point c2p2 = { 2., 5., 2., 2., 7., 1. };
-	Point c2p3 = { 5., 3., 7., 3., 5., 1. };
-	Curve Curve2 = {
-		r, g, b,
-		c2p0, c2p1, c2p2, c2p3
-	};
-
-	glColor3f(r, g, b);
-	glBegin(GL_LINE_STRIP);
-	for (int it = 0; it <= NUMPOINTS; it++)
-	{
-		float t = (float)it / (float)NUMPOINTS;
-		float omt = 1.f - t;
-		float x = omt * omt * omt * Curve1.p0.x + 3.f * t * omt * omt * Curve1.p1.x + 3.f * t * t * omt * Curve1.p2.x + t * t * t * Curve1.p3.x;
-		float y = omt * omt * omt * Curve1.p0.y + 3.f * t * omt * omt * Curve1.p1.y + 3.f * t * t * omt * Curve1.p2.y + t * t * t * Curve1.p3.y;
-		float z = omt * omt * omt * Curve1.p0.z + 3.f * t * omt * omt * Curve1.p1.z + 3.f * t * t * omt * Curve1.p2.z + t * t * t * Curve1.p3.z;
-		glVertex3f(x, y, z);
-	}
-	glEnd();
-	glLineWidth(1.);
+	Point c2p0 = { 0., 0., 0., 0., 0., 0. };
+	Point c2p1 = { 3., 3., 0.,  3., 2., 0. };
+	Point c2p2 = { 5., 4., 0., 5., 3., 0. };
+	Point c2p3 = { 0., 0., 0., 0., 0., 0. };
 
 #ifdef DEMO_Z_FIGHTING
 	if( DepthFightingOn != 0 )
