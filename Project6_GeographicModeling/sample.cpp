@@ -225,7 +225,7 @@ struct Curve
 	Point p0, p1, p2, p3;
 };
 
-
+bool AnimateVal = false;
 
 const int NUMCURVES = 5;
 const int NUMPOINTS = 100;
@@ -531,7 +531,11 @@ Display( )
 
 	glFlush( );
 }
-
+void DoAnimateMenu(int id) {
+	AnimateVal = !AnimateVal;
+	glutSetWindow(MainWindow);
+	glutPostRedisplay();
+}
 
 void
 DoAxesMenu( int id )
@@ -684,6 +688,9 @@ InitMenus( )
 	{
 		glutAddMenuEntry( ColorNames[i], i );
 	}
+	int animateMenu = glutCreateMenu(DoAnimateMenu);
+	glutAddMenuEntry("Off", 0);
+	glutAddMenuEntry("On", 1);
 
 	int axesmenu = glutCreateMenu( DoAxesMenu );
 	glutAddMenuEntry( "Off",  0 );
@@ -720,7 +727,7 @@ InitMenus( )
 #ifdef DEMO_Z_FIGHTING
 	glutAddSubMenu(   "Depth Fighting",depthfightingmenu);
 #endif
-
+	glutAddSubMenu("Animate",  animateMenu);
 	glutAddSubMenu(   "Depth Cue",     depthcuemenu);
 	glutAddSubMenu(   "Projection",    projmenu );
 	glutAddMenuEntry( "Reset",         RESET );
