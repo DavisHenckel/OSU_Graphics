@@ -377,7 +377,7 @@ Display( )
 
 	// set the eye position, look-at position, and up-vector:
 
-	gluLookAt( 0., 0., 3.,     0., 0., 0.,     0., 1., 0. );
+	gluLookAt( 6., 10., 9.,     0., 0., 0.,     0., 1., 0. );
 
 	// rotate the scene:
 
