@@ -304,6 +304,7 @@ void DrawCurve(Point  p0, Point p1, Point p2, Point p3, float r, float g, float 
 		r, g, b,
 		p0, p1, p2, p3
 	};
+	glLineWidth(3.);
 	glColor3f(r, g, b);
 	glBegin(GL_LINE_STRIP);
 	for (int it = 0; it <= NUMPOINTS; it++)
@@ -421,24 +422,38 @@ Display( )
 	// draw the current object:
 
 	
-	glLineWidth(3.);
 	float r = .5;
 	float g = .7;
 	float b = 1.;
-	Point c1p0 = { 0., 5., 0., 0., 5., 0. };
-	Point c1p1 = { 0., 2., 0.,  1., 2., 0. };
-	Point c1p2 = { 0., 2., 0., 3., 2., 0. };
-	Point c1p3 = { 0., 5., 0., 0., 0., 0. };
+	Point c1p0 = { -2., 5., 0., -2., 5., 0. };
+	Point c1p1 = { -1., 0., 0.,  -1., 0., 0. };
+	Point c1p2 = { -.5, 2., 0.,-.5, 2., 0. };
+	Point c1p3 = { 0., 5., 0., 0., 5., 0. };
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
-	Curve Curve1 = {
-		r, g, b,
-		c1p0, c1p1, c1p2, c1p3
-	};
 
-	Point c2p0 = { 0., 0., 0., 0., 0., 0. };
-	Point c2p1 = { 3., 3., 0.,  3., 2., 0. };
-	Point c2p2 = { 5., 4., 0., 5., 3., 0. };
-	Point c2p3 = { 0., 0., 0., 0., 0., 0. };
+	c1p0 = { 0., 5., 0., 0., 5., 0. };
+	c1p1 = { 1., 0., 0.,  1., 0., 0. };
+	c1p2 = { 1.5, 2., 0.,1.5, 2., 0. };
+	c1p3 = { 2., 5., 0., 2., 5., 0. };
+	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
+
+	c1p0 = { 2., 5., 0., 2., 5., 0. };
+	c1p1 = { 3., 0., 0.,  3., 0., 0. };
+	c1p2 = { 3.5, 2., 0.,3.5, 2., 0. };
+	c1p3 = { 4., 5., 0., 4., 5., 0. };
+	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
+
+	c1p0 = { 4., 5., 0., 4., 5., 0. };
+	c1p1 = { 5., 0., 0.,  5., 0., 0. };
+	c1p2 = { 5.5, 2., 0.,5.5, 2., 0. };
+	c1p3 = { 6., 5., 0., 6., 5., 0. };
+	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
+	
+	c1p0 = { 6., 5., 0., 6., 5., 0. };
+	c1p1 = { 7., 0., 0.,  7., 0., 0. };
+	c1p2 = { 7.5, 2., 0.,7.5, 2., 0. };
+	c1p3 = { 8., 5., 0., 8., 5., 0. };
+	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
 
 #ifdef DEMO_Z_FIGHTING
 	if( DepthFightingOn != 0 )
