@@ -478,8 +478,8 @@ Display( )
 	Point c1p3 = { 0., 5., 0., 0., 5., 0. };
 	if (AnimateVal) {
 		MyTime = abs(Time - .5f);
-		float zVal = MyTime * 10;
-		float yVal = MyTime * 5;
+		float zVal = MyTime * 15;
+		float yVal = MyTime * 10;
 		c1p2 = { 0., yVal, zVal, 0., yVal, zVal };
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
@@ -497,8 +497,8 @@ Display( )
 	c1p3 = { 2., 5., 0., 2., 5., 0. };
 	if (AnimateVal) {
 		MyTime = abs(Time - .5f);
-		float zVal = MyTime * 10;
-		float yVal = MyTime * 5;
+		float zVal = MyTime * 15;
+		float yVal = MyTime * 10;
 		c1p2 = { 0., yVal, zVal, 0., yVal, zVal };
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
@@ -516,8 +516,8 @@ Display( )
 	c1p3 = { 4., 5., 0., 4., 5., 0. };
 	if (AnimateVal) {
 		MyTime = abs(Time - .5f);
-		float zVal = MyTime * 10;
-		float yVal = MyTime * 5;
+		float zVal = MyTime * 15;
+		float yVal = MyTime * 10;
 		c1p2 = { 0., yVal, zVal, 0., yVal, zVal };
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
@@ -535,8 +535,8 @@ Display( )
 	c1p3 = { 6., 5., 0., 6., 5., 0. };
 	if (AnimateVal) {
 		MyTime = abs(Time - .5f);
-		float zVal = MyTime * 10;
-		float yVal = MyTime * 5;
+		float zVal = MyTime * 15;
+		float yVal = MyTime * 10;
 		c1p2 = { 0., yVal, zVal, 0., yVal, zVal };
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
@@ -554,8 +554,8 @@ Display( )
 	c1p3 = { 8., 5., 0., 8., 5., 0. };
 	if (AnimateVal) {
 		MyTime = abs(Time - .5f);
-		float zVal = MyTime * 10;
-		float yVal = MyTime * 5;
+		float zVal = MyTime * 15;
+		float yVal = MyTime * 10;
 		c1p2 = { 0., yVal, zVal, 0., yVal, zVal };
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
@@ -577,8 +577,8 @@ Display( )
 	c1p3 = { 0., 5., 5., 0., 5., 5. };
 	if (AnimateVal) {
 		MyTime = abs(Time - .5f);
-		float zVal = MyTime * 10;
-		float yVal = MyTime * 5;
+		float zVal = MyTime * 15;
+		float yVal = MyTime * 10;
 		c1p2 = { 0., yVal, zVal, 0., yVal, zVal };
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
@@ -596,8 +596,8 @@ Display( )
 	c1p3 = { 2., 5., 5., 2., 5., 5. };
 	if (AnimateVal) {
 		MyTime = abs(Time - .5f);
-		float zVal = MyTime * 10;
-		float yVal = MyTime * 5;
+		float zVal = MyTime * 15;
+		float yVal = MyTime * 10;
 		c1p2 = { 0., yVal, zVal, 0., yVal, zVal };
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
@@ -615,8 +615,8 @@ Display( )
 	c1p3 = { 4., 5., 5., 4., 5., 5. };
 	if (AnimateVal) {
 		MyTime = abs(Time - .5f);
-		float zVal = MyTime * 10;
-		float yVal = MyTime * 5;
+		float zVal = MyTime * 15;
+		float yVal = MyTime * 10;
 		c1p2 = { 0., yVal, zVal, 0., yVal, zVal };
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
@@ -634,8 +634,8 @@ Display( )
 	c1p3 = { 6., 5., 5., 6., 5., 5. };
 	if (AnimateVal) {
 		MyTime = abs(Time - .5f);
-		float zVal = MyTime * 10;
-		float yVal = MyTime * 5;
+		float zVal = MyTime * 15;
+		float yVal = MyTime * 10;
 		c1p2 = { 0., yVal, zVal, 0., yVal, zVal };
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
@@ -653,8 +653,8 @@ Display( )
 	c1p3 = { 8., 5., 5., 8., 5., 5. };
 	if (AnimateVal) {
 		MyTime = abs(Time - .5f);
-		float zVal = MyTime * 10;
-		float yVal = MyTime * 5;
+		float zVal = MyTime * 15;
+		float yVal = MyTime * 10;
 		c1p2 = { 0., yVal, zVal, 0., yVal, zVal };
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
