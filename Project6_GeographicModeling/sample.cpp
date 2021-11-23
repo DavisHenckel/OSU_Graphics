@@ -423,7 +423,6 @@ Display( )
 	glEnable( GL_NORMALIZE );
 
 	// draw the current object:
-	printf("time is %f\n", Time);
 
 	//Side 1
 	float r = .5;
