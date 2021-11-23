@@ -4,6 +4,7 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <cmath>
 
 #ifdef WIN32
 #include <windows.h>
@@ -225,11 +226,11 @@ struct Curve
 	Point p0, p1, p2, p3;
 };
 
-
+bool AnimateVal = false;
 
 const int NUMCURVES = 5;
 const int NUMPOINTS = 100;
-
+float MyTime;
 Curve Curves[NUMCURVES];		// if you are creating a pattern of curves
 Curve Stem;				// if you are not
 
@@ -290,7 +291,6 @@ Animate( )
 	int ms = glutGet(GLUT_ELAPSED_TIME);			// milliseconds since the program started
 	ms %= MS_IN_THE_ANIMATION_CYCLE;				// milliseconds in the range 0 to MS_IN_THE_ANIMATION_CYCLE-1
 	Time = (float)ms / (float)MS_IN_THE_ANIMATION_CYCLE;        // [ 0., 1. )
-
 	// force a call to Display( ) next time it is convenient:
 
 	glutSetWindow( MainWindow );
@@ -325,6 +325,9 @@ void DrawCurve(Point  p0, Point p1, Point p2, Point p3, float r, float g, float 
 void
 Display( )
 {
+	if (AnimateVal) {
+		Animate();
+	}
 	if( DebugOn != 0 )
 	{
 		fprintf( stderr, "Display\n" );
@@ -420,6 +423,7 @@ Display( )
 	glEnable( GL_NORMALIZE );
 
 	// draw the current object:
+	printf("time is %f\n", Time);
 
 	//Side 1
 	float r = .5;
@@ -430,30 +434,65 @@ Display( )
 	Point c1p1 = { -1., 0., 0.,  -1., 0., 0. };
 	Point c1p2 = { -.5, 2., 0.,-.5, 2., 0. };
 	Point c1p3 = { 0., 5., 0., 0., 5., 0. };
+	if (AnimateVal) {
+		MyTime = abs(Time - .5f);
+		float zVal = MyTime * 10;
+		float yVal = MyTime * 5;
+		c1p2 = { 0., yVal, zVal, 0., yVal, zVal };
+		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
+	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
 
 	c1p0 = { 0., 5., 0., 0., 5., 0. };
 	c1p1 = { 1., 0., 0.,  1., 0., 0. };
 	c1p2 = { 1.5, 2., 0.,1.5, 2., 0. };
 	c1p3 = { 2., 5., 0., 2., 5., 0. };
+	if (AnimateVal) {
+		MyTime = abs(Time - .5f);
+		float zVal = MyTime * 10;
+		float yVal = MyTime * 5;
+		c1p2 = { 0., yVal, zVal, 0., yVal, zVal };
+		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
+	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
 
 	c1p0 = { 2., 5., 0., 2., 5., 0. };
 	c1p1 = { 3., 0., 0.,  3., 0., 0. };
 	c1p2 = { 3.5, 2., 0.,3.5, 2., 0. };
 	c1p3 = { 4., 5., 0., 4., 5., 0. };
+	if (AnimateVal) {
+		MyTime = abs(Time - .5f);
+		float zVal = MyTime * 10;
+		float yVal = MyTime * 5;
+		c1p2 = { 0., yVal, zVal, 0., yVal, zVal };
+		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
+	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
 
 	c1p0 = { 4., 5., 0., 4., 5., 0. };
 	c1p1 = { 5., 0., 0.,  5., 0., 0. };
 	c1p2 = { 5.5, 2., 0.,5.5, 2., 0. };
 	c1p3 = { 6., 5., 0., 6., 5., 0. };
+	if (AnimateVal) {
+		MyTime = abs(Time - .5f);
+		float zVal = MyTime * 10;
+		float yVal = MyTime * 5;
+		c1p2 = { 0., yVal, zVal, 0., yVal, zVal };
+		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
+	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
 	
 	c1p0 = { 6., 5., 0., 6., 5., 0. };
 	c1p1 = { 7., 0., 0.,  7., 0., 0. };
 	c1p2 = { 7.5, 2., 0.,7.5, 2., 0. };
 	c1p3 = { 8., 5., 0., 8., 5., 0. };
+	if (AnimateVal) {
+		MyTime = abs(Time - .5f);
+		float zVal = MyTime * 10;
+		float yVal = MyTime * 5;
+		c1p2 = { 0., yVal, zVal, 0., yVal, zVal };
+		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
+	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
 
 	//side 2
@@ -464,30 +503,65 @@ Display( )
 	c1p1 = { -1., 0., 5.,  -1., 0., 5. };
 	c1p2 = { -.5, 2., 5.,-.5, 2., 5. };
 	c1p3 = { 0., 5., 5., 0., 5., 5. };
+	if (AnimateVal) {
+		MyTime = abs(Time - .5f);
+		float zVal = MyTime * 10;
+		float yVal = MyTime * 5;
+		c1p2 = { 0., yVal, zVal, 0., yVal, zVal };
+		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
+	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
 
 	c1p0 = { 0., 5., 5., 0., 5., 5. };
 	c1p1 = { 1., 0., 5.,  1., 0., 5. };
 	c1p2 = { 1.5, 2., 5.,1.5, 2., 5. };
 	c1p3 = { 2., 5., 5., 2., 5., 5. };
+	if (AnimateVal) {
+		MyTime = abs(Time - .5f);
+		float zVal = MyTime * 10;
+		float yVal = MyTime * 5;
+		c1p2 = { 0., yVal, zVal, 0., yVal, zVal };
+		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
+	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
 
 	c1p0 = { 2., 5., 5., 2., 5., 5. };
 	c1p1 = { 3., 0., 5.,  3., 0., 5. };
 	c1p2 = { 3.5, 2., 5.,3.5, 2., 5. };
 	c1p3 = { 4., 5., 5., 4., 5., 5. };
+	if (AnimateVal) {
+		MyTime = abs(Time - .5f);
+		float zVal = MyTime * 10;
+		float yVal = MyTime * 5;
+		c1p2 = { 0., yVal, zVal, 0., yVal, zVal };
+		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
+	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
 
 	c1p0 = { 4., 5., 5., 4., 5., 5. };
 	c1p1 = { 5., 0., 5.,  5., 0., 5. };
 	c1p2 = { 5.5, 2., 5.,5.5, 2., 5. };
 	c1p3 = { 6., 5., 5., 6., 5., 5. };
+	if (AnimateVal) {
+		MyTime = abs(Time - .5f);
+		float zVal = MyTime * 10;
+		float yVal = MyTime * 5;
+		c1p2 = { 0., yVal, zVal, 0., yVal, zVal };
+		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
+	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
 
 	c1p0 = { 6., 5., 5., 6., 5., 5. };
 	c1p1 = { 7., 0., 5.,  7., 0., 5. };
 	c1p2 = { 7.5, 2., 5.,7.5, 2., 5. };
 	c1p3 = { 8., 5., 5., 8., 5., 5. };
+	if (AnimateVal) {
+		MyTime = abs(Time - .5f);
+		float zVal = MyTime * 10;
+		float yVal = MyTime * 5;
+		c1p2 = { 0., yVal, zVal, 0., yVal, zVal };
+		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
+	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
 
 	//Side 2
@@ -531,7 +605,17 @@ Display( )
 
 	glFlush( );
 }
-
+void DoAnimateMenu(int id) {
+	AnimateVal = !AnimateVal;
+	if (AnimateVal) {
+		glutIdleFunc(Animate);
+	}
+	else {
+		glutIdleFunc(NULL);
+	}
+	glutSetWindow(MainWindow);
+	glutPostRedisplay();
+}
 
 void
 DoAxesMenu( int id )
@@ -684,6 +768,9 @@ InitMenus( )
 	{
 		glutAddMenuEntry( ColorNames[i], i );
 	}
+	int animateMenu = glutCreateMenu(DoAnimateMenu);
+	glutAddMenuEntry("Off", 0);
+	glutAddMenuEntry("On", 1);
 
 	int axesmenu = glutCreateMenu( DoAxesMenu );
 	glutAddMenuEntry( "Off",  0 );
@@ -720,7 +807,7 @@ InitMenus( )
 #ifdef DEMO_Z_FIGHTING
 	glutAddSubMenu(   "Depth Fighting",depthfightingmenu);
 #endif
-
+	glutAddSubMenu("Animate",  animateMenu);
 	glutAddSubMenu(   "Depth Cue",     depthcuemenu);
 	glutAddSubMenu(   "Projection",    projmenu );
 	glutAddMenuEntry( "Reset",         RESET );
@@ -986,6 +1073,7 @@ Reset( )
 	WhichColor = WHITE;
 	WhichProjection = PERSP;
 	Xrot = Yrot = 0.;
+	AnimateVal = false;
 }
 
 
