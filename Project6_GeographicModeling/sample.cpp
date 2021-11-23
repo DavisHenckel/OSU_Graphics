@@ -324,8 +324,8 @@ void DrawCurve(Point  p0, Point p1, Point p2, Point p3, float r, float g, float 
 void DrawControlLines(Point p0, Point p1, Point p2, Point p3) {
 	glLineWidth(1.);
 	Curve Curve1 = {
-	1.,1.,1.,
-	p0, p1, p2, p3
+		1.,1.,1.,
+		p0, p1, p2, p3
 	};
 	glColor3f(1., 1., 1.);
 	glBegin(GL_LINE_STRIP);
@@ -337,7 +337,33 @@ void DrawControlLines(Point p0, Point p1, Point p2, Point p3) {
 }
 
 void DrawControlPoints(Point p0, Point p1, Point p2, Point p3) {
+	Curve Curve1 = {
+		1.,1.,1.,
+		p0, p1, p2, p3
+	};
+	glPushMatrix();
+	glColor3f(1., 0., 0.);
+	glTranslatef(Curve1.p0.x, Curve1.p0.y, Curve1.p0.z);
+	glutWireSphere(.1, 50, 50);
+	glPopMatrix();
 
+	glPushMatrix();
+	glColor3f(1., 0., 0.);
+	glTranslatef(Curve1.p1.x, Curve1.p1.y, Curve1.p1.z);
+	glutWireSphere(.1, 50, 50);
+	glPopMatrix();
+
+	glPushMatrix();
+	glColor3f(1.,0.,0.);
+	glTranslatef(Curve1.p2.x, Curve1.p2.y, Curve1.p2.z);
+	glutWireSphere(.1, 50, 50);
+	glPopMatrix();
+
+	glPushMatrix();
+	glColor3f(1., 0., 0.);
+	glTranslatef(Curve1.p3.x, Curve1.p3.y, Curve1.p3.z);
+	glutWireSphere(.1, 50, 50);
+	glPopMatrix();
 }
 
 // draw the complete scene:
@@ -458,9 +484,13 @@ Display( )
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
-	if (DrawControlLines) {
+	if (ControlLines) {
 		DrawControlLines(c1p0, c1p1, c1p2, c1p3);
 	}
+	if (ControlPoints) {
+		DrawControlPoints(c1p0, c1p1, c1p2, c1p3);
+	}
+
 	c1p0 = { 0., 5., 0., 0., 5., 0. };
 	c1p1 = { 1., 0., 0.,  1., 0., 0. };
 	c1p2 = { 1.5, 2., 0.,1.5, 2., 0. };
@@ -473,8 +503,11 @@ Display( )
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
-	if (DrawControlLines) {
+	if (ControlLines) {
 		DrawControlLines(c1p0, c1p1, c1p2, c1p3);
+	}
+	if (ControlPoints) {
+		DrawControlPoints(c1p0, c1p1, c1p2, c1p3);
 	}
 
 	c1p0 = { 2., 5., 0., 2., 5., 0. };
@@ -489,8 +522,11 @@ Display( )
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
-	if (DrawControlLines) {
+	if (ControlLines) {
 		DrawControlLines(c1p0, c1p1, c1p2, c1p3);
+	}
+	if (ControlPoints) {
+		DrawControlPoints(c1p0, c1p1, c1p2, c1p3);
 	}
 
 	c1p0 = { 4., 5., 0., 4., 5., 0. };
@@ -505,8 +541,11 @@ Display( )
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
-	if (DrawControlLines) {
+	if (ControlLines) {
 		DrawControlLines(c1p0, c1p1, c1p2, c1p3);
+	}
+	if (ControlPoints) {
+		DrawControlPoints(c1p0, c1p1, c1p2, c1p3);
 	}
 
 	c1p0 = { 6., 5., 0., 6., 5., 0. };
@@ -521,8 +560,11 @@ Display( )
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
-	if (DrawControlLines) {
+	if (ControlLines) {
 		DrawControlLines(c1p0, c1p1, c1p2, c1p3);
+	}
+	if (ControlPoints) {
+		DrawControlPoints(c1p0, c1p1, c1p2, c1p3);
 	}
 
 	//side 2
@@ -541,8 +583,11 @@ Display( )
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
-	if (DrawControlLines) {
+	if (ControlLines) {
 		DrawControlLines(c1p0, c1p1, c1p2, c1p3);
+	}
+	if (ControlPoints) {
+		DrawControlPoints(c1p0, c1p1, c1p2, c1p3);
 	}
 
 	c1p0 = { 0., 5., 5., 0., 5., 5. };
@@ -557,8 +602,11 @@ Display( )
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
-	if (DrawControlLines) {
+	if (ControlLines) {
 		DrawControlLines(c1p0, c1p1, c1p2, c1p3);
+	}
+	if (ControlPoints) {
+		DrawControlPoints(c1p0, c1p1, c1p2, c1p3);
 	}
 
 	c1p0 = { 2., 5., 5., 2., 5., 5. };
@@ -573,8 +621,11 @@ Display( )
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
-	if (DrawControlLines) {
+	if (ControlLines) {
 		DrawControlLines(c1p0, c1p1, c1p2, c1p3);
+	}
+	if (ControlPoints) {
+		DrawControlPoints(c1p0, c1p1, c1p2, c1p3);
 	}
 
 	c1p0 = { 4., 5., 5., 4., 5., 5. };
@@ -589,8 +640,11 @@ Display( )
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
-	if (DrawControlLines) {
+	if (ControlLines) {
 		DrawControlLines(c1p0, c1p1, c1p2, c1p3);
+	}
+	if (ControlPoints) {
+		DrawControlPoints(c1p0, c1p1, c1p2, c1p3);
 	}
 
 	c1p0 = { 6., 5., 5., 6., 5., 5. };
@@ -605,8 +659,11 @@ Display( )
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
-	if (DrawControlLines) {
+	if (ControlLines) {
 		DrawControlLines(c1p0, c1p1, c1p2, c1p3);
+	}
+	if (ControlPoints) {
+		DrawControlPoints(c1p0, c1p1, c1p2, c1p3);
 	}
 
 	//Side 2
