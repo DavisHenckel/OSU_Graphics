@@ -666,6 +666,25 @@ Display( )
 		DrawControlPoints(c1p0, c1p1, c1p2, c1p3);
 	}
 
+	//3d Curve to meet requirements
+	c1p0 = { 6., 5., -5., 6., 5., -5. };
+	c1p1 = { 7., 0., -6.,  7., 0., -6. };
+	c1p2 = { 7.5, 2., -7.,7.5, 2., -7. };
+	c1p3 = { 8., 5., -8., 8., 5., -8. };
+	if (AnimateVal) {
+		MyTime = abs(Time - .5f);
+		float zVal = MyTime * 15;
+		float yVal = MyTime * 10;
+		c1p2 = { 0., yVal, zVal, 0., yVal, zVal };
+		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
+	}
+	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
+	if (ControlLines) {
+		DrawControlLines(c1p0, c1p1, c1p2, c1p3);
+	}
+	if (ControlPoints) {
+		DrawControlPoints(c1p0, c1p1, c1p2, c1p3);
+	}
 	//Side 2
 
 #ifdef DEMO_Z_FIGHTING
