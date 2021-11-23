@@ -231,6 +231,8 @@ bool AnimateVal = false;
 const int NUMCURVES = 5;
 const int NUMPOINTS = 100;
 float MyTime;
+bool ControlPoints = false;
+bool ControlLines = false;
 Curve Curves[NUMCURVES];		// if you are creating a pattern of curves
 Curve Stem;				// if you are not
 
@@ -616,6 +618,18 @@ void DoAnimateMenu(int id) {
 	glutPostRedisplay();
 }
 
+void DoControlPoints(int id) {
+	ControlPoints = !ControlPoints;
+	glutSetWindow(MainWindow);
+	glutPostRedisplay();
+}
+
+void DoControlLines(int id) {
+	ControlLines = !ControlLines;
+	glutSetWindow(MainWindow);
+	glutPostRedisplay();
+}
+
 void
 DoAxesMenu( int id )
 {
@@ -771,6 +785,14 @@ InitMenus( )
 	glutAddMenuEntry("Off", 0);
 	glutAddMenuEntry("On", 1);
 
+	int controlLinesMenu = glutCreateMenu(DoControlLines);
+	glutAddMenuEntry("Off", 0);
+	glutAddMenuEntry("On", 1);
+
+	int controlPointsMenu = glutCreateMenu(DoControlPoints);
+	glutAddMenuEntry("Off", 0);
+	glutAddMenuEntry("On", 1);
+
 	int axesmenu = glutCreateMenu( DoAxesMenu );
 	glutAddMenuEntry( "Off",  0 );
 	glutAddMenuEntry( "On",   1 );
@@ -806,6 +828,8 @@ InitMenus( )
 #ifdef DEMO_Z_FIGHTING
 	glutAddSubMenu(   "Depth Fighting",depthfightingmenu);
 #endif
+	glutAddSubMenu("Control Lines", controlLinesMenu);
+	glutAddSubMenu("Control Points", controlPointsMenu);
 	glutAddSubMenu("Animate",  animateMenu);
 	glutAddSubMenu(   "Depth Cue",     depthcuemenu);
 	glutAddSubMenu(   "Projection",    projmenu );
