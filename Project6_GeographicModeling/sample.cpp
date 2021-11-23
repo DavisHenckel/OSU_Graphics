@@ -319,7 +319,25 @@ void DrawCurve(Point  p0, Point p1, Point p2, Point p3, float r, float g, float 
 		glVertex3f(x, y, z);
 	}
 	glEnd();
+}
+
+void DrawControlLines(Point p0, Point p1, Point p2, Point p3) {
 	glLineWidth(1.);
+	Curve Curve1 = {
+	1.,1.,1.,
+	p0, p1, p2, p3
+	};
+	glColor3f(1., 1., 1.);
+	glBegin(GL_LINE_STRIP);
+	glVertex3f(Curve1.p0.x, Curve1.p0.y, Curve1.p0.z);
+	glVertex3f(Curve1.p1.x, Curve1.p1.y, Curve1.p1.z);
+	glVertex3f(Curve1.p2.x, Curve1.p2.y, Curve1.p2.z);
+	glVertex3f(Curve1.p3.x, Curve1.p3.y, Curve1.p3.z);
+	glEnd();
+}
+
+void DrawControlPoints(Point p0, Point p1, Point p2, Point p3) {
+
 }
 
 // draw the complete scene:
@@ -327,9 +345,6 @@ void DrawCurve(Point  p0, Point p1, Point p2, Point p3, float r, float g, float 
 void
 Display( )
 {
-	if (AnimateVal) {
-		Animate();
-	}
 	if( DebugOn != 0 )
 	{
 		fprintf( stderr, "Display\n" );
@@ -443,7 +458,9 @@ Display( )
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
-
+	if (DrawControlLines) {
+		DrawControlLines(c1p0, c1p1, c1p2, c1p3);
+	}
 	c1p0 = { 0., 5., 0., 0., 5., 0. };
 	c1p1 = { 1., 0., 0.,  1., 0., 0. };
 	c1p2 = { 1.5, 2., 0.,1.5, 2., 0. };
@@ -456,6 +473,9 @@ Display( )
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
+	if (DrawControlLines) {
+		DrawControlLines(c1p0, c1p1, c1p2, c1p3);
+	}
 
 	c1p0 = { 2., 5., 0., 2., 5., 0. };
 	c1p1 = { 3., 0., 0.,  3., 0., 0. };
@@ -469,6 +489,9 @@ Display( )
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
+	if (DrawControlLines) {
+		DrawControlLines(c1p0, c1p1, c1p2, c1p3);
+	}
 
 	c1p0 = { 4., 5., 0., 4., 5., 0. };
 	c1p1 = { 5., 0., 0.,  5., 0., 0. };
@@ -482,7 +505,10 @@ Display( )
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
-	
+	if (DrawControlLines) {
+		DrawControlLines(c1p0, c1p1, c1p2, c1p3);
+	}
+
 	c1p0 = { 6., 5., 0., 6., 5., 0. };
 	c1p1 = { 7., 0., 0.,  7., 0., 0. };
 	c1p2 = { 7.5, 2., 0.,7.5, 2., 0. };
@@ -495,6 +521,9 @@ Display( )
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
+	if (DrawControlLines) {
+		DrawControlLines(c1p0, c1p1, c1p2, c1p3);
+	}
 
 	//side 2
 	r = .2;
@@ -512,6 +541,9 @@ Display( )
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
+	if (DrawControlLines) {
+		DrawControlLines(c1p0, c1p1, c1p2, c1p3);
+	}
 
 	c1p0 = { 0., 5., 5., 0., 5., 5. };
 	c1p1 = { 1., 0., 5.,  1., 0., 5. };
@@ -525,6 +557,9 @@ Display( )
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
+	if (DrawControlLines) {
+		DrawControlLines(c1p0, c1p1, c1p2, c1p3);
+	}
 
 	c1p0 = { 2., 5., 5., 2., 5., 5. };
 	c1p1 = { 3., 0., 5.,  3., 0., 5. };
@@ -538,6 +573,9 @@ Display( )
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
+	if (DrawControlLines) {
+		DrawControlLines(c1p0, c1p1, c1p2, c1p3);
+	}
 
 	c1p0 = { 4., 5., 5., 4., 5., 5. };
 	c1p1 = { 5., 0., 5.,  5., 0., 5. };
@@ -551,6 +589,9 @@ Display( )
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
+	if (DrawControlLines) {
+		DrawControlLines(c1p0, c1p1, c1p2, c1p3);
+	}
 
 	c1p0 = { 6., 5., 5., 6., 5., 5. };
 	c1p1 = { 7., 0., 5.,  7., 0., 5. };
@@ -564,6 +605,9 @@ Display( )
 		c1p1 = { 0., yVal, zVal, 0., yVal, zVal };
 	}
 	DrawCurve(c1p0, c1p1, c1p2, c1p3, r, g, b);
+	if (DrawControlLines) {
+		DrawControlLines(c1p0, c1p1, c1p2, c1p3);
+	}
 
 	//Side 2
 
@@ -619,13 +663,13 @@ void DoAnimateMenu(int id) {
 }
 
 void DoControlPoints(int id) {
-	ControlPoints = !ControlPoints;
+	ControlPoints = id;
 	glutSetWindow(MainWindow);
 	glutPostRedisplay();
 }
 
 void DoControlLines(int id) {
-	ControlLines = !ControlLines;
+	ControlLines = id;
 	glutSetWindow(MainWindow);
 	glutPostRedisplay();
 }
