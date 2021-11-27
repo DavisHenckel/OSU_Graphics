@@ -219,7 +219,7 @@ bool AnimateBool = false;
 float EarthXPos = 0.;
 float EarthZPos = 0.;
 float EarthPathRadius = 20.;
-GLuint myTextureT;
+GLuint EarthTex;
 bool Light0On;
 float AU = 400.;
 float EARTHSIZE = 1.;
@@ -521,10 +521,24 @@ Animate( )
 
 
 // draw the complete scene:
-
 void
 Display( )
 {
+
+	//Earth is the baseline it is defined as 1. for scale.
+	//The sun is 109 times the diameter of Earth
+	//I have defined 250 as 1 AU Since it made Earth Placement look nice and proportionate
+	PlanetCoords SunCoords = { 0.,0.,0. }; //sun starts at origin of solar system
+	PlanetCoords EarthCoords = { AU, 0., 0. }; //1 AU from sun.
+	PlanetCoords MercuryCoords = { AU * .4, 0.,0. }; //Mercury is .4 AU from Sun.
+	PlanetCoords MarsCoords = { AU * 1.5,0.,0. }; //Mars 1.5AU from sun
+	PlanetCoords VenusCoords = { AU * .7, 0., 0. }; //Venus .7AU from sun
+	PlanetCoords JupiterCoords = { AU * 5.2, 0., 0. }; //Jupiter 5.2AU from sun
+	PlanetCoords SaturnCoords = { AU * 9.5 ,0.,0. }; //Saturn 9.5AU from sun
+	PlanetCoords UranusCoords = { AU * 19.8,0.,0. }; //Uranus 19.8AU from sun
+	PlanetCoords NeptuneCoords = { AU * 30.,0.,0. }; //Neptune 30AU from sun.
+	PlanetCoords PlutoCoords = { AU * 39.,0.,0. }; //Pluto 39AU from sun.
+
 	if( DebugOn != 0 )
 	{
 		fprintf( stderr, "Display\n" );
@@ -576,8 +590,39 @@ Display( )
 	glLoadIdentity( );
 
 	// set the eye position, look-at position, and up-vector:
-
-	gluLookAt( 0., 500., 3.,     129., 0., 0.,     0., 1., 0. );
+	switch (PlanetPerspective) {
+	case 0: //Sun
+		gluLookAt(100., 500., 3., 0., 0., 0., 0., 1., 0.);
+		break;
+	case 1: //Mercury
+		gluLookAt(MercuryCoords.x, 500., 0., MercuryCoords.x, MercuryCoords.y, MercuryCoords.z, 0., 1., 0.);
+		break;
+	case 2: //Venus
+		gluLookAt(VenusCoords.x, 100., 0., VenusCoords.x, VenusCoords.y, VenusCoords.z, 0., 1., 0.);
+		break;
+	case 3: //Mars
+		gluLookAt(MarsCoords.x, 100., 0., MarsCoords.x, MarsCoords.y, MarsCoords.z, 0., 1., 0.);
+		break;
+	case 4: //Earth
+		gluLookAt(EarthCoords.x, 100., 0., EarthCoords.x, EarthCoords.y, EarthCoords.z, 0., 1., 0.);
+		break;
+	case 5: //Jupiter
+		gluLookAt(JupiterCoords.x, 50., 0., JupiterCoords.x, JupiterCoords.y, JupiterCoords.z, 0., 1., 0.);
+		break;
+	case 6: //Saturn
+		gluLookAt(SaturnCoords.x, 100., 0., SaturnCoords.x, SaturnCoords.y, SaturnCoords.z, 0., 1., 0.);
+		break;
+	case 7: //Uranus
+		gluLookAt(UranusCoords.x, 100., 0., UranusCoords.x, UranusCoords.y, UranusCoords.z, 0., 1., 0.);
+		break;
+	case 8: //Neptune
+		gluLookAt(NeptuneCoords.x, 100., 0., NeptuneCoords.x, NeptuneCoords.y, NeptuneCoords.z, 0., 1., 0.);
+		break;
+	case 9: //Pluto
+		gluLookAt(PlutoCoords.x, 100., 0., PlutoCoords.x, PlutoCoords.y, PlutoCoords.z, 0., 1., 0.);
+		break;
+	}
+	/*gluLookAt( 0., 500., 3.,     0., 0., 0.,     0., 1., 0. );*/
 
 	// rotate the scene:
 
@@ -641,23 +686,15 @@ Display( )
 	// the modelview matrix is reset to identity as we don't
 	// want to transform these coordinates
 
-	//Earth is the baseline it is defined as 1. for scale.
-	//The sun is 109 times the diameter of Earth
-	//I have defined 250 as 1 AU Since it made Earth Placement look nice and proportionate
-	PlanetCoords SunCoords = { 0.,0.,0. }; //sun starts at origin of solar system
-	PlanetCoords EarthCoords = { AU, 0., 0. }; //1 AU from sun.
-	PlanetCoords MercuryCoords = { AU * .4, 0.,0. }; //Mercury is .4 AU from Sun.
-	PlanetCoords MarsCoords = { AU * 1.5,0.,0. }; //Mars 1.5AU from sun
-	PlanetCoords VenusCoords = { AU * .7, 0., 0. }; //Venus .7AU from sun
-	PlanetCoords JupiterCoords = { AU * 5.2, 0., 0. }; //Jupiter 5.2AU from sun
-	PlanetCoords SaturnCoords = { AU * 9.5 ,0.,0. }; //Saturn 9.5AU from sun
-	PlanetCoords UranusCoords = { AU * 19.8,0.,0. }; //Uranus 19.8AU from sun
-	PlanetCoords NeptuneCoords = { AU * 30.,0.,0. }; //Neptune 30AU from sun.
-	PlanetCoords PlutoCoords = { AU * 39.,0.,0. }; //Pluto 39AU from sun.
-
 	glPushMatrix();
 	glTranslatef(EarthCoords.x, EarthCoords.y, EarthCoords.z);
+	glMatrixMode(GL_TEXTURE);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, EarthTex);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glDisable(GL_TEXTURE_2D);
 	OsuSphere(EARTHSIZE, 50, 50);
+	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
 	glPushMatrix();
@@ -1016,6 +1053,22 @@ InitGraphics( )
 		fprintf( stderr, "GLEW initialized OK\n" );
 	fprintf( stderr, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 #endif
+	int width = 1024;
+	int height = 512;
+	//build EarthTexture
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glGenTextures(1, &EarthTex);
+	unsigned char* myTexture = BmpToTexture("2k_earth.bmp", &width, &height);
+	glBindTexture(GL_TEXTURE_2D, EarthTex);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	int level = 0;
+	int ncomps = 3;
+	int border = 0;
+	glTexImage2D(GL_TEXTURE_2D, level, ncomps, width, height, border, GL_RGB, GL_UNSIGNED_BYTE, myTexture);
 }
 
 
