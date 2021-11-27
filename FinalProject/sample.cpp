@@ -222,6 +222,12 @@ float EarthPathRadius = 20.;
 GLuint myTextureT;
 bool Light0On;
 
+//Struct to hold Planet Coords
+struct PlanetCoords
+{
+	float x, y, z;
+};
+
 //Mjb Functions
 int		NumLngs, NumLats;
 struct point* Pts;
@@ -568,7 +574,7 @@ Display( )
 
 	// set the eye position, look-at position, and up-vector:
 
-	gluLookAt( 0., 0., 3.,     0., 0., 0.,     0., 1., 0. );
+	gluLookAt( 0., 500., 3.,     129., 0., 0.,     0., 1., 0. );
 
 	// rotate the scene:
 
@@ -632,12 +638,30 @@ Display( )
 	// the modelview matrix is reset to identity as we don't
 	// want to transform these coordinates
 
-	// swap the double-buffered framebuffers:
+	//Earth is the baseline it is defined as 1. for scale.
+	//The sun is 109 times the diameter of Earth
+	//I have defined 250 as 1 AU Since it made Earth Placement look nice and proportionate
+	PlanetCoords SunCoords = { 0.,0.,0. };
+	PlanetCoords EarthCoords = { 250.,0.,0. };
+	PlanetCoords MercuryCoords = { 0.,0.,0. };
+	PlanetCoords MarsCoords = { 0.,0.,0. };
+	PlanetCoords VenusCoords = { 0.,0.,0. };
+	PlanetCoords JupiterCoords = { 0.,0.,0. };
+	PlanetCoords SaturnCoords = { 0.,0.,0. };
+	PlanetCoords UranusCoords = { 0.,0.,0. };
+	PlanetCoords PlutoCoords = { 0.,0.,0. };
+
 	glPushMatrix();
-	glTranslatef(0., 0., 0.);
-	OsuSphere(10., 50, 50);
+	glTranslatef(SunCoords.x, SunCoords.y, SunCoords.z);
+	OsuSphere(109., 250, 250);
 	glPopMatrix();
 
+	glPushMatrix();
+	glTranslatef(EarthCoords.x, EarthCoords.y, EarthCoords.z);
+	OsuSphere(1., 50, 50);
+	glPopMatrix();
+
+	// swap the double-buffered framebuffers:
 	glutSwapBuffers( );
 
 	// be sure the graphics buffer has been sent:
