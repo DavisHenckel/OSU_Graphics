@@ -15,6 +15,7 @@
 #include <GL/glu.h>
 #include "glut.h"
 
+
 //	This is my final project for CS450
 //
 //	The objective is to draw a solar system to scale (from Earth's Perspective)
@@ -33,7 +34,7 @@
 
 // title of these windows:
 
-const char* WINDOWTITLE = { "Solar System -- CS450 Final" };
+const char *WINDOWTITLE = { "Solar System -- CS450 Final" };
 const char *GLUITITLE   = { "User Interface Window" };
 
 // what the glui package defines as true and false:
@@ -47,7 +48,7 @@ const int ESCAPE = { 0x1b };
 
 // initial window size:
 
-const int INIT_WINDOW_SIZE = { 600 };
+const int INIT_WINDOW_SIZE = { 1200 };
 
 
 // multiplication factors for input interaction:
@@ -211,240 +212,6 @@ void			Cross(float[3], float[3], float[3]);
 float			Dot(float [3], float [3]);
 float			Unit(float [3], float [3]);
 
-bool TextureBool = false;
-float RADIUS = 1.;
-int SLICES = 50;
-int STACKS = 50;
-bool AnimateBool = false;
-float EarthXPos = 0.;
-float EarthZPos = 0.;
-float EarthPathRadius = 20.;
-GLuint myTextureT;
-bool Light0On;
-
-//Mjb Functions
-int		NumLngs, NumLats;
-struct point* Pts;
-
-struct point
-{
-	float x, y, z;		// coordinates
-	float nx, ny, nz;	// surface normal
-	float s, t;		// texture coords
-};
-
-inline
-struct point*
-	PtsPointer(int lat, int lng)
-{
-	if (lat < 0)	lat += (NumLats - 1);
-	if (lng < 0)	lng += (NumLngs - 0);
-	if (lat > NumLats - 1)	lat -= (NumLats - 1);
-	if (lng > NumLngs - 1)	lng -= (NumLngs - 0);
-	return &Pts[NumLngs * lat + lng];
-}
-
-inline
-void
-DrawPoint(struct point* p)
-{
-	glNormal3fv(&p->nx);
-	glTexCoord2fv(&p->s);
-	glVertex3fv(&p->x);
-}
-
-void
-OsuSphere(float radius, int slices, int stacks)
-{
-	if (TextureBool) {
-		glEnable(GL_TEXTURE_2D);
-	}
-	// set the globals:
-
-	NumLngs = slices;
-	NumLats = stacks;
-	if (NumLngs < 3)
-		NumLngs = 3;
-	if (NumLats < 3)
-		NumLats = 3;
-
-	// allocate the point data structure:
-
-	Pts = new struct point[NumLngs * NumLats];
-
-	// fill the Pts structure:
-
-	for (int ilat = 0; ilat < NumLats; ilat++)
-	{
-		float lat = -M_PI / 2. + M_PI * (float)ilat / (float)(NumLats - 1);	// ilat=0/lat=0. is the south pole
-											// ilat=NumLats-1, lat=+M_PI/2. is the north pole
-		float xz = cosf(lat);
-		float  y = sinf(lat);
-		for (int ilng = 0; ilng < NumLngs; ilng++)				// ilng=0, lng=-M_PI and
-											// ilng=NumLngs-1, lng=+M_PI are the same meridian
-		{
-			float lng = -M_PI + 2. * M_PI * (float)ilng / (float)(NumLngs - 1);
-			float x = xz * cosf(lng);
-			float z = -xz * sinf(lng);
-			struct point* p = PtsPointer(ilat, ilng);
-			p->x = radius * x;
-			p->y = radius * y;
-			p->z = radius * z;
-			p->nx = x;
-			p->ny = y;
-			p->nz = z;
-			p->s = (lng + M_PI) / (2. * M_PI);
-			p->t = (lat + M_PI / 2.) / M_PI;
-
-		}
-	}
-
-	struct point top, bot;		// top, bottom points
-
-	top.x = 0.;
-	top.y = radius;
-	top.z = 0.;
-	top.nx = 0.;
-	top.ny = 1.;
-	top.nz = 0.;
-	top.s = 0.;
-	top.t = 1.;
-
-	bot.x = 0.;
-	bot.y = -radius;
-	bot.z = 0.;
-	bot.nx = 0.;
-	bot.ny = -1.;
-	bot.nz = 0.;
-	bot.s = 0.;
-	bot.t = 0.;
-
-	// connect the north pole to the latitude NumLats-2:
-
-	glBegin(GL_TRIANGLE_STRIP);
-	for (int ilng = 0; ilng < NumLngs; ilng++)
-	{
-		float lng = -M_PI + 2. * M_PI * (float)ilng / (float)(NumLngs - 1);
-		top.s = (lng + M_PI) / (2. * M_PI);
-		//if (DistortBool) {
-		//	top.s = sin(top.s * Time);
-		//}
-		DrawPoint(&top);
-		struct point* p = PtsPointer(NumLats - 2, ilng);	// ilat=NumLats-1 is the north pole
-		DrawPoint(p);
-	}
-	glEnd();
-
-	// connect the south pole to the latitude 1:
-
-	glBegin(GL_TRIANGLE_STRIP);
-	for (int ilng = NumLngs - 1; ilng >= 0; ilng--)
-	{
-		float lng = -M_PI + 2. * M_PI * (float)ilng / (float)(NumLngs - 1);
-		bot.s = (lng + M_PI) / (2. * M_PI);
-		//if (DistortBool) {
-		//	bot.s = sin(bot.s * Time);
-		//}
-		DrawPoint(&bot);
-		struct point* p = PtsPointer(1, ilng);					// ilat=0 is the south pole
-		DrawPoint(p);
-	}
-	glEnd();
-
-	// connect the horizontal strips:
-
-	for (int ilat = 2; ilat < NumLats - 1; ilat++)
-	{
-		struct point* p;
-		glBegin(GL_TRIANGLE_STRIP);
-		for (int ilng = 0; ilng < NumLngs; ilng++)
-		{
-			p = PtsPointer(ilat, ilng);
-			DrawPoint(p);
-			p = PtsPointer(ilat - 1, ilng);
-			DrawPoint(p);
-		}
-		glEnd();
-	}
-
-	// clean-up:
-
-	delete[] Pts;
-	Pts = NULL;
-	if (TextureBool) {
-		glDisable(GL_TEXTURE_2D);
-	}
-}
-
-float
-White[] = { 1.,1.,1.,1. };
-// utility to create an array from 3 separate values:
-float*
-Array3(float a, float b, float c)
-{
-	static float array[4];
-	array[0] = a;
-	array[1] = b;
-	array[2] = c;
-	array[3] = 1.;
-	return array;
-}
-
-// utility to create an array from a multiplier and an array:
-float*
-MulArray3(float factor, float array0[3])
-{
-	static float array[4];
-	array[0] = factor * array0[0];
-	array[1] = factor * array0[1];
-	array[2] = factor * array0[2];
-	array[3] = 1.;
-	return array;
-}
-
-void
-SetMaterial(float r, float g, float b, float shininess) {
-	glMaterialfv(GL_BACK, GL_EMISSION, Array3(0., 0., 0.));
-	glMaterialfv(GL_BACK, GL_AMBIENT, MulArray3(.4f, White));
-	glMaterialfv(GL_BACK, GL_DIFFUSE, MulArray3(1., White));
-	glMaterialfv(GL_BACK, GL_SPECULAR, Array3(0., 0., 0.));
-	glMaterialf(GL_BACK, GL_SHININESS, 2.f);
-	glMaterialfv(GL_FRONT, GL_EMISSION, Array3(0., 0., 0.));
-	glMaterialfv(GL_FRONT, GL_AMBIENT, Array3(r, g, b));
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, Array3(r, g, b));
-	glMaterialfv(GL_FRONT, GL_SPECULAR, MulArray3(.8f, White));
-	glMaterialf(GL_FRONT, GL_SHININESS, shininess);
-}
-
-
-void
-SetPointLight(int ilight, float x, float y, float z, float r, float g, float b)
-{
-	glLightfv(ilight, GL_POSITION, Array3(x, y, z));
-	glLightfv(ilight, GL_AMBIENT, Array3(0., 0., 0.));
-	glLightfv(ilight, GL_DIFFUSE, Array3(r, g, b));
-	glLightfv(ilight, GL_SPECULAR, Array3(r, g, b));
-	glLightf(ilight, GL_CONSTANT_ATTENUATION, 1.);
-	glLightf(ilight, GL_LINEAR_ATTENUATION, 0.);
-	glLightf(ilight, GL_QUADRATIC_ATTENUATION, 0.);
-	glEnable(ilight);
-}
-
-void
-SetSpotLight(int ilight, float x, float y, float z, float xdir, float ydir, float zdir, float r, float g, float b)
-{
-	glLightfv(ilight, GL_POSITION, Array3(x, y, z));
-	glLightfv(ilight, GL_SPOT_DIRECTION, Array3(xdir, ydir, zdir));
-	glLightf(ilight, GL_SPOT_EXPONENT, 1.);
-	glLightf(ilight, GL_SPOT_CUTOFF, 45.);
-	glLightfv(ilight, GL_AMBIENT, Array3(0., 0., 0.));
-	glLightfv(ilight, GL_DIFFUSE, Array3(r, g, b));
-	glLightfv(ilight, GL_SPECULAR, Array3(r, g, b));
-	glLightf(ilight, GL_CONSTANT_ATTENUATION, 1.);
-	glLightf(ilight, GL_LINEAR_ATTENUATION, 0.);
-	glLightf(ilight, GL_QUADRATIC_ATTENUATION, 0.);
-	glEnable(ilight);
-}
 
 // main program:
 
@@ -632,11 +399,16 @@ Display( )
 	// the modelview matrix is reset to identity as we don't
 	// want to transform these coordinates
 
+	glDisable( GL_DEPTH_TEST );
+	glMatrixMode( GL_PROJECTION );
+	glLoadIdentity( );
+	gluOrtho2D( 0., 100.,     0., 100. );
+	glMatrixMode( GL_MODELVIEW );
+	glLoadIdentity( );
+	glColor3f( 1., 1., 1. );
+	DoRasterString( 2.5, 2.5, 0., (char *)"CS450 Final" );
+
 	// swap the double-buffered framebuffers:
-	glPushMatrix();
-	glTranslatef(0., 0., 0.);
-	OsuSphere(10., 50, 50);
-	glPopMatrix();
 
 	glutSwapBuffers( );
 
