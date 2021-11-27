@@ -223,6 +223,7 @@ GLuint myTextureT;
 bool Light0On;
 float AU = 400.;
 float EARTHSIZE = 1.;
+int PlanetPerspective = 0;
 
 //Struct to hold Planet Coords
 struct PlanetCoords
@@ -768,6 +769,13 @@ DoDepthMenu( int id )
 	glutPostRedisplay( );
 }
 
+void DoPlanetPerpectiveMenu(int id) 
+{
+	PlanetPerspective = id;
+	glutSetWindow(MainWindow);
+	glutPostRedisplay();
+}
+
 
 // main menu callback:
 
@@ -867,6 +875,18 @@ InitMenus( )
 		glutAddMenuEntry( ColorNames[i], i );
 	}
 
+	int PPerspectiveMenu = glutCreateMenu(DoPlanetPerpectiveMenu);
+	glutAddMenuEntry("Sun", 0);
+	glutAddMenuEntry("Mercury", 1);
+	glutAddMenuEntry("Venus", 2);
+	glutAddMenuEntry("Earth", 3);
+	glutAddMenuEntry("Mars", 4);
+	glutAddMenuEntry("Jupiter", 5);
+	glutAddMenuEntry("Saturn", 6);
+	glutAddMenuEntry("Uranus", 7);
+	glutAddMenuEntry("Neptune", 8);
+	glutAddMenuEntry("Pluto", 9);
+
 	int axesmenu = glutCreateMenu( DoAxesMenu );
 	glutAddMenuEntry( "Off",  0 );
 	glutAddMenuEntry( "On",   1 );
@@ -902,7 +922,7 @@ InitMenus( )
 #ifdef DEMO_Z_FIGHTING
 	glutAddSubMenu(   "Depth Fighting",depthfightingmenu);
 #endif
-
+	glutAddSubMenu(   "Planet Perspective", PPerspectiveMenu );
 	glutAddSubMenu(   "Depth Cue",     depthcuemenu);
 	glutAddSubMenu(   "Projection",    projmenu );
 	glutAddMenuEntry( "Reset",         RESET );
@@ -1169,6 +1189,7 @@ Reset( )
 	WhichColor = WHITE;
 	WhichProjection = PERSP;
 	Xrot = Yrot = 0.;
+	PlanetPerspective = 0;
 }
 
 
