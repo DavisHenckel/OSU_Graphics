@@ -219,7 +219,7 @@ bool AnimateBool = false;
 float EarthXPos = 0.;
 float EarthZPos = 0.;
 float EarthPathRadius = 20.;
-GLuint EarthTex;
+GLuint EarthTex, SunTex, MercuryTex, VenusTex, MarsTex, JupiterTex, SaturnTex, UranusTex, NeptuneTex, PlutoTex;
 bool Light0On;
 float AU = 400.;
 float EARTHSIZE = 1.;
@@ -699,37 +699,79 @@ Display( )
 
 	glPushMatrix();
 	glTranslatef(SunCoords.x, SunCoords.y, SunCoords.z);
+	glMatrixMode(GL_TEXTURE);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, SunTex);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glDisable(GL_TEXTURE_2D);
 	OsuSphere(EARTHSIZE * 109., 250, 250); //Sun is 109 the size of Earth diameter diameter
+	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(MercuryCoords.x, MercuryCoords.y, MercuryCoords.z);
+	glMatrixMode(GL_TEXTURE);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, MercuryTex);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glDisable(GL_TEXTURE_2D);
 	OsuSphere(EARTHSIZE * .38, 50, 50); //Mercury 2/5th the size of Earth diameter
+	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(MarsCoords.x, MarsCoords.y, MarsCoords.z);
+	glMatrixMode(GL_TEXTURE);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, MarsTex);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glDisable(GL_TEXTURE_2D);
 	OsuSphere(EARTHSIZE * .53, 50, 50); //Mars .53 times the size of Earth diameter
+	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(VenusCoords.x, VenusCoords.y, VenusCoords.z);
+	glMatrixMode(GL_TEXTURE);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, VenusTex);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glDisable(GL_TEXTURE_2D);
 	OsuSphere(EARTHSIZE * .94, 50, 50);  //Venus .94 times the size of  diameter
+	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(JupiterCoords.x, JupiterCoords.y, JupiterCoords.z);
+	glMatrixMode(GL_TEXTURE);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, JupiterTex);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glDisable(GL_TEXTURE_2D);
 	OsuSphere(EARTHSIZE * 10.97, 50, 50); //Jupiter 10.97 times the size of Earth diameter
+	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(SaturnCoords.x, SaturnCoords.y, SaturnCoords.z);
+	glMatrixMode(GL_TEXTURE);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, SaturnTex);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glDisable(GL_TEXTURE_2D);
 	OsuSphere(EARTHSIZE * 9.14, 50, 50); //Saturn 9.14 times the size of Earth diameter
+	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(UranusCoords.x, UranusCoords.y, UranusCoords.z);
+	glMatrixMode(GL_TEXTURE);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, UranusTex);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glDisable(GL_TEXTURE_2D);
 	OsuSphere(EARTHSIZE * 3.98, 50, 50); //Uranus 3.98 times the size of Earth diameter
+	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
 	glPushMatrix();
@@ -971,7 +1013,22 @@ InitMenus( )
 	glutAttachMenu( GLUT_RIGHT_BUTTON );
 }
 
-
+void BuildTexObj(GLuint TexObj, char FileName[], int width, int height) 
+{
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glGenTextures(1, &TexObj);
+	unsigned char* myTexture = BmpToTexture(FileName, &width, &height);
+	glBindTexture(GL_TEXTURE_2D, TexObj);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	int level = 0;
+	int ncomps = 3;
+	int border = 0;
+	glTexImage2D(GL_TEXTURE_2D, level, ncomps, width, height, border, GL_RGB, GL_UNSIGNED_BYTE, myTexture);
+}
 
 // initialize the glut and OpenGL libraries:
 //	also setup display lists and callback functions
@@ -1055,20 +1112,18 @@ InitGraphics( )
 #endif
 	int width = 1024;
 	int height = 512;
-	//build EarthTexture
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glGenTextures(1, &EarthTex);
-	unsigned char* myTexture = BmpToTexture("2k_earth.bmp", &width, &height);
-	glBindTexture(GL_TEXTURE_2D, EarthTex);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	int level = 0;
-	int ncomps = 3;
-	int border = 0;
-	glTexImage2D(GL_TEXTURE_2D, level, ncomps, width, height, border, GL_RGB, GL_UNSIGNED_BYTE, myTexture);
+	//build all textures
+	BuildTexObj(EarthTex, "2k_earth.bmp", 1028, 512);
+	BuildTexObj(SunTex, "2k_sun.bmp", 1028, 512);
+	BuildTexObj(MercuryTex, "2k_mercury.bmp", 1028, 512);
+	BuildTexObj(VenusTex, "2k_venus.bmp", 1028, 512);
+	BuildTexObj(MarsTex, "2k_mars.bmp", 1028, 512);
+	BuildTexObj(JupiterTex, "2k_jupiter.bmp", 1028, 512);
+	BuildTexObj(SaturnTex, "2k_saturn.bmp", 1028, 512);
+	BuildTexObj(UranusTex, "2k_uranus.bmp", 1028, 512);
+	BuildTexObj(NeptuneTex, "2k_neptune.bmp", 1028, 512);
+	BuildTexObj(PlutoTex, "2k_pluto.bmp", 1028, 512);
+
 }
 
 
@@ -1468,7 +1523,7 @@ BmpToTexture( char *filename, int *width, int *height )
 			FileHeader.bfType, FileHeader.bfType&0xff, (FileHeader.bfType>>8)&0xff );
 	if( FileHeader.bfType != BMP_MAGIC_NUMBER )
 	{
-		fprintf( stderr, "Wrong type of file: 0x%0x\n", FileHeader.bfType );
+		fprintf( stderr, "Wrong type of file: 0x%0x\nFileName is %s\n", FileHeader.bfType, filename );
 		fclose( fp );
 		return NULL;
 	}
