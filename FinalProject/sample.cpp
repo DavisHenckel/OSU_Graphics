@@ -47,7 +47,7 @@ const int ESCAPE = { 0x1b };
 
 // initial window size:
 
-const int INIT_WINDOW_SIZE = { 600 };
+const int INIT_WINDOW_SIZE = { 900 };
 
 
 // multiplication factors for input interaction:
@@ -784,6 +784,14 @@ Display( )
 	OsuSphere(EARTHSIZE * .19, 50, 50); //Pluto .19 times the size of Earth diameter
 	glPopMatrix();
 
+	glDisable(GL_DEPTH_TEST);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluOrtho2D(0., 100., 0., 100.);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glColor3f(1.,0.5,0.);
+	DoRasterString(5., 5., 0., (char*)"Davis Henckel - Final CS450 Project");
 
 	// swap the double-buffered framebuffers:
 	glutSwapBuffers( );
