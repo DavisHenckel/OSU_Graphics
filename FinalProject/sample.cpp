@@ -221,6 +221,8 @@ float EarthZPos = 0.;
 float EarthPathRadius = 20.;
 GLuint myTextureT;
 bool Light0On;
+float AU = 400.;
+float EARTHSIZE = 1.;
 
 //Struct to hold Planet Coords
 struct PlanetCoords
@@ -641,25 +643,67 @@ Display( )
 	//Earth is the baseline it is defined as 1. for scale.
 	//The sun is 109 times the diameter of Earth
 	//I have defined 250 as 1 AU Since it made Earth Placement look nice and proportionate
-	PlanetCoords SunCoords = { 0.,0.,0. };
-	PlanetCoords EarthCoords = { 250.,0.,0. };
-	PlanetCoords MercuryCoords = { 0.,0.,0. };
-	PlanetCoords MarsCoords = { 0.,0.,0. };
-	PlanetCoords VenusCoords = { 0.,0.,0. };
-	PlanetCoords JupiterCoords = { 0.,0.,0. };
-	PlanetCoords SaturnCoords = { 0.,0.,0. };
-	PlanetCoords UranusCoords = { 0.,0.,0. };
-	PlanetCoords PlutoCoords = { 0.,0.,0. };
-
-	glPushMatrix();
-	glTranslatef(SunCoords.x, SunCoords.y, SunCoords.z);
-	OsuSphere(109., 250, 250);
-	glPopMatrix();
+	PlanetCoords SunCoords = { 0.,0.,0. }; //sun starts at origin of solar system
+	PlanetCoords EarthCoords = { AU, 0., 0. }; //1 AU from sun.
+	PlanetCoords MercuryCoords = { AU * .4, 0.,0. }; //Mercury is .4 AU from Sun.
+	PlanetCoords MarsCoords = { AU * 1.5,0.,0. }; //Mars 1.5AU from sun
+	PlanetCoords VenusCoords = { AU * .7, 0., 0. }; //Venus .7AU from sun
+	PlanetCoords JupiterCoords = { AU * 5.2, 0., 0. }; //Jupiter 5.2AU from sun
+	PlanetCoords SaturnCoords = { AU * 9.5 ,0.,0. }; //Saturn 9.5AU from sun
+	PlanetCoords UranusCoords = { AU * 19.8,0.,0. }; //Uranus 19.8AU from sun
+	PlanetCoords NeptuneCoords = { AU * 30.,0.,0. }; //Neptune 30AU from sun.
+	PlanetCoords PlutoCoords = { AU * 39.,0.,0. }; //Pluto 39AU from sun.
 
 	glPushMatrix();
 	glTranslatef(EarthCoords.x, EarthCoords.y, EarthCoords.z);
-	OsuSphere(1., 50, 50);
+	OsuSphere(EARTHSIZE, 50, 50);
 	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(SunCoords.x, SunCoords.y, SunCoords.z);
+	OsuSphere(EARTHSIZE * 109., 250, 250); //Sun is 109 the size of Earth diameter diameter
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(MercuryCoords.x, MercuryCoords.y, MercuryCoords.z);
+	OsuSphere(EARTHSIZE * .38, 50, 50); //Mercury 2/5th the size of Earth diameter
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(MarsCoords.x, MarsCoords.y, MarsCoords.z);
+	OsuSphere(EARTHSIZE * .53, 50, 50); //Mars .53 times the size of Earth diameter
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(VenusCoords.x, VenusCoords.y, VenusCoords.z);
+	OsuSphere(EARTHSIZE * .94, 50, 50);  //Venus .94 times the size of  diameter
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(JupiterCoords.x, JupiterCoords.y, JupiterCoords.z);
+	OsuSphere(EARTHSIZE * 10.97, 50, 50); //Jupiter 10.97 times the size of Earth diameter
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(SaturnCoords.x, SaturnCoords.y, SaturnCoords.z);
+	OsuSphere(EARTHSIZE * 9.14, 50, 50); //Saturn 9.14 times the size of Earth diameter
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(UranusCoords.x, UranusCoords.y, UranusCoords.z);
+	OsuSphere(EARTHSIZE * 3.98, 50, 50); //Uranus 3.98 times the size of Earth diameter
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(NeptuneCoords.x, NeptuneCoords.y, NeptuneCoords.z);
+	OsuSphere(EARTHSIZE * 3.86, 50, 50); //Neptune 3.86 times the size of Earth diameter
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(PlutoCoords.x, PlutoCoords.y, PlutoCoords.z);
+	OsuSphere(EARTHSIZE * .19, 50, 50); //Pluto .19 times the size of Earth diameter
+	glPopMatrix();
+
 
 	// swap the double-buffered framebuffers:
 	glutSwapBuffers( );
