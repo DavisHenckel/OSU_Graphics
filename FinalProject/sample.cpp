@@ -590,38 +590,41 @@ Display( )
 	glLoadIdentity( );
 
 	// set the eye position, look-at position, and up-vector:
+	/*glPushMatrix();*/
 	switch (PlanetPerspective) {
 	case 0: //Sun
 		gluLookAt(100., 500., 3., 0., 0., 0., 0., 1., 0.);
 		break;
 	case 1: //Mercury
-		gluLookAt(MercuryCoords.x, 500., 0., MercuryCoords.x, MercuryCoords.y, MercuryCoords.z, 0., 1., 0.);
+		//gluLookAt(MercuryCoords.x, 500., 3., MercuryCoords.x, MercuryCoords.y, MercuryCoords.z, 0., 1., 0.);
+		gluLookAt(MercuryCoords.x + 5, MercuryCoords.y + 3, 0., 0.,0.,0., 0., 1., 0);
 		break;
 	case 2: //Venus
-		gluLookAt(VenusCoords.x, 100., 0., VenusCoords.x, VenusCoords.y, VenusCoords.z, 0., 1., 0.);
+		gluLookAt(VenusCoords.x + 7, VenusCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
 		break;
 	case 3: //Mars
-		gluLookAt(MarsCoords.x, 100., 0., MarsCoords.x, MarsCoords.y, MarsCoords.z, 0., 1., 0.);
+		gluLookAt(MarsCoords.x + 7, MarsCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
 		break;
 	case 4: //Earth
-		gluLookAt(EarthCoords.x, 100., 0., EarthCoords.x, EarthCoords.y, EarthCoords.z, 0., 1., 0.);
+		gluLookAt(EarthCoords.x + 7, EarthCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
 		break;
 	case 5: //Jupiter
-		gluLookAt(JupiterCoords.x, 50., 0., JupiterCoords.x, JupiterCoords.y, JupiterCoords.z, 0., 1., 0.);
+		gluLookAt(JupiterCoords.x + 30, JupiterCoords.y + 10, 0., 0., 0., 0., 0., 1., 0);
 		break;
 	case 6: //Saturn
-		gluLookAt(SaturnCoords.x, 100., 0., SaturnCoords.x, SaturnCoords.y, SaturnCoords.z, 0., 1., 0.);
+		gluLookAt(SaturnCoords.x + 25, SaturnCoords.y + 7, 0., 0., 0., 0., 0., 1., 0);
 		break;
 	case 7: //Uranus
-		gluLookAt(UranusCoords.x, 100., 0., UranusCoords.x, UranusCoords.y, UranusCoords.z, 0., 1., 0.);
+		gluLookAt(UranusCoords.x + 15, UranusCoords.y + 7, 0., 0., 0., 0., 0., 1., 0);
 		break;
 	case 8: //Neptune
-		gluLookAt(NeptuneCoords.x, 100., 0., NeptuneCoords.x, NeptuneCoords.y, NeptuneCoords.z, 0., 1., 0.);
+		gluLookAt(NeptuneCoords.x + 10, NeptuneCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
 		break;
 	case 9: //Pluto
-		gluLookAt(PlutoCoords.x, 100., 0., PlutoCoords.x, PlutoCoords.y, PlutoCoords.z, 0., 1., 0.);
+		gluLookAt(PlutoCoords.x + 2, PlutoCoords.y + 1, 0., 0., 0., 0., 0., 1., 0);
 		break;
 	}
+	/*glPopMatrix();*/
 	/*gluLookAt( 0., 500., 3.,     0., 0., 0.,     0., 1., 0. );*/
 
 	// rotate the scene:
@@ -709,6 +712,7 @@ Display( )
 	glPopMatrix();
 
 	glPushMatrix();
+	glColor3f(1., 0., 0.);
 	glTranslatef(MercuryCoords.x, MercuryCoords.y, MercuryCoords.z);
 	glMatrixMode(GL_TEXTURE);
 	glEnable(GL_TEXTURE_2D);
@@ -860,6 +864,7 @@ void DoPlanetPerpectiveMenu(int id)
 {
 	PlanetPerspective = id;
 	glutSetWindow(MainWindow);
+	Reset();
 	glutPostRedisplay();
 }
 
@@ -1305,7 +1310,7 @@ Reset( )
 	WhichColor = WHITE;
 	WhichProjection = PERSP;
 	Xrot = Yrot = 0.;
-	PlanetPerspective = 0;
+	/*PlanetPerspective = 0;*/
 }
 
 
