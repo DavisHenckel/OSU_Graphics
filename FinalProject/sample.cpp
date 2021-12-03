@@ -514,19 +514,35 @@ Animate( )
 	const int MS_IN_THE_ANIMATION_CYCLE_URANUS = MS_IN_THE_ANIMATION_CYCLE_EARTH / .0119; //30687 days to orbit sun
 	const int MS_IN_THE_ANIMATION_CYCLE_NEPTUNE = MS_IN_THE_ANIMATION_CYCLE_EARTH / .0061; //60190 days to orbit sun
 	const int MS_IN_THE_ANIMATION_CYCLE_PLUTO = MS_IN_THE_ANIMATION_CYCLE_EARTH / .00403; //248 years to orbit sun
-	int msEarth = glutGet(GLUT_ELAPSED_TIME);			// milliseconds since the program started
-	int msMerc = glutGet(GLUT_ELAPSED_TIME);
+	int msEarth, msMerc, msVenus, msMars, msJupiter, msSaturn, msUranus, msNeptune, msPluto;
+	msEarth = glutGet(GLUT_ELAPSED_TIME);			// milliseconds since the program started
+	msMerc = msEarth;
+	msJupiter = msEarth;
+	msVenus = msEarth;
+	msMars = msEarth;
+	msSaturn = msEarth;
+	msUranus = msEarth;
+	msNeptune = msEarth;
+	msPluto = msEarth;
+
 	msEarth %= MS_IN_THE_ANIMATION_CYCLE_EARTH;				// milliseconds in the range 0 to MS_IN_THE_ANIMATION_CYCLE-1
 	msMerc %= MS_IN_THE_ANIMATION_CYCLE_MERC;
+	msJupiter %= MS_IN_THE_ANIMATION_CYCLE_JUPITER;
+	msVenus %= MS_IN_THE_ANIMATION_CYCLE_VENUS;
+	msMars %= MS_IN_THE_ANIMATION_CYCLE_MARS;
+	msSaturn %= MS_IN_THE_ANIMATION_CYCLE_SATURN;
+	msUranus %= MS_IN_THE_ANIMATION_CYCLE_URANUS;
+	msNeptune %= MS_IN_THE_ANIMATION_CYCLE_NEPTUNE;
+	msPluto %= MS_IN_THE_ANIMATION_CYCLE_PLUTO;
 	TimeEarth = (float)msEarth / (float)MS_IN_THE_ANIMATION_CYCLE_EARTH;        // [ 0., 1. )
 	TimeMerc = (float)msMerc / (float)MS_IN_THE_ANIMATION_CYCLE_MERC;        // [ 0., 1. )
-	TimeVenus = (float)msEarth / (float)MS_IN_THE_ANIMATION_CYCLE_VENUS;        // [ 0., 1. )
-	TimeMars = (float)msEarth / (float)MS_IN_THE_ANIMATION_CYCLE_MARS;        // [ 0., 1. )
-	TimeJupiter = (float)msEarth / (float)MS_IN_THE_ANIMATION_CYCLE_JUPITER;        // [ 0., 1. )
-	TimeSaturn = (float)msEarth / (float)MS_IN_THE_ANIMATION_CYCLE_SATURN;        // [ 0., 1. )
-	TimeUranus = (float)msEarth / (float)MS_IN_THE_ANIMATION_CYCLE_URANUS;        // [ 0., 1. )
-	TimeNeptune = (float)msEarth / (float)MS_IN_THE_ANIMATION_CYCLE_NEPTUNE;        // [ 0., 1. )
-	TimePluto = (float)msEarth / (float)MS_IN_THE_ANIMATION_CYCLE_PLUTO;        // [ 0., 1. )
+	TimeVenus = (float)msVenus / (float)MS_IN_THE_ANIMATION_CYCLE_VENUS;        // [ 0., 1. )
+	TimeMars = (float)msMars / (float)MS_IN_THE_ANIMATION_CYCLE_MARS;        // [ 0., 1. )
+	TimeJupiter = (float)msJupiter / (float)MS_IN_THE_ANIMATION_CYCLE_JUPITER;        // [ 0., 1. )
+	TimeSaturn = (float)msSaturn / (float)MS_IN_THE_ANIMATION_CYCLE_SATURN;        // [ 0., 1. )
+	TimeUranus = (float)msUranus / (float)MS_IN_THE_ANIMATION_CYCLE_URANUS;        // [ 0., 1. )
+	TimeNeptune = (float)msNeptune / (float)MS_IN_THE_ANIMATION_CYCLE_NEPTUNE;        // [ 0., 1. )
+	TimePluto = (float)msPluto / (float)MS_IN_THE_ANIMATION_CYCLE_PLUTO;        // [ 0., 1. )
 	// force a call to Display( ) next time it is convenient:
 
 	glutSetWindow( MainWindow );
