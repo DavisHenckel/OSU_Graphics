@@ -211,7 +211,7 @@ void			Cross(float[3], float[3], float[3]);
 float			Dot(float [3], float [3]);
 float			Unit(float [3], float [3]);
 
-bool TextureBool = false;
+bool TextureBool = true;
 float RADIUS = 1.;
 int SLICES = 50;
 int STACKS = 50;
@@ -265,9 +265,7 @@ DrawPoint(struct point* p)
 void
 OsuSphere(float radius, int slices, int stacks)
 {
-	if (TextureBool) {
-		glEnable(GL_TEXTURE_2D);
-	}
+	glEnable(GL_TEXTURE_2D);
 	// set the globals:
 
 	NumLngs = slices;
@@ -380,9 +378,7 @@ OsuSphere(float radius, int slices, int stacks)
 
 	delete[] Pts;
 	Pts = NULL;
-	if (TextureBool) {
-		glDisable(GL_TEXTURE_2D);
-	}
+	glDisable(GL_TEXTURE_2D);
 }
 
 float
@@ -590,38 +586,41 @@ Display( )
 	glLoadIdentity( );
 
 	// set the eye position, look-at position, and up-vector:
+	/*glPushMatrix();*/
 	switch (PlanetPerspective) {
 	case 0: //Sun
 		gluLookAt(100., 500., 3., 0., 0., 0., 0., 1., 0.);
 		break;
 	case 1: //Mercury
-		gluLookAt(MercuryCoords.x, 500., 0., MercuryCoords.x, MercuryCoords.y, MercuryCoords.z, 0., 1., 0.);
+		//gluLookAt(MercuryCoords.x, 500., 3., MercuryCoords.x, MercuryCoords.y, MercuryCoords.z, 0., 1., 0.);
+		gluLookAt(MercuryCoords.x + 5, MercuryCoords.y + 3, 0., 0.,0.,0., 0., 1., 0);
 		break;
 	case 2: //Venus
-		gluLookAt(VenusCoords.x, 100., 0., VenusCoords.x, VenusCoords.y, VenusCoords.z, 0., 1., 0.);
+		gluLookAt(VenusCoords.x + 7, VenusCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
 		break;
-	case 3: //Mars
-		gluLookAt(MarsCoords.x, 100., 0., MarsCoords.x, MarsCoords.y, MarsCoords.z, 0., 1., 0.);
+	case 3: //Earth
+		gluLookAt(EarthCoords.x + 7, EarthCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
 		break;
-	case 4: //Earth
-		gluLookAt(EarthCoords.x, 100., 0., EarthCoords.x, EarthCoords.y, EarthCoords.z, 0., 1., 0.);
+	case 4: //Mars
+		gluLookAt(MarsCoords.x + 7, MarsCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
 		break;
 	case 5: //Jupiter
-		gluLookAt(JupiterCoords.x, 50., 0., JupiterCoords.x, JupiterCoords.y, JupiterCoords.z, 0., 1., 0.);
+		gluLookAt(JupiterCoords.x + 30, JupiterCoords.y + 10, 0., 0., 0., 0., 0., 1., 0);
 		break;
 	case 6: //Saturn
-		gluLookAt(SaturnCoords.x, 100., 0., SaturnCoords.x, SaturnCoords.y, SaturnCoords.z, 0., 1., 0.);
+		gluLookAt(SaturnCoords.x + 25, SaturnCoords.y + 7, 0., 0., 0., 0., 0., 1., 0);
 		break;
 	case 7: //Uranus
-		gluLookAt(UranusCoords.x, 100., 0., UranusCoords.x, UranusCoords.y, UranusCoords.z, 0., 1., 0.);
+		gluLookAt(UranusCoords.x + 15, UranusCoords.y + 7, 0., 0., 0., 0., 0., 1., 0);
 		break;
 	case 8: //Neptune
-		gluLookAt(NeptuneCoords.x, 100., 0., NeptuneCoords.x, NeptuneCoords.y, NeptuneCoords.z, 0., 1., 0.);
+		gluLookAt(NeptuneCoords.x + 10, NeptuneCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
 		break;
 	case 9: //Pluto
-		gluLookAt(PlutoCoords.x, 100., 0., PlutoCoords.x, PlutoCoords.y, PlutoCoords.z, 0., 1., 0.);
+		gluLookAt(PlutoCoords.x + 2, PlutoCoords.y + 1, 0., 0., 0., 0., 0., 1., 0);
 		break;
 	}
+	/*glPopMatrix();*/
 	/*gluLookAt( 0., 500., 3.,     0., 0., 0.,     0., 1., 0. );*/
 
 	// rotate the scene:
@@ -687,99 +686,98 @@ Display( )
 	// want to transform these coordinates
 
 	glPushMatrix();
-	glTranslatef(EarthCoords.x, EarthCoords.y, EarthCoords.z);
-	glMatrixMode(GL_TEXTURE);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, EarthTex);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glDisable(GL_TEXTURE_2D);
-	OsuSphere(EARTHSIZE, 50, 50);
 	glMatrixMode(GL_MODELVIEW);
+	glTranslatef(EarthCoords.x, EarthCoords.y, EarthCoords.z);
+	OsuSphere(EARTHSIZE, 50, 50);
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(SunCoords.x, SunCoords.y, SunCoords.z);
-	glMatrixMode(GL_TEXTURE);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, SunTex);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glDisable(GL_TEXTURE_2D);
-	OsuSphere(EARTHSIZE * 109., 250, 250); //Sun is 109 the size of Earth diameter diameter
 	glMatrixMode(GL_MODELVIEW);
+	glTranslatef(SunCoords.x, SunCoords.y, SunCoords.z);
+	OsuSphere(EARTHSIZE * 109., 250, 250); //Sun is 109 the size of Earth diameter diameter
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(MercuryCoords.x, MercuryCoords.y, MercuryCoords.z);
-	glMatrixMode(GL_TEXTURE);
-	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, MercuryTex);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glDisable(GL_TEXTURE_2D);
+	glTranslatef(MercuryCoords.x, MercuryCoords.y, MercuryCoords.z);
 	OsuSphere(EARTHSIZE * .38, 50, 50); //Mercury 2/5th the size of Earth diameter
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(MarsCoords.x, MarsCoords.y, MarsCoords.z);
-	glMatrixMode(GL_TEXTURE);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, MarsTex);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glDisable(GL_TEXTURE_2D);
+	glTranslatef(MarsCoords.x, MarsCoords.y, MarsCoords.z);
 	OsuSphere(EARTHSIZE * .53, 50, 50); //Mars .53 times the size of Earth diameter
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(VenusCoords.x, VenusCoords.y, VenusCoords.z);
-	glMatrixMode(GL_TEXTURE);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, VenusTex);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glDisable(GL_TEXTURE_2D);
+	glTranslatef(VenusCoords.x, VenusCoords.y, VenusCoords.z);
 	OsuSphere(EARTHSIZE * .94, 50, 50);  //Venus .94 times the size of  diameter
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(JupiterCoords.x, JupiterCoords.y, JupiterCoords.z);
-	glMatrixMode(GL_TEXTURE);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, JupiterTex);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glDisable(GL_TEXTURE_2D);
+	glTranslatef(JupiterCoords.x, JupiterCoords.y, JupiterCoords.z);
 	OsuSphere(EARTHSIZE * 10.97, 50, 50); //Jupiter 10.97 times the size of Earth diameter
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(SaturnCoords.x, SaturnCoords.y, SaturnCoords.z);
-	glMatrixMode(GL_TEXTURE);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, SaturnTex);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glDisable(GL_TEXTURE_2D);
+	glTranslatef(SaturnCoords.x, SaturnCoords.y, SaturnCoords.z);
 	OsuSphere(EARTHSIZE * 9.14, 50, 50); //Saturn 9.14 times the size of Earth diameter
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(UranusCoords.x, UranusCoords.y, UranusCoords.z);
-	glMatrixMode(GL_TEXTURE);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, UranusTex);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glDisable(GL_TEXTURE_2D);
+	glTranslatef(UranusCoords.x, UranusCoords.y, UranusCoords.z);
 	OsuSphere(EARTHSIZE * 3.98, 50, 50); //Uranus 3.98 times the size of Earth diameter
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
 	glPushMatrix();
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, NeptuneTex);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glDisable(GL_TEXTURE_2D);
 	glTranslatef(NeptuneCoords.x, NeptuneCoords.y, NeptuneCoords.z);
 	OsuSphere(EARTHSIZE * 3.86, 50, 50); //Neptune 3.86 times the size of Earth diameter
 	glPopMatrix();
 
 	glPushMatrix();
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, PlutoTex);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glDisable(GL_TEXTURE_2D);
 	glTranslatef(PlutoCoords.x, PlutoCoords.y, PlutoCoords.z);
 	OsuSphere(EARTHSIZE * .19, 50, 50); //Pluto .19 times the size of Earth diameter
 	glPopMatrix();
@@ -860,6 +858,7 @@ void DoPlanetPerpectiveMenu(int id)
 {
 	PlanetPerspective = id;
 	glutSetWindow(MainWindow);
+	Reset();
 	glutPostRedisplay();
 }
 
@@ -1021,12 +1020,12 @@ InitMenus( )
 	glutAttachMenu( GLUT_RIGHT_BUTTON );
 }
 
-void BuildTexObj(GLuint TexObj, char FileName[], int width, int height) 
+void BuildTexObj(GLuint *TexObj, char FileName[], int width, int height) 
 {
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glGenTextures(1, &TexObj);
+	glGenTextures(1, TexObj);
 	unsigned char* myTexture = BmpToTexture(FileName, &width, &height);
-	glBindTexture(GL_TEXTURE_2D, TexObj);
+	glBindTexture(GL_TEXTURE_2D, *TexObj);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -1118,19 +1117,17 @@ InitGraphics( )
 		fprintf( stderr, "GLEW initialized OK\n" );
 	fprintf( stderr, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 #endif
-	int width = 1024;
-	int height = 512;
-	//build all textures
-	BuildTexObj(EarthTex, "2k_earth.bmp", 1028, 512);
-	BuildTexObj(SunTex, "2k_sun.bmp", 1028, 512);
-	BuildTexObj(MercuryTex, "2k_mercury.bmp", 1028, 512);
-	BuildTexObj(VenusTex, "2k_venus.bmp", 1028, 512);
-	BuildTexObj(MarsTex, "2k_mars.bmp", 1028, 512);
-	BuildTexObj(JupiterTex, "2k_jupiter.bmp", 1028, 512);
-	BuildTexObj(SaturnTex, "2k_saturn.bmp", 1028, 512);
-	BuildTexObj(UranusTex, "2k_uranus.bmp", 1028, 512);
-	BuildTexObj(NeptuneTex, "2k_neptune.bmp", 1028, 512);
-	BuildTexObj(PlutoTex, "2k_pluto.bmp", 1028, 512);
+
+	BuildTexObj(&EarthTex, "2k_earth.bmp", 1028, 512);
+	BuildTexObj(&SunTex, "2k_sun.bmp", 1028, 512);
+	BuildTexObj(&MercuryTex, "2k_mercury.bmp", 1028, 512);
+	BuildTexObj(&VenusTex, "2k_venus.bmp", 1028, 512);
+	BuildTexObj(&MarsTex, "2k_mars.bmp", 1028, 512);
+	BuildTexObj(&JupiterTex, "2k_jupiter.bmp", 1028, 512);
+	BuildTexObj(&SaturnTex, "2k_saturn.bmp", 1028, 512);
+	BuildTexObj(&UranusTex, "2k_uranus.bmp", 1028, 512);
+	BuildTexObj(&NeptuneTex, "2k_neptune.bmp", 1028, 512);
+	BuildTexObj(&PlutoTex, "2k_pluto.bmp", 1028, 512);
 
 }
 
@@ -1305,7 +1302,7 @@ Reset( )
 	WhichColor = WHITE;
 	WhichProjection = PERSP;
 	Xrot = Yrot = 0.;
-	PlanetPerspective = 0;
+	/*PlanetPerspective = 0;*/
 }
 
 
