@@ -703,7 +703,7 @@ Display( )
 		break;
 	case 6: //Saturn
 		if (AnimateBool) {
-			gluLookAt(SaturnCoords.x, SaturnCoords.y, SaturnCoords.z, 0., 0., 0., 0., 1., 0);
+			gluLookAt(SaturnCoords.x + (SaturnCoords.x * .07), SaturnCoords.y + 7, SaturnCoords.z + (SaturnCoords.z * .07), 0., 0., 0., 0., 1., 0);
 		}
 		else {
 			gluLookAt(SaturnCoords.x + 25, SaturnCoords.y + 7, 0., 0., 0., 0., 0., 1., 0);
