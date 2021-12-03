@@ -679,7 +679,7 @@ Display( )
 		break;
 	case 3: //Earth
 		if (AnimateBool) {
-			gluLookAt(EarthCoords.x, EarthCoords.y, EarthCoords.z, 0., 0., 0., 0., 1., 0);
+			gluLookAt(EarthCoords.x + (EarthCoords.x * .015), EarthCoords.y +.5, EarthCoords.z + (EarthCoords.z * .015), 0., 0., 0., 0., 1., 0);
 		}
 		else {
 			gluLookAt(EarthCoords.x + 7, EarthCoords.y + 3, EarthCoords.z, 0., 0., 0., 0., 1., 0);
@@ -687,7 +687,7 @@ Display( )
 		break;
 	case 4: //Mars
 		if (AnimateBool) {
-			gluLookAt(MarsCoords.x + (MarsCoords.x * .009), MarsCoords.y + .5, MarsCoords.z + (MarsCoords.z * .009), 0., 0., 0., 0., 1., 0);
+			gluLookAt(MarsCoords.x + (MarsCoords.x * .007), MarsCoords.y + .3, MarsCoords.z + (MarsCoords.z * .007), 0., 0., 0., 0., 1., 0);
 		}
 		else {
 			gluLookAt(MarsCoords.x + 7, MarsCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
@@ -711,7 +711,7 @@ Display( )
 		break;
 	case 7: //Uranus
 		if (AnimateBool) {
-			gluLookAt(UranusCoords.x + (UranusCoords.x * .0275), UranusCoords.y + 5, UranusCoords.z + (UranusCoords.z * .0275), 0., 0., 0., 0., 1., 0);
+			gluLookAt(UranusCoords.x + (UranusCoords.x * .0275), UranusCoords.y + 4, UranusCoords.z + (UranusCoords.z * .0275), 0., 0., 0., 0., 1., 0);
 		}
 		else {
 			gluLookAt(UranusCoords.x + 15, UranusCoords.y + 7, 0., 0., 0., 0., 0., 1., 0);
@@ -727,7 +727,7 @@ Display( )
 		break;
 	case 9: //Pluto
 		if (AnimateBool) {
-			gluLookAt(PlutoCoords.x + (PlutoCoords.x * .005), PlutoCoords.y + 1, PlutoCoords.z + (PlutoCoords.z * .005), 0., 0., 0., 0., 1., 0);
+			gluLookAt(PlutoCoords.x + (PlutoCoords.x * .005), PlutoCoords.y + .5, PlutoCoords.z + (PlutoCoords.z * .005), 0., 0., 0., 0., 1., 0);
 		}
 		else {
 			gluLookAt(PlutoCoords.x + 2, PlutoCoords.y + 1, 0., 0., 0., 0., 0., 1., 0);
