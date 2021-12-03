@@ -719,7 +719,7 @@ Display( )
 		break;
 	case 8: //Neptune
 		if (AnimateBool) {
-			gluLookAt(NeptuneCoords.x, NeptuneCoords.y, NeptuneCoords.z, 0., 0., 0., 0., 1., 0);
+			gluLookAt(NeptuneCoords.x + (NeptuneCoords.x * .025), NeptuneCoords.y + 5, NeptuneCoords.z + (NeptuneCoords.z * .025), 0., 0., 0., 0., 1., 0);
 		}
 		else {
 			gluLookAt(NeptuneCoords.x + 10, NeptuneCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
@@ -727,7 +727,7 @@ Display( )
 		break;
 	case 9: //Pluto
 		if (AnimateBool) {
-			gluLookAt(PlutoCoords.x, PlutoCoords.y, PlutoCoords.z, 0., 0., 0., 0., 1., 0);
+			gluLookAt(PlutoCoords.x + (PlutoCoords.x * .005), PlutoCoords.y + 1, PlutoCoords.z + (PlutoCoords.z * .005), 0., 0., 0., 0., 1., 0);
 		}
 		else {
 			gluLookAt(PlutoCoords.x + 2, PlutoCoords.y + 1, 0., 0., 0., 0., 0., 1., 0);
