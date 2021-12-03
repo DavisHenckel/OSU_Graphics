@@ -687,7 +687,7 @@ Display( )
 		break;
 	case 4: //Mars
 		if (AnimateBool) {
-			gluLookAt(MarsCoords.x, MarsCoords.y, MarsCoords.z, 0., 0., 0., 0., 1., 0);
+			gluLookAt(MarsCoords.x + (MarsCoords.x * .009), MarsCoords.y + .5, MarsCoords.z + (MarsCoords.z * .009), 0., 0., 0., 0., 1., 0);
 		}
 		else {
 			gluLookAt(MarsCoords.x + 7, MarsCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
