@@ -4,6 +4,7 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <cmath>
 
 #ifdef WIN32
 #include <windows.h>
@@ -168,7 +169,7 @@ int		DepthBufferOn;			// != 0 means to use the z-buffer
 int		DepthFightingOn;		// != 0 means to force the creation of z-fighting
 int		MainWindow;				// window id for main graphics window
 float	Scale;					// scaling factor
-float	Time;					// timer in the range [0.,1.)
+float	TimeEarth, TimeMerc, TimeVenus, TimeMars, TimeJupiter, TimeSaturn, TimeUranus, TimeNeptune, TimePluto;					// timer in the range [0.,1.)
 int		WhichColor;				// index into Colors[ ]
 int		WhichProjection;		// ORTHO or PERSP
 int		Xmouse, Ymouse;			// mouse values
@@ -215,14 +216,11 @@ bool TextureBool = true;
 float RADIUS = 1.;
 int SLICES = 50;
 int STACKS = 50;
-bool AnimateBool = false;
-float EarthXPos = 0.;
-float EarthZPos = 0.;
-float EarthPathRadius = 20.;
-GLuint EarthTex, SunTex, MercuryTex, VenusTex, MarsTex, JupiterTex, SaturnTex, UranusTex, NeptuneTex, PlutoTex;
+bool AnimateBool = true;
+GLuint EarthTex, SunTex, MercuryTex, VenusTex, MarsTex, JupiterTex, SaturnTex, UranusTex, NeptuneTex, PlutoTex, MilkyWayTex;
 bool Light0On;
-float AU = 400.;
-float EARTHSIZE = 1.;
+float AU = 100.;
+float EARTHSIZE = .25;
 int PlanetPerspective = 0;
 
 //Struct to hold Planet Coords
@@ -504,11 +502,44 @@ Animate( )
 	// put animation stuff in here -- change some global variables
 	// for Display( ) to find:
 
-	const int MS_IN_THE_ANIMATION_CYCLE = 10000;	// milliseconds in the animation loop
-	int ms = glutGet(GLUT_ELAPSED_TIME);			// milliseconds since the program started
-	ms %= MS_IN_THE_ANIMATION_CYCLE;				// milliseconds in the range 0 to MS_IN_THE_ANIMATION_CYCLE-1
-	Time = (float)ms / (float)MS_IN_THE_ANIMATION_CYCLE;        // [ 0., 1. )
+	const int MS_IN_THE_ANIMATION_CYCLE_EARTH = 10000;	// 365 days to orbit sun.
+	const int MS_IN_THE_ANIMATION_CYCLE_MERC = MS_IN_THE_ANIMATION_CYCLE_EARTH / 4.15;	// 88 days to orbit sun
+	const int MS_IN_THE_ANIMATION_CYCLE_VENUS = MS_IN_THE_ANIMATION_CYCLE_EARTH / 1.6; // 225 days to orbit sun
+	const int MS_IN_THE_ANIMATION_CYCLE_MARS = MS_IN_THE_ANIMATION_CYCLE_EARTH / .53; // 687 days to orbit sun
+	const int MS_IN_THE_ANIMATION_CYCLE_JUPITER = MS_IN_THE_ANIMATION_CYCLE_EARTH / .084; // 4333 days to orbit sun
+	const int MS_IN_THE_ANIMATION_CYCLE_SATURN = MS_IN_THE_ANIMATION_CYCLE_EARTH / .034; // 10756 days to orbit sun 
+	const int MS_IN_THE_ANIMATION_CYCLE_URANUS = MS_IN_THE_ANIMATION_CYCLE_EARTH / .0119; //30687 days to orbit sun
+	const int MS_IN_THE_ANIMATION_CYCLE_NEPTUNE = MS_IN_THE_ANIMATION_CYCLE_EARTH / .0061; //60190 days to orbit sun
+	const int MS_IN_THE_ANIMATION_CYCLE_PLUTO = MS_IN_THE_ANIMATION_CYCLE_EARTH / .00403; //248 years to orbit sun
+	int msEarth, msMerc, msVenus, msMars, msJupiter, msSaturn, msUranus, msNeptune, msPluto;
+	msEarth = glutGet(GLUT_ELAPSED_TIME);			// milliseconds since the program started
+	msMerc = msEarth;
+	msJupiter = msEarth;
+	msVenus = msEarth;
+	msMars = msEarth;
+	msSaturn = msEarth;
+	msUranus = msEarth;
+	msNeptune = msEarth;
+	msPluto = msEarth;
 
+	msEarth %= MS_IN_THE_ANIMATION_CYCLE_EARTH;				// milliseconds in the range 0 to MS_IN_THE_ANIMATION_CYCLE-1
+	msMerc %= MS_IN_THE_ANIMATION_CYCLE_MERC;
+	msJupiter %= MS_IN_THE_ANIMATION_CYCLE_JUPITER;
+	msVenus %= MS_IN_THE_ANIMATION_CYCLE_VENUS;
+	msMars %= MS_IN_THE_ANIMATION_CYCLE_MARS;
+	msSaturn %= MS_IN_THE_ANIMATION_CYCLE_SATURN;
+	msUranus %= MS_IN_THE_ANIMATION_CYCLE_URANUS;
+	msNeptune %= MS_IN_THE_ANIMATION_CYCLE_NEPTUNE;
+	msPluto %= MS_IN_THE_ANIMATION_CYCLE_PLUTO;
+	TimeEarth = (float)msEarth / (float)MS_IN_THE_ANIMATION_CYCLE_EARTH;        // [ 0., 1. )
+	TimeMerc = (float)msMerc / (float)MS_IN_THE_ANIMATION_CYCLE_MERC;        // [ 0., 1. )
+	TimeVenus = (float)msVenus / (float)MS_IN_THE_ANIMATION_CYCLE_VENUS;        // [ 0., 1. )
+	TimeMars = (float)msMars / (float)MS_IN_THE_ANIMATION_CYCLE_MARS;        // [ 0., 1. )
+	TimeJupiter = (float)msJupiter / (float)MS_IN_THE_ANIMATION_CYCLE_JUPITER;        // [ 0., 1. )
+	TimeSaturn = (float)msSaturn / (float)MS_IN_THE_ANIMATION_CYCLE_SATURN;        // [ 0., 1. )
+	TimeUranus = (float)msUranus / (float)MS_IN_THE_ANIMATION_CYCLE_URANUS;        // [ 0., 1. )
+	TimeNeptune = (float)msNeptune / (float)MS_IN_THE_ANIMATION_CYCLE_NEPTUNE;        // [ 0., 1. )
+	TimePluto = (float)msPluto / (float)MS_IN_THE_ANIMATION_CYCLE_PLUTO;        // [ 0., 1. )
 	// force a call to Display( ) next time it is convenient:
 
 	glutSetWindow( MainWindow );
@@ -529,11 +560,47 @@ Display( )
 	PlanetCoords MercuryCoords = { AU * .4, 0.,0. }; //Mercury is .4 AU from Sun.
 	PlanetCoords MarsCoords = { AU * 1.5,0.,0. }; //Mars 1.5AU from sun
 	PlanetCoords VenusCoords = { AU * .7, 0., 0. }; //Venus .7AU from sun
-	PlanetCoords JupiterCoords = { AU * 5.2, 0., 0. }; //Jupiter 5.2AU from sun
-	PlanetCoords SaturnCoords = { AU * 9.5 ,0.,0. }; //Saturn 9.5AU from sun
-	PlanetCoords UranusCoords = { AU * 19.8,0.,0. }; //Uranus 19.8AU from sun
-	PlanetCoords NeptuneCoords = { AU * 30.,0.,0. }; //Neptune 30AU from sun.
-	PlanetCoords PlutoCoords = { AU * 39.,0.,0. }; //Pluto 39AU from sun.
+	//PlanetCoords JupiterCoords = { AU * 5.2, 0., 0. }; //Jupiter 5.2AU from sun ACTUAL DISTANCE
+	PlanetCoords JupiterCoords = { (AU * 5.2) / 2, 0., 0. }; //Used distance for viewing
+	//PlanetCoords SaturnCoords = { AU * 9.5 ,0.,0. }; //Saturn 9.5AU from sun ACTUAL DISTANCE
+	PlanetCoords SaturnCoords = { (AU * 5.2) / 2 + 5 ,0.,0. }; //Used distance for viewing
+	//PlanetCoords UranusCoords = { (AU * 19.8),0.,0. }; //Uranus 19.8AU from sun ACTUAL DISTANCE
+	PlanetCoords UranusCoords = { (AU * 5.2) / 2 + 10 ,0.,0. }; //Used distance for viewing
+	//PlanetCoords NeptuneCoords = { AU * 30.,0.,0. }; //Neptune 30AU from sun. ACTUAL DISTANCE
+	PlanetCoords NeptuneCoords = { (AU * 5.2) / 2 + 15,0.,0. }; //Used distance for viewing
+	//PlanetCoords PlutoCoords = { AU * 39.,0.,0. }; //Pluto 39AU from sun.
+	PlanetCoords PlutoCoords = { (AU * 5.2) / 2 + 20,0.,0. }; //Used distance for viewing
+
+	if (AnimateBool) {
+		Animate();
+		float EarthRadius = EarthCoords.x;
+		float MercuryRadius = MercuryCoords.x;
+		float VenusRadius = VenusCoords.x;
+		float MarsRadius = MarsCoords.x;
+		float JupiterRadius = JupiterCoords.x;
+		float SaturnRadius = SaturnCoords.x;
+		float NeptuneRadius = NeptuneCoords.x;
+		float UranusRadius = UranusCoords.x;
+		float PlutoRadius = PlutoCoords.x;
+		EarthCoords.x = EarthRadius * sin(TimeEarth * 2 * M_PI);
+		EarthCoords.z = EarthRadius * cos(TimeEarth * 2 * M_PI);
+		MercuryCoords.x = MercuryRadius * sin(TimeMerc * 2 * M_PI);
+		MercuryCoords.z = MercuryRadius * cos(TimeMerc * 2 * M_PI);
+		VenusCoords.x = VenusRadius * sin(TimeVenus * 2 * M_PI);
+		VenusCoords.z = VenusRadius * cos(TimeVenus * 2 * M_PI);
+		MarsCoords.x = MarsRadius * sin(TimeMars * 2 * M_PI);
+		MarsCoords.z = MarsRadius * cos(TimeMars * 2 * M_PI);
+		JupiterCoords.x = JupiterRadius * sin(TimeJupiter * 2 * M_PI);
+		JupiterCoords.z = JupiterRadius * cos(TimeJupiter * 2 * M_PI);
+		SaturnCoords.x = SaturnRadius * sin(TimeSaturn * 2 * M_PI);
+		SaturnCoords.z = SaturnRadius * cos(TimeSaturn * 2 * M_PI);
+		NeptuneCoords.x = NeptuneRadius * sin(TimeNeptune * 2 * M_PI);
+		NeptuneCoords.z = NeptuneRadius * cos(TimeNeptune * 2 * M_PI);
+		UranusCoords.x = UranusRadius * sin(TimeUranus * 2 * M_PI);
+		UranusCoords.z = UranusRadius * cos(TimeUranus * 2 * M_PI);
+		PlutoCoords.x = PlutoRadius * sin(TimePluto * 2 * M_PI);
+		PlutoCoords.z = PlutoRadius * cos(TimePluto * 2 * M_PI);
+	}
 
 	if( DebugOn != 0 )
 	{
@@ -589,35 +656,79 @@ Display( )
 	/*glPushMatrix();*/
 	switch (PlanetPerspective) {
 	case 0: //Sun
-		gluLookAt(100., 500., 3., 0., 0., 0., 0., 1., 0.);
+		gluLookAt(50., 100., 3., 0., 0., 0., 0., 1., 0.);
 		break;
 	case 1: //Mercury
-		//gluLookAt(MercuryCoords.x, 500., 3., MercuryCoords.x, MercuryCoords.y, MercuryCoords.z, 0., 1., 0.);
-		gluLookAt(MercuryCoords.x + 5, MercuryCoords.y + 3, 0., 0.,0.,0., 0., 1., 0);
+		if (AnimateBool) {
+			gluLookAt(MercuryCoords.x, MercuryCoords.y, MercuryCoords.z, 0., 0., 0., 0., 1., 0);
+		}
+		else {
+			gluLookAt(MercuryCoords.x + 5, MercuryCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
+		}
 		break;
 	case 2: //Venus
-		gluLookAt(VenusCoords.x + 7, VenusCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
+		if (AnimateBool) {
+			gluLookAt(VenusCoords.x, VenusCoords.y, VenusCoords.z, 0., 0., 0., 0., 1., 0);
+		}
+		else {
+			gluLookAt(VenusCoords.x + 7, VenusCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
+		}
 		break;
 	case 3: //Earth
-		gluLookAt(EarthCoords.x + 7, EarthCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
+		if (AnimateBool) {
+			gluLookAt(EarthCoords.x, EarthCoords.y, EarthCoords.z, 0., 0., 0., 0., 1., 0);
+		}
+		else {
+			gluLookAt(EarthCoords.x + 7, EarthCoords.y + 3, EarthCoords.z, 0., 0., 0., 0., 1., 0);
+		}
 		break;
 	case 4: //Mars
-		gluLookAt(MarsCoords.x + 7, MarsCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
+		if (AnimateBool) {
+			gluLookAt(MarsCoords.x, MarsCoords.y, MarsCoords.z, 0., 0., 0., 0., 1., 0);
+		}
+		else {
+			gluLookAt(MarsCoords.x + 7, MarsCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
+		}
 		break;
 	case 5: //Jupiter
-		gluLookAt(JupiterCoords.x + 30, JupiterCoords.y + 10, 0., 0., 0., 0., 0., 1., 0);
+		if (AnimateBool) {
+			gluLookAt(JupiterCoords.x, JupiterCoords.y, JupiterCoords.z, 0., 0., 0., 0., 1., 0);
+		}
+		else {
+			gluLookAt(JupiterCoords.x + 30, JupiterCoords.y + 10, 0., 0., 0., 0., 0., 1., 0);
+		}
 		break;
 	case 6: //Saturn
-		gluLookAt(SaturnCoords.x + 25, SaturnCoords.y + 7, 0., 0., 0., 0., 0., 1., 0);
+		if (AnimateBool) {
+			gluLookAt(SaturnCoords.x, SaturnCoords.y, SaturnCoords.z, 0., 0., 0., 0., 1., 0);
+		}
+		else {
+			gluLookAt(SaturnCoords.x + 25, SaturnCoords.y + 7, 0., 0., 0., 0., 0., 1., 0);
+		}
 		break;
 	case 7: //Uranus
-		gluLookAt(UranusCoords.x + 15, UranusCoords.y + 7, 0., 0., 0., 0., 0., 1., 0);
+		if (AnimateBool) {
+			gluLookAt(UranusCoords.x, UranusCoords.y, UranusCoords.z, 0., 0., 0., 0., 1., 0);
+		}
+		else {
+			gluLookAt(UranusCoords.x + 15, UranusCoords.y + 7, 0., 0., 0., 0., 0., 1., 0);
+		}
 		break;
 	case 8: //Neptune
-		gluLookAt(NeptuneCoords.x + 10, NeptuneCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
+		if (AnimateBool) {
+			gluLookAt(NeptuneCoords.x, NeptuneCoords.y, NeptuneCoords.z, 0., 0., 0., 0., 1., 0);
+		}
+		else {
+			gluLookAt(NeptuneCoords.x + 10, NeptuneCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
+		}
 		break;
 	case 9: //Pluto
-		gluLookAt(PlutoCoords.x + 2, PlutoCoords.y + 1, 0., 0., 0., 0., 0., 1., 0);
+		if (AnimateBool) {
+			gluLookAt(PlutoCoords.x, PlutoCoords.y, PlutoCoords.z, 0., 0., 0., 0., 1., 0);
+		}
+		else {
+			gluLookAt(PlutoCoords.x + 2, PlutoCoords.y + 1, 0., 0., 0., 0., 0., 1., 0);
+		}
 		break;
 	}
 	/*glPopMatrix();*/
@@ -685,6 +796,7 @@ Display( )
 	// the modelview matrix is reset to identity as we don't
 	// want to transform these coordinates
 
+
 	glPushMatrix();
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, EarthTex);
@@ -703,6 +815,17 @@ Display( )
 	glMatrixMode(GL_MODELVIEW);
 	glTranslatef(SunCoords.x, SunCoords.y, SunCoords.z);
 	OsuSphere(EARTHSIZE * 109., 250, 250); //Sun is 109 the size of Earth diameter diameter
+	glPopMatrix();
+
+	//Universe
+	glPushMatrix();
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, MilkyWayTex);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glDisable(GL_TEXTURE_2D);
+	glMatrixMode(GL_MODELVIEW);
+	glTranslatef(0.,0.,0.);
+	OsuSphere(EARTHSIZE * 2000., 250, 250); 
 	glPopMatrix();
 
 	glPushMatrix();
@@ -1117,7 +1240,7 @@ InitGraphics( )
 		fprintf( stderr, "GLEW initialized OK\n" );
 	fprintf( stderr, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 #endif
-
+	BuildTexObj(&MilkyWayTex, "2k_stars_milky_way.bmp", 1028, 512);
 	BuildTexObj(&EarthTex, "2k_earth.bmp", 1028, 512);
 	BuildTexObj(&SunTex, "2k_sun.bmp", 1028, 512);
 	BuildTexObj(&MercuryTex, "2k_mercury.bmp", 1028, 512);
