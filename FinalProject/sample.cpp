@@ -814,12 +814,13 @@ Display( )
 	OsuSphere(EARTHSIZE * 109., 250, 250); //Sun is 109 the size of Earth diameter diameter
 	if (Light0On) {
 		glEnable(GL_LIGHTING);
-		SetPointLight(GL_LIGHT0, 109.1f, 0.f, 0.f, 1., 1., 1.); //white light coming from sun
-		SetPointLight(GL_LIGHT1, -109.1f, 0.f, 0.f, 1., 1., 1.); //white light coming from sun
-		SetPointLight(GL_LIGHT2, 0.f, 109.1f, 0.f, 1., 1., 1.); //white light coming from sun
-		SetPointLight(GL_LIGHT3, 0.f, -109.1f, 0.f, 1., 1., 1.); //white light coming from sun
-		SetPointLight(GL_LIGHT4, 0.f, 0.f, 109.1f, 1., 1., 1.); //white light coming from sun
-		SetPointLight(GL_LIGHT5, 0.f, 0.f, -109.1f, 1., 1., 1.); //white light coming from sun
+		SetMaterial(1.,1.,1., 20.f);
+		SetPointLight(GL_LIGHT0, 109.1f / 1.3, 0.f, 0.f, 1., 1., 1.); //white light coming from sun
+		SetPointLight(GL_LIGHT1, -109.1f / 1.3, 0.f, 0.f, 1., 1., 1.); //white light coming from sun
+		SetPointLight(GL_LIGHT2, 0.f, 109.1f / 1.3, 0.f, 1., 1., 1.); //white light coming from sun
+		SetPointLight(GL_LIGHT3, 0.f, -109.1f / 1.3, 0.f, 1., 1., 1.); //white light coming from sun
+		SetPointLight(GL_LIGHT4, 0.f, 0.f, 109.1f / 1.3, 1., 1., 1.); //white light coming from sun
+		SetPointLight(GL_LIGHT5, 0.f, 0.f, -109.1f / 1.3, 1., 1., 1.); //white light coming from sun
 		glEnable(GL_LIGHT0);
 		glEnable(GL_LIGHT1);
 		glEnable(GL_LIGHT2);
@@ -835,6 +836,7 @@ Display( )
 		glDisable(GL_LIGHT3);
 		glDisable(GL_LIGHT4);
 		glDisable(GL_LIGHT5);
+
 	}
 	glPopMatrix();
 
