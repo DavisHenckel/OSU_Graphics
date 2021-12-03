@@ -217,13 +217,10 @@ float RADIUS = 1.;
 int SLICES = 50;
 int STACKS = 50;
 bool AnimateBool = true;
-float EarthXPos = 0.;
-float EarthZPos = 0.;
-float EarthPathRadius = 20.;
-GLuint EarthTex, SunTex, MercuryTex, VenusTex, MarsTex, JupiterTex, SaturnTex, UranusTex, NeptuneTex, PlutoTex;
+GLuint EarthTex, SunTex, MercuryTex, VenusTex, MarsTex, JupiterTex, SaturnTex, UranusTex, NeptuneTex, PlutoTex, MilkyWayTex;
 bool Light0On;
-float AU = 400.;
-float EARTHSIZE = 1.;
+float AU = 100.;
+float EARTHSIZE = .25;
 int PlanetPerspective = 0;
 
 //Struct to hold Planet Coords
@@ -563,11 +560,16 @@ Display( )
 	PlanetCoords MercuryCoords = { AU * .4, 0.,0. }; //Mercury is .4 AU from Sun.
 	PlanetCoords MarsCoords = { AU * 1.5,0.,0. }; //Mars 1.5AU from sun
 	PlanetCoords VenusCoords = { AU * .7, 0., 0. }; //Venus .7AU from sun
-	PlanetCoords JupiterCoords = { AU * 5.2, 0., 0. }; //Jupiter 5.2AU from sun
-	PlanetCoords SaturnCoords = { AU * 9.5 ,0.,0. }; //Saturn 9.5AU from sun
-	PlanetCoords UranusCoords = { AU * 19.8,0.,0. }; //Uranus 19.8AU from sun
-	PlanetCoords NeptuneCoords = { AU * 30.,0.,0. }; //Neptune 30AU from sun.
-	PlanetCoords PlutoCoords = { AU * 39.,0.,0. }; //Pluto 39AU from sun.
+	//PlanetCoords JupiterCoords = { AU * 5.2, 0., 0. }; //Jupiter 5.2AU from sun ACTUAL DISTANCE
+	PlanetCoords JupiterCoords = { (AU * 5.2) / 2, 0., 0. }; //Used distance for viewing
+	//PlanetCoords SaturnCoords = { AU * 9.5 ,0.,0. }; //Saturn 9.5AU from sun ACTUAL DISTANCE
+	PlanetCoords SaturnCoords = { (AU * 5.2) / 2 + 5 ,0.,0. }; //Used distance for viewing
+	//PlanetCoords UranusCoords = { (AU * 19.8),0.,0. }; //Uranus 19.8AU from sun ACTUAL DISTANCE
+	PlanetCoords UranusCoords = { (AU * 5.2) / 2 + 10 ,0.,0. }; //Used distance for viewing
+	//PlanetCoords NeptuneCoords = { AU * 30.,0.,0. }; //Neptune 30AU from sun. ACTUAL DISTANCE
+	PlanetCoords NeptuneCoords = { (AU * 5.2) / 2 + 15,0.,0. }; //Used distance for viewing
+	//PlanetCoords PlutoCoords = { AU * 39.,0.,0. }; //Pluto 39AU from sun.
+	PlanetCoords PlutoCoords = { (AU * 5.2) / 2 + 20,0.,0. }; //Used distance for viewing
 
 	if (AnimateBool) {
 		Animate();
@@ -654,7 +656,7 @@ Display( )
 	/*glPushMatrix();*/
 	switch (PlanetPerspective) {
 	case 0: //Sun
-		gluLookAt(100., 500., 3., 0., 0., 0., 0., 1., 0.);
+		gluLookAt(50., 100., 3., 0., 0., 0., 0., 1., 0.);
 		break;
 	case 1: //Mercury
 		if (AnimateBool) {
@@ -813,6 +815,17 @@ Display( )
 	glMatrixMode(GL_MODELVIEW);
 	glTranslatef(SunCoords.x, SunCoords.y, SunCoords.z);
 	OsuSphere(EARTHSIZE * 109., 250, 250); //Sun is 109 the size of Earth diameter diameter
+	glPopMatrix();
+
+	//Universe
+	glPushMatrix();
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, MilkyWayTex);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glDisable(GL_TEXTURE_2D);
+	glMatrixMode(GL_MODELVIEW);
+	glTranslatef(0.,0.,0.);
+	OsuSphere(EARTHSIZE * 2000., 250, 250); 
 	glPopMatrix();
 
 	glPushMatrix();
@@ -1227,7 +1240,7 @@ InitGraphics( )
 		fprintf( stderr, "GLEW initialized OK\n" );
 	fprintf( stderr, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 #endif
-
+	BuildTexObj(&MilkyWayTex, "2k_stars_milky_way.bmp", 1028, 512);
 	BuildTexObj(&EarthTex, "2k_earth.bmp", 1028, 512);
 	BuildTexObj(&SunTex, "2k_sun.bmp", 1028, 512);
 	BuildTexObj(&MercuryTex, "2k_mercury.bmp", 1028, 512);
