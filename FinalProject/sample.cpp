@@ -663,7 +663,7 @@ Display( )
 		break;
 	case 1: //Mercury
 		if (AnimateBool) {
-			gluLookAt(MercuryCoords.x, MercuryCoords.y, MercuryCoords.z, 0., 0., 0., 0., 1., 0);
+			gluLookAt(MercuryCoords.x + (MercuryCoords.x * .021), MercuryCoords.y + .2, MercuryCoords.z + (MercuryCoords.z * .021), 0., 0., 0., 0., 1., 0);
 		}
 		else {
 			gluLookAt(MercuryCoords.x + 5, MercuryCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
@@ -671,7 +671,7 @@ Display( )
 		break;
 	case 2: //Venus
 		if (AnimateBool) {
-			gluLookAt(VenusCoords.x, VenusCoords.y, VenusCoords.z, 0., 0., 0., 0., 1., 0);
+			gluLookAt(VenusCoords.x + (VenusCoords.x * .019), VenusCoords.y + .4, VenusCoords.z + (VenusCoords.z * .019), 0., 0., 0., 0., 1., 0);
 		}
 		else {
 			gluLookAt(VenusCoords.x + 7, VenusCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
