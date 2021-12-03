@@ -711,7 +711,7 @@ Display( )
 		break;
 	case 7: //Uranus
 		if (AnimateBool) {
-			gluLookAt(UranusCoords.x, UranusCoords.y, UranusCoords.z, 0., 0., 0., 0., 1., 0);
+			gluLookAt(UranusCoords.x + (UranusCoords.x * .0275), UranusCoords.y + 5, UranusCoords.z + (UranusCoords.z * .0275), 0., 0., 0., 0., 1., 0);
 		}
 		else {
 			gluLookAt(UranusCoords.x + 15, UranusCoords.y + 7, 0., 0., 0., 0., 0., 1., 0);
