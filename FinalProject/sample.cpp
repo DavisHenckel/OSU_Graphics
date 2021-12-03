@@ -695,7 +695,7 @@ Display( )
 		break;
 	case 5: //Jupiter
 		if (AnimateBool) {
-			gluLookAt(JupiterCoords.x, JupiterCoords.y, JupiterCoords.z, 0., 0., 0., 0., 1., 0);
+			gluLookAt(JupiterCoords.x + (JupiterCoords.x * .08), JupiterCoords.y + 7, JupiterCoords.z + (JupiterCoords.z * .08), 0., 0., 0., 0., 1., 0);
 		}
 		else {
 			gluLookAt(JupiterCoords.x + 30, JupiterCoords.y + 10, 0., 0., 0., 0., 0., 1., 0);
