@@ -443,7 +443,7 @@ SetSpotLight(int ilight, float x, float y, float z, float xdir, float ydir, floa
 	glLightfv(ilight, GL_AMBIENT, Array3(0., 0., 0.));
 	glLightfv(ilight, GL_DIFFUSE, Array3(r, g, b));
 	glLightfv(ilight, GL_SPECULAR, Array3(r, g, b));
-	glLightf(ilight, GL_CONSTANT_ATTENUATION, 1.);
+	glLightf(ilight, GL_CONSTANT_ATTENUATION, 1.1);
 	glLightf(ilight, GL_LINEAR_ATTENUATION, 0.);
 	glLightf(ilight, GL_QUADRATIC_ATTENUATION, 0.);
 	glEnable(ilight);
@@ -858,7 +858,7 @@ Display( )
 	glDisable(GL_TEXTURE_2D);
 	glMatrixMode(GL_MODELVIEW);
 	glTranslatef(EarthCoords.x, EarthCoords.y, EarthCoords.z);
-	OsuSphere(EARTHSIZE, 50, 50);
+	OsuSphere(EARTHSIZE, 100, 100);
 	glPopMatrix();
 
 	glPushMatrix();
@@ -866,7 +866,7 @@ Display( )
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glDisable(GL_TEXTURE_2D);
 	glTranslatef(MercuryCoords.x, MercuryCoords.y, MercuryCoords.z);
-	OsuSphere(EARTHSIZE * .38, 50, 50); //Mercury 2/5th the size of Earth diameter
+	OsuSphere(EARTHSIZE * .38, 100, 100); //Mercury 2/5th the size of Earth diameter
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
@@ -876,7 +876,7 @@ Display( )
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glDisable(GL_TEXTURE_2D);
 	glTranslatef(MarsCoords.x, MarsCoords.y, MarsCoords.z);
-	OsuSphere(EARTHSIZE * .53, 50, 50); //Mars .53 times the size of Earth diameter
+	OsuSphere(EARTHSIZE * .53, 100, 100); //Mars .53 times the size of Earth diameter
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
@@ -886,7 +886,7 @@ Display( )
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glDisable(GL_TEXTURE_2D);
 	glTranslatef(VenusCoords.x, VenusCoords.y, VenusCoords.z);
-	OsuSphere(EARTHSIZE * .94, 50, 50);  //Venus .94 times the size of  diameter
+	OsuSphere(EARTHSIZE * .94, 100, 100);  //Venus .94 times the size of  diameter
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
@@ -896,7 +896,7 @@ Display( )
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glDisable(GL_TEXTURE_2D);
 	glTranslatef(JupiterCoords.x, JupiterCoords.y, JupiterCoords.z);
-	OsuSphere(EARTHSIZE * 10.97, 50, 50); //Jupiter 10.97 times the size of Earth diameter
+	OsuSphere(EARTHSIZE * 10.97, 100, 100); //Jupiter 10.97 times the size of Earth diameter
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
@@ -907,7 +907,7 @@ Display( )
 	glDisable(GL_TEXTURE_2D);
 	glTranslatef(SaturnCoords.x, SaturnCoords.y, SaturnCoords.z);
 
-	OsuSphere(EARTHSIZE * 9.14, 50, 50); //Saturn 9.14 times the size of Earth diameter
+	OsuSphere(EARTHSIZE * 9.14, 100, 100); //Saturn 9.14 times the size of Earth diameter
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
@@ -925,7 +925,7 @@ Display( )
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glDisable(GL_TEXTURE_2D);
 	glTranslatef(UranusCoords.x, UranusCoords.y, UranusCoords.z);
-	OsuSphere(EARTHSIZE * 3.98, 50, 50); //Uranus 3.98 times the size of Earth diameter
+	OsuSphere(EARTHSIZE * 3.98, 100, 100); //Uranus 3.98 times the size of Earth diameter
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
@@ -935,7 +935,7 @@ Display( )
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glDisable(GL_TEXTURE_2D);
 	glTranslatef(NeptuneCoords.x, NeptuneCoords.y, NeptuneCoords.z);
-	OsuSphere(EARTHSIZE * 3.86, 50, 50); //Neptune 3.86 times the size of Earth diameter
+	OsuSphere(EARTHSIZE * 3.86, 100, 100); //Neptune 3.86 times the size of Earth diameter
 	glPopMatrix();
 
 	glPushMatrix();
@@ -1398,14 +1398,14 @@ MouseButton( int button, int state, int x, int y )
 			b = RIGHT;		break;
 
 		case SCROLL_WHEEL_UP:
-			Scale += SCLFACT * SCROLL_WHEEL_CLICK_FACTOR;
+			Scale += (SCLFACT * SCROLL_WHEEL_CLICK_FACTOR) / 200; //make it 200 times slower
 			// keep object from turning inside-out or disappearing:
 			if (Scale < MINSCALE)
 				Scale = MINSCALE;
 			break;
 
 		case SCROLL_WHEEL_DOWN:
-			Scale -= SCLFACT * SCROLL_WHEEL_CLICK_FACTOR;
+			Scale -= (SCLFACT * SCROLL_WHEEL_CLICK_FACTOR) / 200; //make it 200 times slower
 			// keep object from turning inside-out or disappearing:
 			if (Scale < MINSCALE)
 				Scale = MINSCALE;
@@ -1448,8 +1448,8 @@ MouseMotion( int x, int y )
 
 	if( ( ActiveButton & LEFT ) != 0 )
 	{
-		Xrot += ( ANGFACT*dy );
-		Yrot += ( ANGFACT*dx );
+		Xrot += ( ANGFACT*dy ) / 200; //make it 200 times slower
+		Yrot += ( ANGFACT*dx ) / 200; //make it 200 times slower
 	}
 
 	if( ( ActiveButton & MIDDLE ) != 0 )
