@@ -4,6 +4,7 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <cmath>
 
 #ifdef WIN32
 #include <windows.h>
@@ -168,7 +169,7 @@ int		DepthBufferOn;			// != 0 means to use the z-buffer
 int		DepthFightingOn;		// != 0 means to force the creation of z-fighting
 int		MainWindow;				// window id for main graphics window
 float	Scale;					// scaling factor
-float	Time;					// timer in the range [0.,1.)
+float	TimeEarth, TimeMerc, TimeVenus, TimeMars, TimeJupiter, TimeSaturn, TimeUranus, TimeNeptune, TimePluto;					// timer in the range [0.,1.)
 int		WhichColor;				// index into Colors[ ]
 int		WhichProjection;		// ORTHO or PERSP
 int		Xmouse, Ymouse;			// mouse values
@@ -215,7 +216,7 @@ bool TextureBool = true;
 float RADIUS = 1.;
 int SLICES = 50;
 int STACKS = 50;
-bool AnimateBool = false;
+bool AnimateBool = true;
 float EarthXPos = 0.;
 float EarthZPos = 0.;
 float EarthPathRadius = 20.;
@@ -504,11 +505,26 @@ Animate( )
 	// put animation stuff in here -- change some global variables
 	// for Display( ) to find:
 
-	const int MS_IN_THE_ANIMATION_CYCLE = 10000;	// milliseconds in the animation loop
+	const int MS_IN_THE_ANIMATION_CYCLE_EARTH = 10000;	// 365 days to orbit sun.
+	const int MS_IN_THE_ANIMATION_CYCLE_MERC = MS_IN_THE_ANIMATION_CYCLE_EARTH * 4.15;	// 88 days to orbit sun
+	const int MS_IN_THE_ANIMATION_CYCLE_VENUS = MS_IN_THE_ANIMATION_CYCLE_EARTH * 1.6; // 225 days to orbit sun
+	const int MS_IN_THE_ANIMATION_CYCLE_MARS = MS_IN_THE_ANIMATION_CYCLE_EARTH * .53; // 687 days to orbit sun
+	const int MS_IN_THE_ANIMATION_CYCLE_JUPITER = MS_IN_THE_ANIMATION_CYCLE_EARTH * .084; // 4333 days to orbit sun
+	const int MS_IN_THE_ANIMATION_CYCLE_SATURN = MS_IN_THE_ANIMATION_CYCLE_EARTH * .034; // 10756 days to orbit sun 
+	const int MS_IN_THE_ANIMATION_CYCLE_URANUS = MS_IN_THE_ANIMATION_CYCLE_EARTH * .0119; //30687 days to orbit sun
+	const int MS_IN_THE_ANIMATION_CYCLE_NEPTUNE = MS_IN_THE_ANIMATION_CYCLE_EARTH * .0061; //60190 days to orbit sun
+	const int MS_IN_THE_ANIMATION_CYCLE_PLUTO = MS_IN_THE_ANIMATION_CYCLE_EARTH * .00403; //248 years to orbit sun
 	int ms = glutGet(GLUT_ELAPSED_TIME);			// milliseconds since the program started
-	ms %= MS_IN_THE_ANIMATION_CYCLE;				// milliseconds in the range 0 to MS_IN_THE_ANIMATION_CYCLE-1
-	Time = (float)ms / (float)MS_IN_THE_ANIMATION_CYCLE;        // [ 0., 1. )
-
+	ms %= MS_IN_THE_ANIMATION_CYCLE_EARTH;				// milliseconds in the range 0 to MS_IN_THE_ANIMATION_CYCLE-1
+	TimeEarth = (float)ms / (float)MS_IN_THE_ANIMATION_CYCLE_EARTH;        // [ 0., 1. )
+	TimeMerc = (float)ms / (float)MS_IN_THE_ANIMATION_CYCLE_MERC;        // [ 0., 1. )
+	TimeVenus = (float)ms / (float)MS_IN_THE_ANIMATION_CYCLE_VENUS;        // [ 0., 1. )
+	TimeMars = (float)ms / (float)MS_IN_THE_ANIMATION_CYCLE_MARS;        // [ 0., 1. )
+	TimeJupiter = (float)ms / (float)MS_IN_THE_ANIMATION_CYCLE_JUPITER;        // [ 0., 1. )
+	TimeSaturn = (float)ms / (float)MS_IN_THE_ANIMATION_CYCLE_SATURN;        // [ 0., 1. )
+	TimeUranus = (float)ms / (float)MS_IN_THE_ANIMATION_CYCLE_URANUS;        // [ 0., 1. )
+	TimeNeptune = (float)ms / (float)MS_IN_THE_ANIMATION_CYCLE_NEPTUNE;        // [ 0., 1. )
+	TimePluto = (float)ms / (float)MS_IN_THE_ANIMATION_CYCLE_PLUTO;        // [ 0., 1. )
 	// force a call to Display( ) next time it is convenient:
 
 	glutSetWindow( MainWindow );
@@ -534,6 +550,13 @@ Display( )
 	PlanetCoords UranusCoords = { AU * 19.8,0.,0. }; //Uranus 19.8AU from sun
 	PlanetCoords NeptuneCoords = { AU * 30.,0.,0. }; //Neptune 30AU from sun.
 	PlanetCoords PlutoCoords = { AU * 39.,0.,0. }; //Pluto 39AU from sun.
+
+	if (AnimateBool) {
+		Animate();
+		float EarthRadius = EarthCoords.x;
+		EarthCoords.x = EarthRadius * sin(TimeEarth * 2 * M_PI);
+		EarthCoords.z = EarthRadius * cos(TimeEarth * 2 * M_PI);
+	}
 
 	if( DebugOn != 0 )
 	{
@@ -592,14 +615,18 @@ Display( )
 		gluLookAt(100., 500., 3., 0., 0., 0., 0., 1., 0.);
 		break;
 	case 1: //Mercury
-		//gluLookAt(MercuryCoords.x, 500., 3., MercuryCoords.x, MercuryCoords.y, MercuryCoords.z, 0., 1., 0.);
 		gluLookAt(MercuryCoords.x + 5, MercuryCoords.y + 3, 0., 0.,0.,0., 0., 1., 0);
 		break;
 	case 2: //Venus
 		gluLookAt(VenusCoords.x + 7, VenusCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
 		break;
 	case 3: //Earth
-		gluLookAt(EarthCoords.x + 7, EarthCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
+		if (AnimateBool) {
+			gluLookAt(EarthCoords.x, EarthCoords.y, EarthCoords.z, 0., 0., 0., 0., 1., 0);
+		}
+		else {
+			gluLookAt(EarthCoords.x + 7, EarthCoords.y + 3, EarthCoords.z, 0., 0., 0., 0., 1., 0);
+		}
 		break;
 	case 4: //Mars
 		gluLookAt(MarsCoords.x + 7, MarsCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
@@ -684,6 +711,7 @@ Display( )
 	//
 	// the modelview matrix is reset to identity as we don't
 	// want to transform these coordinates
+
 
 	glPushMatrix();
 	glEnable(GL_TEXTURE_2D);
