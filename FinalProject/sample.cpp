@@ -216,7 +216,7 @@ bool TextureBool = true;
 float RADIUS = 1.;
 int SLICES = 50;
 int STACKS = 50;
-bool AnimateBool = true;
+bool AnimateBool = false;
 GLuint EarthTex, SunTex, MercuryTex, VenusTex, MarsTex, JupiterTex, SaturnTex, UranusTex, NeptuneTex, PlutoTex, MilkyWayTex;
 bool Light0On;
 float AU = 100.;
@@ -561,11 +561,11 @@ Display( )
 	PlanetCoords MarsCoords = { AU * 1.5,0.,0. }; //Mars 1.5AU from sun
 	PlanetCoords VenusCoords = { AU * .7, 0., 0. }; //Venus .7AU from sun
 	//PlanetCoords JupiterCoords = { AU * 5.2, 0., 0. }; //Jupiter 5.2AU from sun ACTUAL DISTANCE
-	PlanetCoords JupiterCoords = { (AU * 5.2) / 2, 0., 0. }; //Used distance for viewing
+	PlanetCoords JupiterCoords = { (AU * 5.2) / 3, 0., 0. }; //Used distance for viewing
 	//PlanetCoords SaturnCoords = { AU * 9.5 ,0.,0. }; //Saturn 9.5AU from sun ACTUAL DISTANCE
-	PlanetCoords SaturnCoords = { (AU * 5.2) / 2 + 5 ,0.,0. }; //Used distance for viewing
+	PlanetCoords SaturnCoords = { (AU * 5.2) / 3 + 20,0.,0. }; //Used distance for viewing
 	//PlanetCoords UranusCoords = { (AU * 19.8),0.,0. }; //Uranus 19.8AU from sun ACTUAL DISTANCE
-	PlanetCoords UranusCoords = { (AU * 5.2) / 2 + 10 ,0.,0. }; //Used distance for viewing
+	PlanetCoords UranusCoords = { (AU * 5.2) / 2,0.,0. }; //Used distance for viewing
 	//PlanetCoords NeptuneCoords = { AU * 30.,0.,0. }; //Neptune 30AU from sun. ACTUAL DISTANCE
 	PlanetCoords NeptuneCoords = { (AU * 5.2) / 2 + 15,0.,0. }; //Used distance for viewing
 	//PlanetCoords PlutoCoords = { AU * 39.,0.,0. }; //Pluto 39AU from sun.
@@ -932,6 +932,17 @@ Display( )
 	glFlush( );
 }
 
+void DoAnimateMenu(int id) {
+	AnimateBool = !AnimateBool;
+	if (AnimateBool) {
+		glutIdleFunc(Animate);
+	}
+	else {
+		glutIdleFunc(NULL);
+	}
+	glutSetWindow(MainWindow);
+	glutPostRedisplay();
+}
 
 void
 DoAxesMenu( int id )
@@ -1093,6 +1104,10 @@ InitMenus( )
 		glutAddMenuEntry( ColorNames[i], i );
 	}
 
+	int AnimateThings = glutCreateMenu(DoAnimateMenu);
+	glutAddMenuEntry("Off", 0);
+	glutAddMenuEntry("On", 1);
+
 	int PPerspectiveMenu = glutCreateMenu(DoPlanetPerpectiveMenu);
 	glutAddMenuEntry("Sun", 0);
 	glutAddMenuEntry("Mercury", 1);
@@ -1140,6 +1155,7 @@ InitMenus( )
 #ifdef DEMO_Z_FIGHTING
 	glutAddSubMenu(   "Depth Fighting",depthfightingmenu);
 #endif
+	glutAddSubMenu(	  "Animate Planets", AnimateThings);
 	glutAddSubMenu(   "Planet Perspective", PPerspectiveMenu );
 	glutAddSubMenu(   "Depth Cue",     depthcuemenu);
 	glutAddSubMenu(   "Projection",    projmenu );
@@ -1235,7 +1251,7 @@ InitGraphics( )
 	glutTabletButtonFunc( NULL );
 	glutMenuStateFunc( NULL );
 	glutTimerFunc( -1, NULL, 0 );
-	glutIdleFunc( NULL );
+	glutIdleFunc( Animate );
 
 	// init glew (a window must be open to do this):
 
