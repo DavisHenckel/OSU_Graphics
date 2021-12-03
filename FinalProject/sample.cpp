@@ -220,7 +220,7 @@ bool AnimateBool = true;
 GLuint EarthTex, SunTex, MercuryTex, VenusTex, MarsTex, JupiterTex, SaturnTex, UranusTex, NeptuneTex, PlutoTex, MilkyWayTex;
 bool Light0On;
 float AU = 100.;
-float EARTHSIZE = .25;
+float EARTHSIZE = .3;
 int PlanetPerspective = 0;
 
 //Struct to hold Planet Coords
@@ -502,7 +502,7 @@ Animate( )
 	// put animation stuff in here -- change some global variables
 	// for Display( ) to find:
 
-	const int MS_IN_THE_ANIMATION_CYCLE_EARTH = 10000;	// 365 days to orbit sun.
+	const int MS_IN_THE_ANIMATION_CYCLE_EARTH = 15000;	// 365 days to orbit sun.
 	const int MS_IN_THE_ANIMATION_CYCLE_MERC = MS_IN_THE_ANIMATION_CYCLE_EARTH / 4.15;	// 88 days to orbit sun
 	const int MS_IN_THE_ANIMATION_CYCLE_VENUS = MS_IN_THE_ANIMATION_CYCLE_EARTH / 1.6; // 225 days to orbit sun
 	const int MS_IN_THE_ANIMATION_CYCLE_MARS = MS_IN_THE_ANIMATION_CYCLE_EARTH / .53; // 687 days to orbit sun
@@ -873,7 +873,16 @@ Display( )
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glDisable(GL_TEXTURE_2D);
 	glTranslatef(SaturnCoords.x, SaturnCoords.y, SaturnCoords.z);
+
 	OsuSphere(EARTHSIZE * 9.14, 50, 50); //Saturn 9.14 times the size of Earth diameter
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+
+	glPushMatrix(); //saturn ring
+	glColor3f(0.862, 0.784, 0.588); //same color as saturn
+	glTranslatef(SaturnCoords.x, SaturnCoords.y, SaturnCoords.z);
+	glRotatef(90., 1., 0., 0.);
+	glutSolidTorus(EARTHSIZE, EARTHSIZE * 12.14,100, 100);
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
