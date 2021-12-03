@@ -804,18 +804,6 @@ Display( )
 	//
 	// the modelview matrix is reset to identity as we don't
 	// want to transform these coordinates
-
-
-	glPushMatrix();
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, EarthTex);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	glDisable(GL_TEXTURE_2D);
-	glMatrixMode(GL_MODELVIEW);
-	glTranslatef(EarthCoords.x, EarthCoords.y, EarthCoords.z);
-	OsuSphere(EARTHSIZE, 50, 50);
-	glPopMatrix();
-
 	glPushMatrix();
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, SunTex);
@@ -824,6 +812,30 @@ Display( )
 	glMatrixMode(GL_MODELVIEW);
 	glTranslatef(SunCoords.x, SunCoords.y, SunCoords.z);
 	OsuSphere(EARTHSIZE * 109., 250, 250); //Sun is 109 the size of Earth diameter diameter
+	if (Light0On) {
+		glEnable(GL_LIGHTING);
+		SetPointLight(GL_LIGHT0, 109.1f, 0.f, 0.f, 1., 1., 1.); //white light coming from sun
+		SetPointLight(GL_LIGHT1, -109.1f, 0.f, 0.f, 1., 1., 1.); //white light coming from sun
+		SetPointLight(GL_LIGHT2, 0.f, 109.1f, 0.f, 1., 1., 1.); //white light coming from sun
+		SetPointLight(GL_LIGHT3, 0.f, -109.1f, 0.f, 1., 1., 1.); //white light coming from sun
+		SetPointLight(GL_LIGHT4, 0.f, 0.f, 109.1f, 1., 1., 1.); //white light coming from sun
+		SetPointLight(GL_LIGHT5, 0.f, 0.f, -109.1f, 1., 1., 1.); //white light coming from sun
+		glEnable(GL_LIGHT0);
+		glEnable(GL_LIGHT1);
+		glEnable(GL_LIGHT2);
+		glEnable(GL_LIGHT3);
+		glEnable(GL_LIGHT4);
+		glEnable(GL_LIGHT5);
+	}
+	else {
+		glDisable(GL_LIGHTING);
+		glDisable(GL_LIGHT0);
+		glDisable(GL_LIGHT1);
+		glDisable(GL_LIGHT2);
+		glDisable(GL_LIGHT3);
+		glDisable(GL_LIGHT4);
+		glDisable(GL_LIGHT5);
+	}
 	glPopMatrix();
 
 	//Universe
@@ -833,8 +845,18 @@ Display( )
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glDisable(GL_TEXTURE_2D);
 	glMatrixMode(GL_MODELVIEW);
-	glTranslatef(0.,0.,0.);
-	OsuSphere(EARTHSIZE * 2000., 250, 250); 
+	glTranslatef(0., 0., 0.);
+	OsuSphere(EARTHSIZE * 2000., 250, 250);
+	glPopMatrix();
+
+	glPushMatrix();
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, EarthTex);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glDisable(GL_TEXTURE_2D);
+	glMatrixMode(GL_MODELVIEW);
+	glTranslatef(EarthCoords.x, EarthCoords.y, EarthCoords.z);
+	OsuSphere(EARTHSIZE, 50, 50);
 	glPopMatrix();
 
 	glPushMatrix();
@@ -932,8 +954,14 @@ Display( )
 	glFlush( );
 }
 
+void DoLightMenu(int id) {
+	Light0On = id;
+	glutSetWindow(MainWindow);
+	glutPostRedisplay();
+}
+
 void DoAnimateMenu(int id) {
-	AnimateBool = !AnimateBool;
+	AnimateBool = id;
 	if (AnimateBool) {
 		glutIdleFunc(Animate);
 	}
@@ -1108,6 +1136,10 @@ InitMenus( )
 	glutAddMenuEntry("Off", 0);
 	glutAddMenuEntry("On", 1);
 
+	int LightMenu = glutCreateMenu(DoLightMenu);
+	glutAddMenuEntry("Off", 0);
+	glutAddMenuEntry("On", 1);
+
 	int PPerspectiveMenu = glutCreateMenu(DoPlanetPerpectiveMenu);
 	glutAddMenuEntry("Sun", 0);
 	glutAddMenuEntry("Mercury", 1);
@@ -1157,6 +1189,7 @@ InitMenus( )
 #ifdef DEMO_Z_FIGHTING
 	glutAddSubMenu(   "Depth Fighting",depthfightingmenu);
 #endif
+	glutAddSubMenu(   "Toggle Lighting", LightMenu);
 	glutAddSubMenu(	  "Animate Planets", AnimateThings);
 	glutAddSubMenu(   "Planet Perspective", PPerspectiveMenu );
 	glutAddSubMenu(   "Depth Cue",     depthcuemenu);
