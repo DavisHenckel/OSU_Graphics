@@ -216,7 +216,7 @@ bool TextureBool = true;
 float RADIUS = 1.;
 int SLICES = 50;
 int STACKS = 50;
-bool AnimateBool = true;
+bool AnimateBool = false;
 GLuint EarthTex, SunTex, MercuryTex, VenusTex, MarsTex, JupiterTex, SaturnTex, UranusTex, NeptuneTex, PlutoTex, MilkyWayTex;
 bool Light0On;
 float AU = 100.;
@@ -561,18 +561,21 @@ Display( )
 	PlanetCoords MarsCoords = { AU * 1.5,0.,0. }; //Mars 1.5AU from sun
 	PlanetCoords VenusCoords = { AU * .7, 0., 0. }; //Venus .7AU from sun
 	//PlanetCoords JupiterCoords = { AU * 5.2, 0., 0. }; //Jupiter 5.2AU from sun ACTUAL DISTANCE
-	PlanetCoords JupiterCoords = { (AU * 5.2) / 2, 0., 0. }; //Used distance for viewing
+	PlanetCoords JupiterCoords = { (AU * 5.2) / 3, 0., 0. }; //Used distance for viewing
 	//PlanetCoords SaturnCoords = { AU * 9.5 ,0.,0. }; //Saturn 9.5AU from sun ACTUAL DISTANCE
-	PlanetCoords SaturnCoords = { (AU * 5.2) / 2 + 5 ,0.,0. }; //Used distance for viewing
+	PlanetCoords SaturnCoords = { (AU * 5.2) / 3 + 20,0.,0. }; //Used distance for viewing
 	//PlanetCoords UranusCoords = { (AU * 19.8),0.,0. }; //Uranus 19.8AU from sun ACTUAL DISTANCE
-	PlanetCoords UranusCoords = { (AU * 5.2) / 2 + 10 ,0.,0. }; //Used distance for viewing
+	PlanetCoords UranusCoords = { (AU * 5.2) / 2,0.,0. }; //Used distance for viewing
 	//PlanetCoords NeptuneCoords = { AU * 30.,0.,0. }; //Neptune 30AU from sun. ACTUAL DISTANCE
 	PlanetCoords NeptuneCoords = { (AU * 5.2) / 2 + 15,0.,0. }; //Used distance for viewing
 	//PlanetCoords PlutoCoords = { AU * 39.,0.,0. }; //Pluto 39AU from sun.
 	PlanetCoords PlutoCoords = { (AU * 5.2) / 2 + 20,0.,0. }; //Used distance for viewing
 
+	PlanetCoords PlutoCoordsCopy = { (AU * 5.2) / 2 + 20,0.,0. }; //copy for special view
+	PlanetCoords EarthCoordsCopy = { AU, 0., 0. }; //copy for special view
+
 	if (AnimateBool) {
-		Animate();
+		//Animate();
 		float EarthRadius = EarthCoords.x;
 		float MercuryRadius = MercuryCoords.x;
 		float VenusRadius = VenusCoords.x;
@@ -660,7 +663,7 @@ Display( )
 		break;
 	case 1: //Mercury
 		if (AnimateBool) {
-			gluLookAt(MercuryCoords.x, MercuryCoords.y, MercuryCoords.z, 0., 0., 0., 0., 1., 0);
+			gluLookAt(MercuryCoords.x + (MercuryCoords.x * .021), MercuryCoords.y + .2, MercuryCoords.z + (MercuryCoords.z * .021), 0., 0., 0., 0., 1., 0);
 		}
 		else {
 			gluLookAt(MercuryCoords.x + 5, MercuryCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
@@ -668,7 +671,7 @@ Display( )
 		break;
 	case 2: //Venus
 		if (AnimateBool) {
-			gluLookAt(VenusCoords.x, VenusCoords.y, VenusCoords.z, 0., 0., 0., 0., 1., 0);
+			gluLookAt(VenusCoords.x + (VenusCoords.x * .019), VenusCoords.y + .4, VenusCoords.z + (VenusCoords.z * .019), 0., 0., 0., 0., 1., 0);
 		}
 		else {
 			gluLookAt(VenusCoords.x + 7, VenusCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
@@ -676,7 +679,7 @@ Display( )
 		break;
 	case 3: //Earth
 		if (AnimateBool) {
-			gluLookAt(EarthCoords.x, EarthCoords.y, EarthCoords.z, 0., 0., 0., 0., 1., 0);
+			gluLookAt(EarthCoords.x + (EarthCoords.x * .015), EarthCoords.y +.5, EarthCoords.z + (EarthCoords.z * .015), 0., 0., 0., 0., 1., 0);
 		}
 		else {
 			gluLookAt(EarthCoords.x + 7, EarthCoords.y + 3, EarthCoords.z, 0., 0., 0., 0., 1., 0);
@@ -684,7 +687,7 @@ Display( )
 		break;
 	case 4: //Mars
 		if (AnimateBool) {
-			gluLookAt(MarsCoords.x, MarsCoords.y, MarsCoords.z, 0., 0., 0., 0., 1., 0);
+			gluLookAt(MarsCoords.x + (MarsCoords.x * .007), MarsCoords.y + .3, MarsCoords.z + (MarsCoords.z * .007), 0., 0., 0., 0., 1., 0);
 		}
 		else {
 			gluLookAt(MarsCoords.x + 7, MarsCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
@@ -692,7 +695,7 @@ Display( )
 		break;
 	case 5: //Jupiter
 		if (AnimateBool) {
-			gluLookAt(JupiterCoords.x, JupiterCoords.y, JupiterCoords.z, 0., 0., 0., 0., 1., 0);
+			gluLookAt(JupiterCoords.x + (JupiterCoords.x * .08), JupiterCoords.y + 7, JupiterCoords.z + (JupiterCoords.z * .08), 0., 0., 0., 0., 1., 0);
 		}
 		else {
 			gluLookAt(JupiterCoords.x + 30, JupiterCoords.y + 10, 0., 0., 0., 0., 0., 1., 0);
@@ -700,7 +703,7 @@ Display( )
 		break;
 	case 6: //Saturn
 		if (AnimateBool) {
-			gluLookAt(SaturnCoords.x, SaturnCoords.y, SaturnCoords.z, 0., 0., 0., 0., 1., 0);
+			gluLookAt(SaturnCoords.x + (SaturnCoords.x * .07), SaturnCoords.y + 7, SaturnCoords.z + (SaturnCoords.z * .07), 0., 0., 0., 0., 1., 0);
 		}
 		else {
 			gluLookAt(SaturnCoords.x + 25, SaturnCoords.y + 7, 0., 0., 0., 0., 0., 1., 0);
@@ -708,7 +711,7 @@ Display( )
 		break;
 	case 7: //Uranus
 		if (AnimateBool) {
-			gluLookAt(UranusCoords.x, UranusCoords.y, UranusCoords.z, 0., 0., 0., 0., 1., 0);
+			gluLookAt(UranusCoords.x + (UranusCoords.x * .0275), UranusCoords.y + 4, UranusCoords.z + (UranusCoords.z * .0275), 0., 0., 0., 0., 1., 0);
 		}
 		else {
 			gluLookAt(UranusCoords.x + 15, UranusCoords.y + 7, 0., 0., 0., 0., 0., 1., 0);
@@ -716,7 +719,7 @@ Display( )
 		break;
 	case 8: //Neptune
 		if (AnimateBool) {
-			gluLookAt(NeptuneCoords.x, NeptuneCoords.y, NeptuneCoords.z, 0., 0., 0., 0., 1., 0);
+			gluLookAt(NeptuneCoords.x + (NeptuneCoords.x * .025), NeptuneCoords.y + 5, NeptuneCoords.z + (NeptuneCoords.z * .025), 0., 0., 0., 0., 1., 0);
 		}
 		else {
 			gluLookAt(NeptuneCoords.x + 10, NeptuneCoords.y + 3, 0., 0., 0., 0., 0., 1., 0);
@@ -724,11 +727,17 @@ Display( )
 		break;
 	case 9: //Pluto
 		if (AnimateBool) {
-			gluLookAt(PlutoCoords.x, PlutoCoords.y, PlutoCoords.z, 0., 0., 0., 0., 1., 0);
+			gluLookAt(PlutoCoords.x + (PlutoCoords.x * .005), PlutoCoords.y + .5, PlutoCoords.z + (PlutoCoords.z * .005), 0., 0., 0., 0., 1., 0);
 		}
 		else {
 			gluLookAt(PlutoCoords.x + 2, PlutoCoords.y + 1, 0., 0., 0., 0., 0., 1., 0);
 		}
+		break;
+	case 10: //Close Planets View
+		gluLookAt(EarthCoordsCopy.x + 20, EarthCoordsCopy.y + 10, EarthCoordsCopy.z + 10, 0., 0., 0., 0., 1., 0);
+		break;
+	case 11: //Far Planets View
+		gluLookAt(PlutoCoordsCopy.x + 15, PlutoCoordsCopy.y + 10, PlutoCoordsCopy.z + 10, 0., 0., 0., 0., 1., 0);
 		break;
 	}
 	/*glPopMatrix();*/
@@ -914,15 +923,6 @@ Display( )
 	OsuSphere(EARTHSIZE * .19, 50, 50); //Pluto .19 times the size of Earth diameter
 	glPopMatrix();
 
-	glDisable(GL_DEPTH_TEST);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluOrtho2D(0., 100., 0., 100.);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glColor3f(1.,0.5,0.);
-	DoRasterString(5., 5., 0., (char*)"Davis Henckel - Final CS450 Project");
-
 	// swap the double-buffered framebuffers:
 	glutSwapBuffers( );
 
@@ -932,6 +932,17 @@ Display( )
 	glFlush( );
 }
 
+void DoAnimateMenu(int id) {
+	AnimateBool = !AnimateBool;
+	if (AnimateBool) {
+		glutIdleFunc(Animate);
+	}
+	else {
+		glutIdleFunc(NULL);
+	}
+	glutSetWindow(MainWindow);
+	glutPostRedisplay();
+}
 
 void
 DoAxesMenu( int id )
@@ -1093,6 +1104,10 @@ InitMenus( )
 		glutAddMenuEntry( ColorNames[i], i );
 	}
 
+	int AnimateThings = glutCreateMenu(DoAnimateMenu);
+	glutAddMenuEntry("Off", 0);
+	glutAddMenuEntry("On", 1);
+
 	int PPerspectiveMenu = glutCreateMenu(DoPlanetPerpectiveMenu);
 	glutAddMenuEntry("Sun", 0);
 	glutAddMenuEntry("Mercury", 1);
@@ -1104,6 +1119,8 @@ InitMenus( )
 	glutAddMenuEntry("Uranus", 7);
 	glutAddMenuEntry("Neptune", 8);
 	glutAddMenuEntry("Pluto", 9);
+	glutAddMenuEntry("Close Planets View", 10);
+	glutAddMenuEntry("Far Planets View", 11);
 
 	int axesmenu = glutCreateMenu( DoAxesMenu );
 	glutAddMenuEntry( "Off",  0 );
@@ -1140,6 +1157,7 @@ InitMenus( )
 #ifdef DEMO_Z_FIGHTING
 	glutAddSubMenu(   "Depth Fighting",depthfightingmenu);
 #endif
+	glutAddSubMenu(	  "Animate Planets", AnimateThings);
 	glutAddSubMenu(   "Planet Perspective", PPerspectiveMenu );
 	glutAddSubMenu(   "Depth Cue",     depthcuemenu);
 	glutAddSubMenu(   "Projection",    projmenu );
@@ -1235,7 +1253,7 @@ InitGraphics( )
 	glutTabletButtonFunc( NULL );
 	glutMenuStateFunc( NULL );
 	glutTimerFunc( -1, NULL, 0 );
-	glutIdleFunc( NULL );
+	glutIdleFunc( Animate );
 
 	// init glew (a window must be open to do this):
 
