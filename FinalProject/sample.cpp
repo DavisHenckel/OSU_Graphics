@@ -571,8 +571,11 @@ Display( )
 	//PlanetCoords PlutoCoords = { AU * 39.,0.,0. }; //Pluto 39AU from sun.
 	PlanetCoords PlutoCoords = { (AU * 5.2) / 2 + 20,0.,0. }; //Used distance for viewing
 
+	PlanetCoords PlutoCoordsCopy = { (AU * 5.2) / 2 + 20,0.,0. }; //copy for special view
+	PlanetCoords EarthCoordsCopy = { AU, 0., 0. }; //copy for special view
+
 	if (AnimateBool) {
-		Animate();
+		//Animate();
 		float EarthRadius = EarthCoords.x;
 		float MercuryRadius = MercuryCoords.x;
 		float VenusRadius = VenusCoords.x;
@@ -729,6 +732,12 @@ Display( )
 		else {
 			gluLookAt(PlutoCoords.x + 2, PlutoCoords.y + 1, 0., 0., 0., 0., 0., 1., 0);
 		}
+		break;
+	case 10: //Close Planets View
+		gluLookAt(EarthCoordsCopy.x + 20, EarthCoordsCopy.y + 10, EarthCoordsCopy.z + 10, 0., 0., 0., 0., 1., 0);
+		break;
+	case 11: //Far Planets View
+		gluLookAt(PlutoCoordsCopy.x + 15, PlutoCoordsCopy.y + 10, PlutoCoordsCopy.z + 10, 0., 0., 0., 0., 1., 0);
 		break;
 	}
 	/*glPopMatrix();*/
@@ -913,15 +922,6 @@ Display( )
 	glTranslatef(PlutoCoords.x, PlutoCoords.y, PlutoCoords.z);
 	OsuSphere(EARTHSIZE * .19, 50, 50); //Pluto .19 times the size of Earth diameter
 	glPopMatrix();
-
-	glDisable(GL_DEPTH_TEST);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluOrtho2D(0., 100., 0., 100.);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glColor3f(1.,0.5,0.);
-	DoRasterString(5., 5., 0., (char*)"Davis Henckel - Final CS450 Project");
 
 	// swap the double-buffered framebuffers:
 	glutSwapBuffers( );
@@ -1119,6 +1119,8 @@ InitMenus( )
 	glutAddMenuEntry("Uranus", 7);
 	glutAddMenuEntry("Neptune", 8);
 	glutAddMenuEntry("Pluto", 9);
+	glutAddMenuEntry("Close Planets View", 10);
+	glutAddMenuEntry("Far Planets View", 11);
 
 	int axesmenu = glutCreateMenu( DoAxesMenu );
 	glutAddMenuEntry( "Off",  0 );
