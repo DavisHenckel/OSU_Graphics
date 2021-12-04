@@ -495,7 +495,7 @@ SetPointLight(int ilight, float x, float y, float z, float r, float g, float b)
 	glLightfv(ilight, GL_SPECULAR, Array3(r, g, b));
 	glLightf(ilight, GL_CONSTANT_ATTENUATION, 1.);
 	glLightf(ilight, GL_LINEAR_ATTENUATION, 0.);
-	glLightf(ilight, GL_QUADRATIC_ATTENUATION, 0.);
+	glLightf(ilight, GL_QUADRATIC_ATTENUATION, 1.);
 	glEnable(ilight);
 }
 
