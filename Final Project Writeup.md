@@ -1,11 +1,12 @@
-﻿Davis Henckel
-
-<henckeld@oregonstate.edu>
-
-CS450 – Intro to Computer Graphics
-
-12/7/21
 # Final Project Submission
+This is the writeup for my final project for Intro to Computer Graphics taken at Oregon State. I followed the guidelines:  
+1. The text from your proposal  
+2. What you actually did for your project, with images  
+3. How your project differs from what you proposed, and why  
+4. (optional) Any impressive cleverness you want us to know about  
+5. What you learned from doing this project (i.e., what you know now that you didn't know when you started)  
+6. Some images that are especially representative of what you did  
+7. A link to the video showing off your project. Be sure your video is set to unlisted.  
 ## 1. Text from Original Proposal
 ### Proposed Name: Solar System!
 The project I am proposing for the final will be a Solar System implementation. I think this is exciting because of my interest in astronomy. This project will emulate the solar system we live in.
